@@ -1,0 +1,10 @@
+
+
+MyClass:
+  extendsions:
+    - FrontEndDataExtension
+
+
+FrontEndEditorCheckRootObjectTask:
+  root_object_class_name: provider
+  delete_unlinked_object: false

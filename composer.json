@@ -1,0 +1,31 @@
+{
+	"name": "sunnysideup/frontendeditor",
+	"type": "silverstripe-module",
+	"description": "Silverstripe Front-End Editor. Useful for places where you have listings and users can maintain their own page.",
+	"keywords": [
+		"Front End Editor",
+		"frontendeditor",
+		"cms",
+		"forms",
+		"content management",
+		"edit"
+	],
+	"license": "Sunny Side Up (BSD-3-Clause and CUSTOM)",
+	"authors":[
+		{
+			"name": "Nicolaas Francken",
+			"homepage": "https://github.com/sunnysideup",
+			"email" : "modules@sunnysideup.co.nz",
+			"role" : "lead developer"
+		}
+	],
+	"require":{
+		"silverstripe/framework": "3.1.*",
+		"sunnysideup/dataobjectsorter": "*",
+		"i-lateral/silverstripe-trumbowyg-htmleditor": "*"
+	},
+	"extra": {
+		"installer-name": "frontendeditor"
+	}
+
+}
