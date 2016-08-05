@@ -260,7 +260,7 @@ var FrontEndEditForm = {
                     else {
                         var label = element.find("label.left").text();
                         var val = input.val();
-                        if(typeof val == "undefined") {
+                        else if(typeof val == "undefined") {
                             //console.debug("value is undefined for "+label);
                         }
                         if(val.length > 0 && val !== "0" && val !== "0.00"){
