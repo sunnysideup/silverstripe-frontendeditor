@@ -3,8 +3,10 @@
     "type": "silverstripe-module",
     "description": "Silverstripe Front-End Editor. Useful for places where you have listings and users can maintain their own page.",
     "keywords": [
+        "Silverstripe-CMS",
+        "CMS",
+        "Silverstripe",
         "Front End Editor",
-        "frontendeditor",
         "cms",
         "forms",
         "content management",
@@ -19,9 +21,10 @@
         }
     ],
     "require": {
-        "silverstripe/framework": "^3.4",
+        "silverstripe/framework": "~3.1",
         "sunnysideup/dataobjectsorter": "*",
-        "i-lateral/silverstripe-trumbowyg-htmleditor": "*"
+        "i-lateral/silverstripe-trumbowyg-htmleditor": "*",
+        "silverstripe/cms": "~3.1"
     },
     "extra": {
         "installer-name": "frontendeditor"
