@@ -1,8 +1,8 @@
 <?php
 
 
-class FrontEndEditForm extends Form {
-
+class FrontEndEditForm extends Form
+{
     private static $allowed_actions = array(
         "createnew",
         "save",
@@ -18,17 +18,17 @@ class FrontEndEditForm extends Form {
 
     protected $isAddAnother = false;
 
-    function __construct($controller, $name, $recordBeingEdited) {
+    public function __construct($controller, $name, $recordBeingEdited)
+    {
 
         //get the right record
         $this->recordBeingEdited = $recordBeingEdited;
         $this->addExtraClass($recordBeingEdited);
-        if(!$this->recordBeingEdited) {
+        if (!$this->recordBeingEdited) {
             $className = Session::get("FrontEndClassName");
             $id = Session::get("FrontEndID");
             $this->recordBeingEdited = $className::get()->byID($id);
-        }
-        elseif($this->recordBeingEdited->getTitle()){
+        } elseif ($this->recordBeingEdited->getTitle()) {
             Session::set("FrontEndClassName", $this->recordBeingEdited->ClassName);
             Session::set("FrontEndID", $this->recordBeingEdited->ID);
         }
@@ -45,16 +45,15 @@ class FrontEndEditForm extends Form {
         );
 
         //add relations: we do this here so that we can tap into Controller!
-        if($this->recordBeingEdited->exists()) {
+        if ($this->recordBeingEdited->exists()) {
             $customRelationFields = $this->recordBeingEdited->FrontEndCustomRelationFields();
             $existingSelectors = $this->recordBeingEdited->FrontEndCustomRelationsOptionProvider();
-            foreach($this->recordBeingEdited->has_one() as $hasOneField => $hasOneClassName) {
+            foreach ($this->recordBeingEdited->has_one() as $hasOneField => $hasOneClassName) {
                 $hasOneFieldWithID = $hasOneField."ID";
                 $fields->removeByName($hasOneFieldWithID);
-                if(in_array($hasOneField, $customRelationFields)  || in_array($hasOneField, $removeFields)) {
+                if (in_array($hasOneField, $customRelationFields)  || in_array($hasOneField, $removeFields)) {
                     //do nothing
-                }
-                else {
+                } else {
                     $hasOneFieldObject = FrontEndExtendedHasOneField::create($hasOneField, $fieldLabels[$hasOneField]);
                     $hasOneFieldObject->setHasOneClassName($hasOneClassName);
                     $hasOneFieldObject->setRecordBeingEdited($this->recordBeingEdited);
@@ -68,14 +67,13 @@ class FrontEndEditForm extends Form {
                 (array) $this->recordBeingEdited->many_many() +
                 (array) Config::inst()->get($this->recordBeingEdited->ClassName, "belongs_many_many") +
                 (array) $this->recordBeingEdited->has_many();
-            foreach($otherRelations as $hasManyField => $hasManyClassName) {
-                if(in_array($hasManyField, $customRelationFields) || in_array($hasManyField, $removeFields)) {
-                    if(in_array($hasManyField, $customRelationFields)) {
+            foreach ($otherRelations as $hasManyField => $hasManyClassName) {
+                if (in_array($hasManyField, $customRelationFields) || in_array($hasManyField, $removeFields)) {
+                    if (in_array($hasManyField, $customRelationFields)) {
                         $this->relationsBeingSaved[$hasManyField] = $hasManyField;
                     }
                     //do nothing
-                }
-                else {
+                } else {
                     $hasManyFieldObject = FrontEndExtendedHasManyField::create($hasManyField, $fieldLabels[$hasManyField]);
                     $hasManyFieldObject->setHasManyClassName($hasManyClassName);
                     $hasManyFieldObject->setRecordBeingEdited($this->recordBeingEdited);
@@ -84,20 +82,19 @@ class FrontEndEditForm extends Form {
                     $fields->push($hasManyFieldObject);
                 }
             }
-        }
-        else {
+        } else {
             $fields = $this->recordBeingEdited->getFrontEndFields();
             $db = $this->recordBeingEdited->has_one();
-            foreach($db as $field => $class) {
+            foreach ($db as $field => $class) {
                 unset($db[$field]);
                 $db[$field."ID"] = $class;
             }
             $db += $this->recordBeingEdited->has_many();
             $db += $this->recordBeingEdited->many_many();
             $db += (array)$this->recordBeingEdited->stat("belongs_many_many");
-            foreach($fields as $field) {
+            foreach ($fields as $field) {
                 $fieldName = $field->getName();
-                if(isset($db[$fieldName])) {
+                if (isset($db[$fieldName])) {
                     $fields->removeByName($fieldName);
                 }
             }
@@ -105,61 +102,60 @@ class FrontEndEditForm extends Form {
 
         //right title
         $rightTitles = Config::inst()->get($this->recordBeingEdited->ClassName, "field_labels_right");
-        if(!is_array($rightTitles)) {
+        if (!is_array($rightTitles)) {
             $rightTitles = array();
         }
         $rightTitles = array_merge($rightTitles, FrontEndEditorRightTitle::get_entered_ones($this->recordBeingEdited->ClassName));
         $rightTitles = array_merge($rightTitles, $this->recordBeingEdited->RightTitlesForFrontEnd());
-        foreach($rightTitles as $fieldName => $rightTitle) {
+        foreach ($rightTitles as $fieldName => $rightTitle) {
             $field = $fields->fieldByName($fieldName);
-            if($field) {
+            if ($field) {
                 $obj = FrontEndEditorRightTitle::add_or_find_item(
                     $this->recordBeingEdited->ClassName,
                     $fieldName,
                     $rightTitle
                 );
-                if($field instanceof CheckboxField ||$field instanceof GridField) {
+                if ($field instanceof CheckboxField ||$field instanceof GridField) {
                     $field->setDescription($obj->BestDescription());
-                }
-                else {
+                } else {
                     $field->setRightTitle($obj->BestDescription());
                 }
             }
         }
 
         $placeHolders = $this->recordBeingEdited->PlaceHoldersForFrontEnd();
-        foreach($placeHolders as $fieldName => $placeHolder) {
+        foreach ($placeHolders as $fieldName => $placeHolder) {
             $field = $fields->fieldByName($fieldName);
-            if($field) {
+            if ($field) {
                 $field->setAttribute("placeholder", $placeHolder);
             }
         }
 
         //sibling edits
-        if(class_exists("DataObjectOneFieldUpdateController")) {
+        if (class_exists("DataObjectOneFieldUpdateController")) {
             $noSiblingEdits = $this->recordBeingEdited->FrontEndNoSiblingEdits();
             $readOnlyFields = $this->recordBeingEdited->FrontEndMakeReadOnlyFields();
             $siblingWhere = $this->recordBeingEdited->FrontEndSiblings(null, false);
             $siblingClassName = $siblingWhere->dataClass();
             $dbFields = $this->recordBeingEdited->db();
-            if(count($dbFields) && class_exists($siblingClassName)) {
+            if (count($dbFields) && class_exists($siblingClassName)) {
                 $siblingArray = $siblingWhere->map("ID", "ID")->toArray();
-                if(count($siblingArray)){
-                    foreach($dbFields as $fieldName => $type) {
-                        if(!in_array($fieldName, $noSiblingEdits) && !in_array($fieldName, $readOnlyFields)) {
+                if (count($siblingArray)) {
+                    foreach ($dbFields as $fieldName => $type) {
+                        if (!in_array($fieldName, $noSiblingEdits) && !in_array($fieldName, $readOnlyFields)) {
                             $field = $fields->fieldByName($fieldName);
                             $tableName = $this->recordBeingEdited->baseTable();
                             $tableNameVersioned = $tableName;
-                            if($field && $tableName) {
-                                if(is_a($this->recordBeingEdited, Object::getCustomClass("SiteTree"))) {
-                                    if(Versioned::current_stage() == "Live") {
+                            if ($field && $tableName) {
+                                if (is_a($this->recordBeingEdited, Object::getCustomClass("SiteTree"))) {
+                                    if (Versioned::current_stage() == "Live") {
                                         $tableNameVersioned .= "_Live";
                                     }
                                 }
                                 $siblingEditLink = DataObjectOneFieldUpdateController::popup_link(
                                     $siblingClassName,
                                     $fieldName,
-                                    $where = "\"".$tableNameVersioned."\".\"ID\" IN (".implode(",",$siblingArray).")",
+                                    $where = "\"".$tableNameVersioned."\".\"ID\" IN (".implode(",", $siblingArray).")",
                                     $sort = '',
                                     $linkText = $field->Title(),
                                     "FrontEndShortAndExtendedTitle"
@@ -174,9 +170,9 @@ class FrontEndEditForm extends Form {
 
         //extra classes
         $extraClasses = $this->recordBeingEdited->ExtraClassesForFrontEnd();
-        foreach($extraClasses as $fieldName => $extraClass) {
+        foreach ($extraClasses as $fieldName => $extraClass) {
             $field = $fields->dataFieldByName($fieldName);
-            if($field) {
+            if ($field) {
                 $field->addExtraClass($extraClass);
             }
         }
@@ -184,7 +180,7 @@ class FrontEndEditForm extends Form {
 
         //remove fields
 
-        foreach($removeFields as $removeField) {
+        foreach ($removeFields as $removeField) {
             $fields->removeByName($removeField);
         }
 
@@ -197,10 +193,10 @@ class FrontEndEditForm extends Form {
 
         //make readonly
         $readOnlyFieldNames = $this->recordBeingEdited->FrontEndMakeReadOnlyFields();
-        if(is_array($readOnlyFieldNames) && count($readOnlyFieldNames)) {
-            foreach($readOnlyFieldNames as $readOnlyFieldName) {
+        if (is_array($readOnlyFieldNames) && count($readOnlyFieldNames)) {
+            foreach ($readOnlyFieldNames as $readOnlyFieldName) {
                 $readOnlyField = $fields->dataFieldByName($readOnlyFieldName);
-                if($readOnlyField) {
+                if ($readOnlyField) {
                     $fields->replaceField($readOnlyFieldName, $readOnlyField->performReadonlyTransformation());
                 }
             }
@@ -210,60 +206,58 @@ class FrontEndEditForm extends Form {
         //headers
         $headerArray = array();
         $currentlyAddingTo = "";
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             $fieldName = $field->ID();
             $headerStartsHere = isset($headers[$fieldName]) ? true : false;
-            if($headerStartsHere) {
+            if ($headerStartsHere) {
                 $headerIsStandard = (is_string($headers[$fieldName])) ? true : false;
-            }
-            else {
+            } else {
                 $headerIsStandard = false;
             }
-            if($headerStartsHere && $headerIsStandard) {
+            if ($headerStartsHere && $headerIsStandard) {
                 //save last one ...
-                if(!isset($headerArray[$fieldName])) {
+                if (!isset($headerArray[$fieldName])) {
                     $headerArray[$fieldName] = array();
                     $currentlyAddingTo = $fieldName;
                 }
             }
-            if($currentlyAddingTo) {
+            if ($currentlyAddingTo) {
                 $headerArray[$currentlyAddingTo][$fieldName] = $field;
             }
         }
-        foreach($headerArray as $fieldName => $fieldArray) {
+        foreach ($headerArray as $fieldName => $fieldArray) {
             $toggleField = ToggleCompositeField($fieldName."_HEADING", $headers[$fieldName]);
             unset($headers[$fieldName]);
             $fields->insertBefore($toggleField, $fieldName);
-            foreach($fieldArray as $fieldNameToRemove => $fieldToAdd) {
+            foreach ($fieldArray as $fieldNameToRemove => $fieldToAdd) {
                 $fields->removeByName($fieldNameToRemove);
                 $toggleField->push($fieldToAdd);
             }
         }
         $headers = $this->recordBeingEdited->FrontEndHeaders();
-        foreach($headers as $insertBefore => $formField) {
+        foreach ($headers as $insertBefore => $formField) {
             $fields->insertBefore($formField, $insertBefore);
         }
 
         //actions
-        if($this->recordBeingEdited->exists()) {
+        if ($this->recordBeingEdited->exists()) {
             $actions = new FieldList(
                 FormAction::create('save', _t("FrontEndEditForm.SAVE", "save"))
                 //to be completed ...
                 //FormAction::create('saveandaddanother', "save and add another")
             );
-        }
-        else {
+        } else {
             $actions = new FieldList(
                 FormAction::create('createnew', _t("FrontEndEditForm.CREATE", "create"))
             );
         }
-        if($this->recordBeingEdited->canDelete()) {
+        if ($this->recordBeingEdited->canDelete()) {
             $actions->push(FormAction::create("deleterecord", "delete"));
         }
 
 
         //broken
-        if($this->previousObject()) {
+        if ($this->previousObject()) {
             $actions->push(
                 new FormAction('saveandgoback', "save and go back")
             );
@@ -271,12 +265,11 @@ class FrontEndEditForm extends Form {
 
         //required fields
         $validator = $this->recordBeingEdited->getFrontEndValidator();
-        if(!$validator) {
+        if (!$validator) {
             $requiredFields = Config::inst()->get($this->recordBeingEdited->ClassName, 'required_fields');
-            if($requiredFields && is_array($requiredFields)) {
+            if ($requiredFields && is_array($requiredFields)) {
                 $validator = RequiredFields::create($requiredFields);
-            }
-            else {
+            } else {
                 $validator = array();
             }
         }
@@ -287,44 +280,44 @@ class FrontEndEditForm extends Form {
             "FrontEndEditForm.formSelector = '#".$this->FormName()."'; ",
             "FrontEndEditForm.formSelector"
         );
-        if(($this->recordBeingEdited && $this->recordBeingEdited->ID) || (isset($_GET["reusedata"]) && $_GET["reusedata"])) {
+        if (($this->recordBeingEdited && $this->recordBeingEdited->ID) || (isset($_GET["reusedata"]) && $_GET["reusedata"])) {
             $this->loadDataFrom($this->recordBeingEdited);
             $oldData = Session::get("FormInfo.FrontEndEditForm.data");
-            if($oldData && (is_array($oldData) || is_object($oldData))) {
+            if ($oldData && (is_array($oldData) || is_object($oldData))) {
                 $this->loadDataFrom($oldData);
             }
         }
     }
 
-    function createnew($data, $form) {
+    public function createnew($data, $form)
+    {
         return $this->save($data, $form);
     }
 
-    function save($data, $form) {
+    public function save($data, $form)
+    {
         $this->retrieveRecordBeingEdited($data);
-        if($this->recordBeingEdited && $this->recordBeingEdited->canEdit()) {
+        if ($this->recordBeingEdited && $this->recordBeingEdited->canEdit()) {
             $form->saveInto($this->recordBeingEdited);
 
             //start hack
-            foreach($this->recordBeingEdited->db() as $name => $type){
-                if(strpos($type, "oolean")) {
-                    if(!isset($data[$name])) {
+            foreach ($this->recordBeingEdited->db() as $name => $type) {
+                if (strpos($type, "oolean")) {
+                    if (!isset($data[$name])) {
                         $this->recordBeingEdited->$name = false;
-                    }
-                    else {
+                    } else {
                         $this->recordBeingEdited->$name = true;
                     }
-                }
-                elseif(isset($data[$name])) {
-                    if($name != "ID" && $name != "ClassName") {
+                } elseif (isset($data[$name])) {
+                    if ($name != "ID" && $name != "ClassName") {
                         $this->recordBeingEdited->$name = $data[$name];
                     }
                 }
             }
             $this->relationsBeingSaved = explode(",", $data["RelationsBeingSaved"]);
-            foreach($this->recordBeingEdited->has_one() as $name => $type){
+            foreach ($this->recordBeingEdited->has_one() as $name => $type) {
                 $name = $name."ID";
-                if(isset($data[$name])) {
+                if (isset($data[$name])) {
                     $this->recordBeingEdited->$name = $data[$name];
                 }
             }
@@ -335,12 +328,11 @@ class FrontEndEditForm extends Form {
             // validate now ...
             // has to be doValidate
             $validationResult = $this->recordBeingEdited->doValidate();
-            if($validationResult && !$validationResult->valid()) {
+            if ($validationResult && !$validationResult->valid()) {
                 $form->sessionMessage("ERROR - Could not save data: ".$validationResult->message(), "bad");
-                if(!$this->recordBeingEdited->ID) {
+                if (!$this->recordBeingEdited->ID) {
                     return $this->controller->redirect($this->controller->Link()."?reusedata=1");
-                }
-                else {
+                } else {
                     return $this->controller->redirectBack();
                 }
             }
@@ -353,78 +345,77 @@ class FrontEndEditForm extends Form {
 
             //more hack!
             //we can only add here, not remove...
-            foreach($this->relationsBeingSaved as $relationName) {
-                if($relationName) {
-                    if(isset($data[$relationName])) {
+            foreach ($this->relationsBeingSaved as $relationName) {
+                if ($relationName) {
+                    if (isset($data[$relationName])) {
                         //$this->recordBeingEdited->$relationName()->removeAll();
-                        if(isset($data[$relationName]["GridState"])) {
+                        if (isset($data[$relationName]["GridState"])) {
                             //do nothing ..
-                        }
-                        else {
+                        } else {
                             $this->recordBeingEdited->$relationName()->addMany($data[$relationName]);
                         }
                     }
                 }
             }
             //end hack
-            if($this->recordBeingEdited instanceof SiteTree) {
+            if ($this->recordBeingEdited instanceof SiteTree) {
                 $this->recordBeingEdited->writeToStage("Stage");
                 $this->recordBeingEdited->Publish("Stage", "Live");
-            }
-            else {
+            } else {
                 $this->recordBeingEdited->write();
             }
             $form->sessionMessage(_t("FrontEndEditor.SAVED", "Details have been saved."), "good");
-            if($this->isGoBack) {
-                if($previousObject = $this->previousObject()) {
+            if ($this->isGoBack) {
+                if ($previousObject = $this->previousObject()) {
                     $this->clearPreviousObject();
                     return $this->controller->redirect($previousObject->FrontEndEditLink());
                 }
             }
-            if($this->isAddAnother) {
+            if ($this->isAddAnother) {
                 return $this->controller->redirect(FrontEndEditorPage::get()->First()->Link());
             }
             $ajaxGetVariable = "";
-            if(Director::is_ajax()) {
-                $ajaxGetVariable = "?ajax=".rand(0,9999999999999999999);
+            if (Director::is_ajax()) {
+                $ajaxGetVariable = "?ajax=".rand(0, 9999999999999999999);
             }
             $this->controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
-        }
-        else {
+        } else {
             $form->sessionMessage("Sorry, you do not have enough permissions to edit this record.", "good");
             $this->controller->redirectBack();
         }
     }
 
 
-    function deleterecord($data, $form) {
+    public function deleterecord($data, $form)
+    {
         $this->retrieveRecordBeingEdited($data);
         //die(" TO BE COMPLETED ");
         $rootParentObject = $this->recordBeingEdited->FrontEndRootParentObject();
-        if($this->recordBeingEdited->exists() || $this->recordBeingEdited->ID > 0) {
-            if($this->recordBeingEdited->canDelete()) {
-                if($this->recordBeingEdited instanceof SiteTree) {
+        if ($this->recordBeingEdited->exists() || $this->recordBeingEdited->ID > 0) {
+            if ($this->recordBeingEdited->canDelete()) {
+                if ($this->recordBeingEdited instanceof SiteTree) {
                     $this->recordBeingEdited->deleteFromStage('Live');
                     $this->recordBeingEdited->deleteFromStage('Stage');
-                }
-                else {
+                } else {
                     $this->recordBeingEdited->delete();
                 }
             }
-            if($rootParentObject) {
+            if ($rootParentObject) {
                 return $this->controller->redirect($rootParentObject->FrontEndEditLink());
             }
         }
         die("Object can not be found ... ");
     }
 
-    function saveandaddanother($data, $form) {
+    public function saveandaddanother($data, $form)
+    {
         $this->isAddAnother = true;
         return $this->save($data, $form);
     }
 
 
-    function saveandgoback($data, $form){
+    public function saveandgoback($data, $form)
+    {
         $this->isGoBack = true;
         return $this->save($data, $form);
     }
@@ -433,14 +424,16 @@ class FrontEndEditForm extends Form {
      *
      * @return null | DataObject
      */
-    function previousObject(){
+    public function previousObject()
+    {
         return FrontEndEditorSessionManager::previous_object($this->recordBeingEdited);
     }
 
     /**
      *
      */
-    function clearPreviousObject(){
+    public function clearPreviousObject()
+    {
         FrontEndEditorSessionManager::clear_previous_object();
     }
 
@@ -456,33 +449,39 @@ class FrontEndEditForm extends Form {
      *
      * @return DataObject
      */
-    protected function retrieveRecordBeingEdited($data){
+    protected function retrieveRecordBeingEdited($data)
+    {
         //has it already been retrieved?
-        if($this->recordBeingEdited && $this->recordBeingEdited->exists() && $this->recordBeingEdited instanceof FrontEndEditable) {
+        if ($this->recordBeingEdited && $this->recordBeingEdited->exists() && $this->recordBeingEdited instanceof FrontEndEditable) {
             return $this->recordBeingEdited;
         }
         $id = 0;
         $className = "";
-        if(isset($data["IDToUse"])) {$id = $data["IDToUse"];}
-        if(isset($data["ClassNameToUse"])) {$className = $data["ClassNameToUse"];}
-        if($className) {
-            if(class_exists($className)) {
+        if (isset($data["IDToUse"])) {
+            $id = $data["IDToUse"];
+        }
+        if (isset($data["ClassNameToUse"])) {
+            $className = $data["ClassNameToUse"];
+        }
+        if ($className) {
+            if (class_exists($className)) {
                 //find existing ...
-                if($id) {
+                if ($id) {
                     $this->recordBeingEdited = $className::get()->byID($id);
-                    if($this->recordBeingEdited instanceof FrontEndEditable) {
+                    if ($this->recordBeingEdited instanceof FrontEndEditable) {
                         return $this->recordBeingEdited;
                     }
                 }
                 //create new ...
                 else {
                     $className = $data["ClassNameToUse"];
-                    if($className && class_exists($className)) {
+                    if ($className && class_exists($className)) {
                         $obj = Injector::inst()->get("Provider");
-                        if($obj instanceof FrontEndEditable) {
-                            if($obj->canCreate()) {
+                        if ($obj instanceof FrontEndEditable) {
+                            if ($obj->canCreate()) {
                                 $this->recordBeingEdited = $className::create();
-                                return $this->recordBeingEdited;;
+                                return $this->recordBeingEdited;
+                                ;
                             }
                         }
                     }
@@ -491,6 +490,4 @@ class FrontEndEditForm extends Form {
         }
         user_error("Form can not find object being edited...<pre>".print_r($data, 1)."</pre>");
     }
-
-
 }

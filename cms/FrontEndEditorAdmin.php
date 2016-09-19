@@ -8,15 +8,11 @@
  */
 
 
-class FrontEndEditorAdmin extends ModelAdmin {
+class FrontEndEditorAdmin extends ModelAdmin
+{
+    private static $url_segment = 'frontendeditor';
 
-	private static $url_segment = 'frontendeditor';
+    private static $menu_title = 'Front End Editor';
 
-	private static $menu_title = 'Front End Editor';
-
-	private static $managed_models = array('FrontEndEditorRightTitle');
-
-
-
+    private static $managed_models = array('FrontEndEditorRightTitle');
 }
-
