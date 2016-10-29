@@ -167,7 +167,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
                 }
             } elseif ($source && $source instanceof SS_List) {
                 if ($source->count()) {
-                    if($source->first() instanceof FrontEndEditable) {
+                    if ($source->first() instanceof FrontEndEditable) {
                         $dropdownSource = $source->map('ID', 'FrontEndShortTitle')->toArray();
                     }
                 }
