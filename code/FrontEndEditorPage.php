@@ -26,8 +26,8 @@ class FrontEndEditorPage extends Page
         return $this->Link(
             "frontendremoverelation/".
             $recordBeingEdited->ClassName."/".
-            $recordBeingEdited->ID."/
-            ?goingto=".$relationName.",".$foreignID
+            $recordBeingEdited->ID."/".
+            "?goingto=".$relationName.",".$foreignID
         );
     }
 
@@ -179,28 +179,40 @@ class FrontEndEditorPage_Controller extends Page_Controller
         $foreignClassName = $this->frontEndDetermineRelationClassName($relationName);
         $foreignObject = $foreignClassName::get()->byID($foreignID);
         $deleteAlternatives = $this->recordBeingEdited->frontEndDeleteAlternatives();
-        switch ($type) {
-            case "belongs_to":
-                die("to be completed");
-                break;
-            case "has_one":
-                $field = $relationName."ID";
-                $this->recordBeingEdited->$field = 0;
-                break;
-            case "has_many":
-            case "many_many":
-            case "belongs_many_many":
-                $this->recordBeingEdited->$relationName()->remove($foreignObject);
-                break;
-        }
         if (isset($deleteAlternatives[$relationName])) {
             if ($foreignObject) {
-                foreach ($deleteAlternatives[$relationName] as $field => $value) {
-                    $foreignObject->$field = $value;
+                echo "A";
+                foreach ($deleteAlternatives[$relationName] as $fieldOrMethod => $value) {
+                    echo "B";
+                    if($foreignObject->hasField($fieldOrMethod)) {
+                        $foreignObject->$fieldOrMethod = $value;
+                        $foreignObject->write();
+                    } elseif($foreignObject->hasMethod($fieldOrMethod)) {
+                        if($value === true) {
+                            $foreignObject->$fieldOrMethod();
+                        } else {
+                            $foreignObject->$fieldOrMethod($value);
+                        }
+                    }
                 }
                 $foreignObject->write();
             }
+        //the else is important so that
         } else {
+            switch ($type) {
+                case "belongs_to":
+                    die("to be completed");
+                    break;
+                case "has_one":
+                    $field = $relationName."ID";
+                    $this->recordBeingEdited->$field = 0;
+                    break;
+                case "has_many":
+                case "many_many":
+                case "belongs_many_many":
+                    $this->recordBeingEdited->$relationName()->remove($foreignObject);
+                    break;
+            }
             if ($foreignObject && $foreignObject->canDelete()) {
                 $foreignObject->delete();
             }
