@@ -10,7 +10,7 @@ interface FrontEndEditable
      * @return null | RequiredFields
      */
     public function getFrontEndValidator();
-    
+
     /**
      * the short title for the object
      * @return string
@@ -107,6 +107,14 @@ interface FrontEndEditable
      * e.g.
      * MyChildren = array("ShowInMenus" => 0, "ShowInSearch" => 0)
      * MySpecialDataObject = array("Archive" => 1)
+     *
+     * Instead of a field, you can also add a method (e.g. doDeletionDifferently)
+     * the value is passed to this method, unless it is TRUE (strict check). e.g.
+     *     MyChildren(
+     *         'doDeletionDifferently' => true,
+     *     )
+     *
+     * The field overrides the method.
      */
     public function FrontEndDeleteAlternatives();
 
