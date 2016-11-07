@@ -179,7 +179,6 @@ class FrontEndEditorPage_Controller extends Page_Controller
         $foreignClassName = $this->frontEndDetermineRelationClassName($relationName);
         $foreignObject = $foreignClassName::get()->byID($foreignID);
         $deleteAlternatives = $this->recordBeingEdited->frontEndDeleteAlternatives();
-
         switch ($type) {
             case "belongs_to":
                 die("to be completed");
@@ -201,7 +200,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 }
                 $foreignObject->write();
             }
-        } else {        
+        } else {
             if ($foreignObject && $foreignObject->canDelete()) {
                 $foreignObject->delete();
             }

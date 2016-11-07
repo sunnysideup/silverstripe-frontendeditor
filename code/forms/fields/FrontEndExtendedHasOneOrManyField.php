@@ -167,7 +167,9 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
                 }
             } elseif ($source && $source instanceof SS_List) {
                 if ($source->count()) {
-                    $dropdownSource = $source->map()->toArray();
+                    if ($source->first() instanceof FrontEndEditable) {
+                        $dropdownSource = $source->map('ID', 'FrontEndShortTitle')->toArray();
+                    }
                 }
             } elseif ($source && is_array($source)) {
                 $dropdownSource = $source;
@@ -188,7 +190,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
                     if (is_array($defaultValue) && is_array($defaultValue)) {
                         $dropdownSource = array_diff_key($dropdownSource, $defaultValue);
                     }
-                    $title = _t("FrontEndEditor.ADD_NEW", "add existing");
+                    $title = _t("FrontEndEditor.ADD_EXISTING", "add existing");
                 }
                 if (count($dropdownSource)) {
                     if ($fieldTypeClassName != "CheckboxOptionSetField") {
