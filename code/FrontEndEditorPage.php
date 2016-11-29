@@ -184,11 +184,11 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 echo "A";
                 foreach ($deleteAlternatives[$relationName] as $fieldOrMethod => $value) {
                     echo "B";
-                    if($foreignObject->hasField($fieldOrMethod)) {
+                    if ($foreignObject->hasField($fieldOrMethod)) {
                         $foreignObject->$fieldOrMethod = $value;
                         $foreignObject->write();
-                    } elseif($foreignObject->hasMethod($fieldOrMethod)) {
-                        if($value === true) {
+                    } elseif ($foreignObject->hasMethod($fieldOrMethod)) {
+                        if ($value === true) {
                             $foreignObject->$fieldOrMethod();
                         } else {
                             $foreignObject->$fieldOrMethod($value);
