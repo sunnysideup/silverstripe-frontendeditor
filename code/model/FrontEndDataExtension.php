@@ -69,7 +69,6 @@ class FrontEndDataExtension extends DataExtension
         $fields->removeFieldFromTab("Root.Main", "FrontEndRootCanEditObject");
     }
 
-
     public function updateSettingsFields($fields)
     {
         $fields->addFieldsToTab('Root.FrontEnd', array(
@@ -276,6 +275,17 @@ class FrontEndDataExtension extends DataExtension
             $list = $list->filter(array("ID" => 0));
         }
         return $list;
+    }
+
+    /**
+     * returns a datalist of objects of a particular class
+     * (e.g. Page will include HomePage)
+     * that share a particular root parent.
+     * @param string $className [description]
+     * @return DataList
+     */
+    public function FrontEndFindChildObjects($className) {
+        return $className::get()->filter(array('FrontEndRootCanEditObject' => $this->owner->FrontEndRootCanEditObject));
     }
 
     public function requireDefaultRecords()
