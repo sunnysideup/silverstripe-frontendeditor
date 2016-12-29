@@ -245,8 +245,27 @@ class FrontEndDataExtension extends DataExtension
     {
         $obj = $this->owner->FrontEndRootParentObject();
         if ($obj && $obj->ID) {
-            return $obj->ClassName.",".$obj->ID;
+            return $obj->ClassName.','.$obj->ID;
         }
+    }
+
+    /**
+     * Adds a root object
+     * @param FrontEndEditable $rootObject any dataobject implementing FrontEndEditable
+     * @param bool             $write      write me?
+     */
+    public function FrontEndAddRootParentObject($rootObject, $write = false)
+    {
+        $this->owner->FrontEndRootCanEditObject = $rootObject->ClassName.','.$rootObject->ID;
+        if($write)
+        if($this->owner instanceof SiteTree) {
+            $this->owner->writeToStage('Stage');
+            $this->owner->publish('Stage', 'Live');
+        } else {
+            $this->owner->write();
+        }
+
+        return $this->owner;
     }
 
     public function FrontEndShortAndExtendedTitle()
