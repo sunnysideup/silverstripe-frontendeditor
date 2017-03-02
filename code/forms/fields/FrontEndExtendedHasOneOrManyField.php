@@ -129,7 +129,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
 
             return parent::FieldHolder($properties = array());
         }
-        return new HiddenField("no field for ".$this->getCalculatedFieldName());
+        return HiddenField::create("no field for ".$this->getCalculatedFieldName());
     }
 
     /**
