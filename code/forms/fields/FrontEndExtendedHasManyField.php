@@ -72,41 +72,43 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
             $hasManyFieldWithID = $this->getCalculatedFieldName(true);
             $hasManyClassName = $this->getForeignClassName();
             //if object exists:
-            $hasManyObjects = $this->recordBeingEdited->$hasManyField();
-            $hasManyObjectSingleton = $this->getForeignSingleton();
-            if ($hasManyObjectSingleton->hasExtension('FrontEndDataExtension')) {
-                if ($hasManyObjects && $hasManyObjects->count()) {
-                    foreach ($hasManyObjects as $hasManyObject) {
-                        if ($hasManyObject->canEdit()) {
-                            $this->push(
-                                LiteralField::create(
-                                    $hasManyField."_EDIT_".$hasManyObject->ID,
-                                    "<h5 class=\"frontEndEditAndRemoveLinks\" id=\"EDIT_AND_REMOVE_LINK_HEADING_".$hasManyObject->ClassName."_".$hasManyObject->ID."\">
-										<a class=\"frontEndRemoveLink\" href=\"".$this->recordBeingEdited->FrontEndRemoveRelationLink($hasManyField, $hasManyObject->ID)."\">✗</a>
-										<a class=\"frontEndEditLink\" href=\"".$hasManyObject->FrontEndEditLink()."\"><span>&#9998;</span> ".$hasManyObject->FrontEndShortTitle()."</a>
-										<div class=\"extendedDescriptionForRelation\">".$hasManyObject->FrontEndExtendedTitle()."</div>
-									</h5>"
-                                )
-                            );
+            if($this->recordBeingEdited) {
+                $hasManyObjects = $this->recordBeingEdited->$hasManyField();
+                $hasManyObjectSingleton = $this->getForeignSingleton();
+                if ($hasManyObjectSingleton->hasExtension('FrontEndDataExtension')) {
+                    if ($hasManyObjects && $hasManyObjects->count()) {
+                        foreach ($hasManyObjects as $hasManyObject) {
+                            if ($hasManyObject->canEdit()) {
+                                $this->push(
+                                    LiteralField::create(
+                                        $hasManyField."_EDIT_".$hasManyObject->ID,
+                                        "<h5 class=\"frontEndEditAndRemoveLinks\" id=\"EDIT_AND_REMOVE_LINK_HEADING_".$hasManyObject->ClassName."_".$hasManyObject->ID."\">
+                                            <a class=\"frontEndRemoveLink\" href=\"".$this->recordBeingEdited->FrontEndRemoveRelationLink($hasManyField, $hasManyObject->ID)."\">✗</a>
+                                            <a class=\"frontEndEditLink\" href=\"".$hasManyObject->FrontEndEditLink()."\"><span>&#9998;</span> ".$hasManyObject->FrontEndShortTitle()."</a>
+                                            <div class=\"extendedDescriptionForRelation\">".$hasManyObject->FrontEndExtendedTitle()."</div>
+                                        </h5>"
+                                    )
+                                );
+                            }
                         }
                     }
+                    if ($hasManyObjectSingleton->canCreate()) {
+                        $this->push(
+                            LiteralField::create(
+                                $hasManyField."_ADD",
+                                "<h5 class=\"frontEndAddLink\" id=\"ADD_LINK_HEADING".$hasManyObjectSingleton->ClassName."\">
+                                    <a href=\"".$this->recordBeingEdited->FrontEndAddRelationLink($hasManyField)."\"><span>[+]</span> "._t("FrontEndEdtior.ADD", "add")." ".$this->Title()."</a>
+                                </h5>"
+                            )
+                        );
+                    }
                 }
+                //temporary hack to stop read-only ones from being added.
                 if ($hasManyObjectSingleton->canCreate()) {
-                    $this->push(
-                        LiteralField::create(
-                            $hasManyField."_ADD",
-                            "<h5 class=\"frontEndAddLink\" id=\"ADD_LINK_HEADING".$hasManyObjectSingleton->ClassName."\">
-								<a href=\"".$this->recordBeingEdited->FrontEndAddRelationLink($hasManyField)."\"><span>[+]</span> "._t("FrontEndEdtior.ADD", "add")." ".$this->Title()."</a>
-							</h5>"
-                        )
-                    );
-                }
-            }
-            //temporary hack to stop read-only ones from being added.
-            if ($hasManyObjectSingleton->canCreate()) {
-                if ($existingSelectorField = $this->existingSelectorField()) {
-                    $this->push($existingSelectorField);
-                    $this->relationIsBeingSaved = true;
+                    if ($existingSelectorField = $this->existingSelectorField()) {
+                        $this->push($existingSelectorField);
+                        $this->relationIsBeingSaved = true;
+                    }
                 }
             }
         }
