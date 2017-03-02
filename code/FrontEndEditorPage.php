@@ -181,9 +181,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         $deleteAlternatives = $this->recordBeingEdited->frontEndDeleteAlternatives();
         if (isset($deleteAlternatives[$relationName])) {
             if ($foreignObject) {
-                echo "A";
                 foreach ($deleteAlternatives[$relationName] as $fieldOrMethod => $value) {
-                    echo "B";
                     if ($foreignObject->hasField($fieldOrMethod)) {
                         $foreignObject->$fieldOrMethod = $value;
                         $foreignObject->write();
