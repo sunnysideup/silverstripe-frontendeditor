@@ -15,4 +15,7 @@ class FrontEndEditorAdmin extends ModelAdmin
     private static $menu_title = 'Front End Editor';
 
     private static $managed_models = array('FrontEndEditorRightTitle');
+
+    private static $menu_icon = 'frontendeditor/images/treeicons/FrontEndEditorAdmin.png';
+    
 }
