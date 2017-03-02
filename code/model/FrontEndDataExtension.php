@@ -117,7 +117,7 @@ class FrontEndDataExtension extends DataExtension
         //to complete
         if ($this->owner->ClassName == Config::inst()->get("FrontEndEditorPage_Controller", "default_model")) {
         }
-        $this->FrontEndEditorID = Member::currentUserID();
+        $this->owner->FrontEndEditorID = Member::currentUserID();
     }
 
     public function canCreate($member)
