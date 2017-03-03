@@ -302,12 +302,16 @@ class FrontEndEditForm extends Form
 
             //start hack
             foreach ($this->recordBeingEdited->db() as $name => $type) {
-                if (strpos($type, "oolean")) {
+                if (stripos($type, "oolean")) {
                     if (!isset($data[$name])) {
                         $this->recordBeingEdited->$name = false;
                     } else {
                         $this->recordBeingEdited->$name = true;
                     }
+                }
+                elseif ($type === 'Date') {
+                    $value = DateField::create('MyDate')->setValue($data[$name])->dataValue();
+                    $this->recordBeingEdited->$name = $value;
                 } elseif (isset($data[$name])) {
                     if ($name != "ID" && $name != "ClassName") {
                         $this->recordBeingEdited->$name = $data[$name];
@@ -468,7 +472,7 @@ class FrontEndEditForm extends Form
                 //find existing ...
                 if ($id) {
                     $this->recordBeingEdited = $className::get()->byID($id);
-                    if ($this->recordBeingEdited instanceof FrontEndEditable) {
+                    if ($this->recordBeingEdited->hasExtension('FrontEndDataExtension')) {
                         return $this->recordBeingEdited;
                     }
                 }
@@ -477,11 +481,10 @@ class FrontEndEditForm extends Form
                     $className = $data["ClassNameToUse"];
                     if ($className && class_exists($className)) {
                         $obj = Injector::inst()->get("Provider");
-                        if ($obj instanceof FrontEndEditable) {
+                        if ($obj->hasExtension('FrontEndDataExtension')) {
                             if ($obj->canCreate()) {
                                 $this->recordBeingEdited = $className::create();
                                 return $this->recordBeingEdited;
-                                ;
                             }
                         }
                     }
