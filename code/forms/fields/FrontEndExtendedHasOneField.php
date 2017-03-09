@@ -80,11 +80,15 @@ class FrontEndExtendedHasOneField extends FrontEndExtendedHasOneOrManyField
             if ($hasOneObject && $hasOneObject->exists()) {
                 if ($hasOneObject->hasExtension('FrontEndDataExtension')) {
                     if ($hasOneObject->canEdit()) {
+                        $deleteLink = "";
+                        if ($hasOneObject->canDelete()) {
+                            $deleteLink = '<a class=\"frontEndRemoveLink\" href=\"".$this->recordBeingEdited->FrontEndRemoveRelationLink($hasOneField, $hasOneObject->ID)."\">✗</a>';
+                        }
                         $this->push(
                             LiteralField::create(
                                 $hasOneFieldWithID."_EDIT",
                                 "<h5 class=\"frontEndEditAndRemoveLinks\"  id=\"EDIT_AND_REMOVE_LINK_HEADING_".$hasOneObject->ClassName."_".$hasOneObject->ID."\">
-									<a class=\"frontEndRemoveLink\" href=\"".$this->recordBeingEdited->FrontEndRemoveRelationLink($hasOneField, $hasOneObject->ID)."\">✗</a>
+									".$deleteLink."
 									<a class=\"frontEndEditLink\" href=\"".$hasOneObject->FrontEndEditLink()."\"><span>&#9998;</span> ".$hasOneObject->FrontEndShortTitle()."</a>
 									<div class=\"extendedDescriptionForRelation\">".$hasOneObject->FrontEndExtendedTitle()."</div>
 								</h5>"
