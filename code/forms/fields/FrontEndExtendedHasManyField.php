@@ -81,7 +81,7 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
                             if ($hasManyObject->canEdit()) {
                                 $deleteLink = "";
                                 if ($hasManyObject->canDelete()) {
-                                    $deleteLink = '<a class=\"frontEndRemoveLink\" href=\"".$this->recordBeingEdited->FrontEndRemoveRelationLink($hasManyField, $hasManyObject->ID)."\">✗</a>';
+                                    $deleteLink = "<a class=\"frontEndRemoveLink\" href=\"".$this->recordBeingEdited->FrontEndRemoveRelationLink($hasManyField, $hasManyObject->ID)."\">✗</a>";
                                 }
                                 $this->push(
                                     LiteralField::create(
