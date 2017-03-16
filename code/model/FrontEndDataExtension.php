@@ -109,7 +109,7 @@ class FrontEndDataExtension extends DataExtension
 
     public function onBeforeWrite()
     {
-        $frontEndRootParentObjectAsString = $this->owner->FrontEndRootParentObjectAsString();
+        $frontEndRootParentObjectAsString = $this->FrontEndRootParentObjectAsString();
         //debug::log("---".$frontEndRootParentObjectAsString);
         if ($this->owner->FrontEndRootCanEditObject != $frontEndRootParentObjectAsString) {
             $this->owner->FrontEndRootCanEditObject = $frontEndRootParentObjectAsString;
@@ -243,7 +243,7 @@ class FrontEndDataExtension extends DataExtension
      */
     public function FrontEndRootParentObjectAsString()
     {
-        $obj = $this->owner->FrontEndRootParentObject();
+        $obj = $this->FrontEndRootParentObject();
         if ($obj && $obj->ID) {
             return $obj->ClassName.','.$obj->ID;
         }
