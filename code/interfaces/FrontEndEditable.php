@@ -153,4 +153,23 @@ interface FrontEndEditable
      * @array
      */
     public function FrontEndNoSiblingEdits();
+
+    /**
+     * Additional Views can be added here.  Some are added by default, but you can add
+     * other ones, such as preview, etc...
+     * It is provided the default array, which it can change OR add to
+     * the array should look like this (standard PHP Array)
+     *     [
+     *         NameOfLink: [
+     *             Title
+     *             Link
+     * -           Description
+     *         ]
+     *     ]
+     *
+     * @param array
+     *
+     * @return array
+     */
+    public function FrontEndAlternativeViewLinks($array);
 }

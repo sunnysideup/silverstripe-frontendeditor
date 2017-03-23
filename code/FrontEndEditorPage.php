@@ -124,6 +124,39 @@ class FrontEndEditorPage_Controller extends Page_Controller
         return FrontEndEditForm::create($this, "Form", $this->recordBeingEdited);
     }
 
+    /**
+     * @return null | ArrayList
+     */
+    public function AlternativeViewLinks()
+    {
+        $record = $this->RecordBeingEdited();
+        if($record) {
+            $array = array();
+            if($this->ViewLink()) {
+                $array['VIEW'] = array(
+                    'Title' => 'View',
+                    'Description' => 'Read-only',
+                    'Link' => $this->ViewLink()
+                );
+            }
+            if($record->hasMethod('CMSEditLink')) {
+                $array['EDIT'] = array(
+                    'Title' => 'CMS',
+                    'Description' => 'Edit this record in the CMS (back-end)',
+                    'Link' => $record->CMSEditLink()
+                );
+            }
+            $array = $record->FrontEndAlternativeViewLinks($array);
+            if(count($array)) {
+                $al = ArrayList::create();
+                foreach($array as $item) {
+                    $al->push(ArrayData::create($item));
+                }
+                return $al;
+            }
+        }
+    }
+
 
     public function edit()
     {
