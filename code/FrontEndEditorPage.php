@@ -146,6 +146,16 @@ class FrontEndEditorPage_Controller extends Page_Controller
                     'Link' => $record->CMSEditLink()
                 );
             }
+            $rootParentObject = $record->FrontEndRootParentObject();
+            if($rootParentObject && $rootParentObject->exists()) {
+                if($record->hasMethod('CMSEditLink')) {
+                    $array['ROOT'] = array(
+                        'Title' => $rootParentObject->getTitle(),
+                        'Description' => 'The root parent of this object',
+                        'Link' => $rootParentObject->FrontEndEditLink()
+                    );
+                }
+            }
             $array = $record->FrontEndAlternativeViewLinks($array);
             if(count($array)) {
                 $al = ArrayList::create();
