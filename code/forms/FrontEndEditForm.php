@@ -382,7 +382,11 @@ class FrontEndEditForm extends Form
             if (Director::is_ajax()) {
                 $ajaxGetVariable = "?ajax=".rand(0, 9999999999999999999);
             }
-            $this->controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
+            if($this->recordBeingEdited->hasMethod('FrontEndEditLink')) {
+                $this->controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
+            } else {
+                $this->controller->redirectBack();
+            }
         } else {
             $form->sessionMessage("Sorry, you do not have enough permissions to edit this record.", "good");
             $this->controller->redirectBack();
