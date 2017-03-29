@@ -83,7 +83,6 @@ class FrontEndEditForm extends Form
                 }
             }
         } else {
-            $fields = $this->recordBeingEdited->getFrontEndFields();
             $db = $this->recordBeingEdited->has_one();
             foreach ($db as $field => $class) {
                 unset($db[$field]);
@@ -286,6 +285,9 @@ class FrontEndEditForm extends Form
             if ($oldData && (is_array($oldData) || is_object($oldData))) {
                 $this->loadDataFrom($oldData);
             }
+        }
+        if($recordBeingEdited->hasMethod('FinalUpdateFrontEndForm')) {
+            $recordBeingEdited->FinalUpdateFrontEndForm($this);
         }
     }
 
