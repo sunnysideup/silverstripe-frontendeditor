@@ -168,13 +168,18 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
             } elseif ($source && $source instanceof SS_List) {
                 if ($source->count()) {
                     if ($source->first() instanceof FrontEndEditable) {
-                        $dropdownSource = $source->map('ID', 'FrontEndShortTitle')->toArray();
+                        $dropdownSource = $source->map('ID', 'FrontEndShortTitle');
                     }
                 }
             } elseif ($source && is_array($source)) {
                 $dropdownSource = $source;
             }
             if ($dropdownSource && count($dropdownSource)) {
+                foreach($dropdownSource as $id => $sourceItem) {
+                    if($id && ! $sourceItem) {
+                        $dropdownSource[$id] = "# ".$id;
+                    }
+                }
                 $fieldName = $this->getCalculatedFieldName(true);
                 $fieldNameWithoutID = $this->getCalculatedFieldName(false);
                 $currentValues = $this->recordBeingEdited->$fieldNameWithoutID();
