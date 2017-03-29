@@ -172,4 +172,10 @@ interface FrontEndEditable
      * @return array
      */
     public function FrontEndAlternativeViewLinks($array);
+
+    /**
+     * @param Form
+     */
+    // public function FinalUpdateFrontEndForm($form)
+
 }
