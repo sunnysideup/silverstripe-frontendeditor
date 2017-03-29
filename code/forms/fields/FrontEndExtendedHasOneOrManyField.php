@@ -169,6 +169,9 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
                 if ($source->count()) {
                     if ($source->first() instanceof FrontEndEditable) {
                         $dropdownSource = $source->map('ID', 'FrontEndShortTitle');
+                        if($dropdownSource instanceof SS_Map) {
+                            $dropdownSource = $dropdownSource->toArray();
+                        }
                     }
                 }
             } elseif ($source && is_array($source)) {
@@ -192,7 +195,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
                     } elseif ($currentValues instanceof SS_Map) {
                         $defaultValue = $currentValues->map("ID", "ID")->toArray();
                     }
-                    if (is_array($defaultValue) && is_array($defaultValue)) {
+                    if (is_array($dropdownSource) && is_array($defaultValue)) {
                         $dropdownSource = array_diff_key($dropdownSource, $defaultValue);
                     }
                     $title = _t("FrontEndEditor.ADD_EXISTING", "add existing");
