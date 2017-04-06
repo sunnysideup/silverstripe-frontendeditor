@@ -286,7 +286,7 @@ class FrontEndEditForm extends Form
                 $this->loadDataFrom($oldData);
             }
         }
-        if($recordBeingEdited->hasMethod('FinalUpdateFrontEndForm')) {
+        if($recordBeingEdited && $recordBeingEdited->hasMethod('FinalUpdateFrontEndForm')) {
             $recordBeingEdited->FinalUpdateFrontEndForm($this);
         }
     }
