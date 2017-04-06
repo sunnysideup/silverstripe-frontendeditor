@@ -73,9 +73,17 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
             $hasManyClassName = $this->getForeignClassName();
             //if object exists:
             if($this->recordBeingEdited) {
-                $hasManyObjects = $this->recordBeingEdited->$hasManyField();
                 $hasManyObjectSingleton = $this->getForeignSingleton();
                 if ($hasManyObjectSingleton->hasExtension('FrontEndDataExtension')) {
+                    $customRelationFields = $this->recordBeingEdited->FrontEndCustomRelationsOptionProvider();
+                    if(
+                        isset($customRelationFields[$hasManyField]) &&
+                        $customRelationFields[$hasManyField] instanceof SS_List
+                    ) {
+                        $hasManyObjects = $customRelationFields[$hasManyField];
+                    } else {
+                        $hasManyObjects = $this->recordBeingEdited->$hasManyField();
+                    }
                     if ($hasManyObjects && $hasManyObjects->count()) {
                         foreach ($hasManyObjects as $hasManyObject) {
                             if ($hasManyObject->canEdit()) {
