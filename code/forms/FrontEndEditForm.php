@@ -146,11 +146,12 @@ class FrontEndEditForm extends Form
                             $tableName = $this->recordBeingEdited->baseTable();
                             $tableNameVersioned = $tableName;
                             if ($field && $tableName) {
-                                if (is_a($this->recordBeingEdited, Object::getCustomClass("SiteTree"))) {
-                                    if (Versioned::current_stage() == "Live") {
-                                        $tableNameVersioned .= "_Live";
-                                    }
-                                }
+                                //the below does not seem to be required ... 
+                                // if (is_a($this->recordBeingEdited, Object::getCustomClass("SiteTree"))) {
+                                //     if (Versioned::current_stage() == "Live") {
+                                //         //$tableNameVersioned .= "_Live";
+                                //     }
+                                // }
                                 $siblingEditLink = DataObjectOneFieldUpdateController::popup_link(
                                     $siblingClassName,
                                     $fieldName,
