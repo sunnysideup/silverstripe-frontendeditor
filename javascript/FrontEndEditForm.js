@@ -225,8 +225,14 @@ var FrontEndEditForm = {
                 jQuery.get(
                     link,
                     function() {
+                        var hasOneSelect = jQuery(el).closest('.frontendextendedhasone').find('select');
+                        console.debug(hasOneSelect);
                         jQuery(el).parent().hide();
                         jQuery(el).removeClass("removingNow");
+                        if(hasOneSelect.length){
+                            console.debug('test');
+                            hasOneSelect.val(0);
+                        }
                     }
                 );
                 return false;
