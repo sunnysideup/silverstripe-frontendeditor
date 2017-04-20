@@ -43,6 +43,12 @@ interface FrontEndEditable
     public function ExtraClassesForFrontEnd();
 
     /**
+     *
+     * @return string
+     */
+    public function ExtraClassesForFrontEndForm();
+
+    /**
      * format:
      * FieldName => HTML Help Message
      *

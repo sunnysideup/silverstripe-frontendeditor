@@ -121,7 +121,13 @@ class FrontEndEditorPage_Controller extends Page_Controller
 
     public function Form()
     {
-        return FrontEndEditForm::create($this, "Form", $this->recordBeingEdited);
+        $form = FrontEndEditForm::create($this, "Form", $this->recordBeingEdited);
+        if($this->recordBeingEdited){
+            if($this->recordBeingEdited->hasMethod("ExtraClassesForFrontEndForm")) {
+                $form->addExtraClass($this->recordBeingEdited->ExtraClassesForFrontEndForm());
+            }
+        }
+        return $form;
     }
 
     /**
