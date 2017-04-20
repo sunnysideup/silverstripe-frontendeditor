@@ -88,15 +88,20 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
                         foreach ($hasManyObjects as $hasManyObject) {
                             if ($hasManyObject->canEdit()) {
                                 $deleteLink = "";
-                                if ($hasManyObject->canDelete()) {
-                                    $deleteLink = "<a class=\"frontEndRemoveLink\" href=\"".$this->recordBeingEdited->FrontEndRemoveRelationLink($hasManyField, $hasManyObject->ID)."\">✗</a>";
+                                $deleteAlternatives = $this->recordBeingEdited->FrontEndDeleteAlternatives();
+                                //note the difference between NULL and FALSE
+                                $deleteAlternative = isset($deleteAlternatives[$hasManyField]) ? $deleteAlternatives[$hasManyField] : null;
+                                if($deleteAlternative !== false) {
+                                    if ($hasManyObject->canDelete()) {
+                                        $deleteLink = "<a class=\"frontEndRemoveLink\" href=\"".$this->recordBeingEdited->FrontEndRemoveRelationLink($hasManyField, $hasManyObject->ID)."\">✗</a>";
+                                    }
                                 }
                                 $this->push(
                                     LiteralField::create(
                                         $hasManyField."_EDIT_".$hasManyObject->ID,
                                         "<h5 class=\"frontEndEditAndRemoveLinks\" id=\"EDIT_AND_REMOVE_LINK_HEADING_".$hasManyObject->ClassName."_".$hasManyObject->ID."\">
                                             ".$deleteLink."
-                                            <a class=\"frontEndEditLink\" href=\"".$hasManyObject->FrontEndEditLink()."\"><span>&#9998;</span> ".$hasManyObject->FrontEndShortTitle()."</a>
+                                            <a class=\"frontEndEditLink \" href=\"".$hasManyObject->FrontEndEditLink()."\"><span>&#9998;</span> ".$hasManyObject->FrontEndShortTitle()."</a>
                                             <div class=\"extendedDescriptionForRelation\">".$hasManyObject->FrontEndExtendedTitle()."</div>
                                         </h5>"
                                     )

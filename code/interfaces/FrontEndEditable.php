@@ -114,6 +114,8 @@ interface FrontEndEditable
      * MyChildren = array("ShowInMenus" => 0, "ShowInSearch" => 0)
      * MySpecialDataObject = array("Archive" => 1)
      *
+     * where `MyChildren` and `MySpecialDataObject` are relations
+     *
      * Instead of a field, you can also add a method (e.g. doDeletionDifferently)
      * the value is passed to this method, unless it is TRUE (strict check). e.g.
      *     MyChildren(
@@ -121,6 +123,14 @@ interface FrontEndEditable
      *     )
      *
      * The field overrides the method.
+     *
+     * If you do not want to show the delete function then you can return:
+     *    return array(
+     *        MyChildren = false
+     *    );
+     *
+     *
+     * @return array
      */
     public function FrontEndDeleteAlternatives();
 

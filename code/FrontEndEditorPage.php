@@ -103,6 +103,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
             }
         }
         Requirements::javascript("mysite/javascript/RecentlyEdited.js");
+
     }
 
     public function ViewLink()
@@ -264,7 +265,11 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 $foreignObject->delete();
             }
         }
-        return $this->redirectBack();
+        if(Director::is_ajax()) {
+            return 'success';
+        } else {
+            return $this->redirectBack();
+        }
     }
 
 
