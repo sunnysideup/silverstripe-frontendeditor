@@ -122,7 +122,13 @@ class FrontEndEditorPage_Controller extends Page_Controller
 
     public function Form()
     {
-        return FrontEndEditForm::create($this, "Form", $this->recordBeingEdited);
+        $form = FrontEndEditForm::create($this, "Form", $this->recordBeingEdited);
+        if($this->recordBeingEdited){
+            if($this->recordBeingEdited->hasMethod("ExtraClassesForFrontEndForm")) {
+                $form->addExtraClass($this->recordBeingEdited->ExtraClassesForFrontEndForm());
+            }
+        }
+        return $form;
     }
 
     /**
@@ -226,15 +232,15 @@ class FrontEndEditorPage_Controller extends Page_Controller
         if (isset($deleteAlternatives[$relationName])) {
             if ($foreignObject) {
                 foreach ($deleteAlternatives[$relationName] as $fieldOrMethod => $value) {
-                    if ($foreignObject->hasField($fieldOrMethod)) {
-                        $foreignObject->$fieldOrMethod = $value;
-                        $foreignObject->write();
-                    } elseif ($foreignObject->hasMethod($fieldOrMethod)) {
+                    if ($foreignObject->hasMethod($fieldOrMethod)) {
                         if ($value === true) {
                             $foreignObject->$fieldOrMethod();
                         } else {
                             $foreignObject->$fieldOrMethod($value);
                         }
+                    } elseif ($foreignObject->hasField($fieldOrMethod)) {
+                        $foreignObject->$fieldOrMethod = $value;
+                        $foreignObject->write();
                     }
                 }
                 $foreignObject->write();

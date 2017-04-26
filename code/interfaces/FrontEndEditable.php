@@ -43,6 +43,12 @@ interface FrontEndEditable
     public function ExtraClassesForFrontEnd();
 
     /**
+     *
+     * @return string
+     */
+    public function ExtraClassesForFrontEndForm();
+
+    /**
      * format:
      * FieldName => HTML Help Message
      *
@@ -116,7 +122,7 @@ interface FrontEndEditable
      *         'doDeletionDifferently' => true,
      *     )
      *
-     * The field overrides the method.
+     * The method overrides the field.
      *
      * If you do not want to show the delete function then you can return:
      *    return array(
