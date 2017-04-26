@@ -101,7 +101,7 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
                                         $hasManyField."_EDIT_".$hasManyObject->ID,
                                         "<h5 class=\"frontEndEditAndRemoveLinks\" id=\"EDIT_AND_REMOVE_LINK_HEADING_".$hasManyObject->ClassName."_".$hasManyObject->ID."\">
                                             ".$deleteLink."
-                                            <a class=\"frontEndEditLink \" href=\"".$hasManyObject->FrontEndEditLink()."\"><span>&#9998;</span> ".$hasManyObject->FrontEndShortTitle()."</a>
+                                            <a class=\"frontEndEditLink\" href=\"".$hasManyObject->FrontEndEditLink()."\"><span>&#9998;</span> ".$hasManyObject->FrontEndShortTitle()."</a>
                                             <div class=\"extendedDescriptionForRelation\">".$hasManyObject->FrontEndExtendedTitle()."</div>
                                         </h5>"
                                     )
