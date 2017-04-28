@@ -86,7 +86,10 @@ class FrontEndEditorRightTitle extends DataObject
             "ObjectClassName" => $className,
             "ObjectFieldName" => $fieldName
         );
-        $obj = FrontEndEditorRightTitle::get()->filter($filter)->first();
+        $obj = DataObject::get_one(
+            'FrontEndEditorRightTitle',
+            $filter
+        );
         if (!$obj) {
             $obj = FrontEndEditorRightTitle::create($filter);
             $obj->DefaultValue = $defaultValue;

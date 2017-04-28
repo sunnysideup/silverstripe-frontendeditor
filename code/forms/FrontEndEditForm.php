@@ -146,7 +146,7 @@ class FrontEndEditForm extends Form
                             $tableName = $this->recordBeingEdited->baseTable();
                             $tableNameVersioned = $tableName;
                             if ($field && $tableName) {
-                                //the below does not seem to be required ... 
+                                //the below does not seem to be required ...
                                 // if (is_a($this->recordBeingEdited, Object::getCustomClass("SiteTree"))) {
                                 //     if (Versioned::current_stage() == "Live") {
                                 //         //$tableNameVersioned .= "_Live";
@@ -379,7 +379,7 @@ class FrontEndEditForm extends Form
                 }
             }
             if ($this->isAddAnother) {
-                return $this->controller->redirect(FrontEndEditorPage::get()->First()->Link());
+                return $this->controller->redirect(DataObject::get_one('FrontEndEditorPage')->Link());
             }
             $ajaxGetVariable = "";
             if (Director::is_ajax()) {

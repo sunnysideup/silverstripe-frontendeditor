@@ -94,7 +94,7 @@ class FrontEndDataExtension extends DataExtension
      */
     public function FrontEndEditLink()
     {
-        $page = FrontEndEditorPage::get()->first();
+        $page = DataObject::get_one('FrontEndEditorPage');
         if ($page) {
             return $page->Link("edit/".$this->owner->ClassName."/".$this->owner->ID."/");
         } elseif ($this->owner->hasMethod("CMSEditLink")) {
@@ -203,12 +203,12 @@ class FrontEndDataExtension extends DataExtension
 
     public function FrontEndRemoveRelationLink($relationField, $foreignID)
     {
-        return FrontEndEditorPage::get()->first()->FrontEndRemoveRelationLink($this->owner, $relationField, $foreignID);
+        return DataObject::get_one('FrontEndEditorPage')->FrontEndRemoveRelationLink($this->owner, $relationField, $foreignID);
     }
 
     public function FrontEndAddRelationLink($relationField)
     {
-        return FrontEndEditorPage::get()->first()->FrontEndAddRelationLink($this->owner, $relationField);
+        return DataObject::get_one('FrontEndEditorPage')->FrontEndAddRelationLink($this->owner, $relationField);
     }
 
     private static $_front_end_root_parent_object = array();
