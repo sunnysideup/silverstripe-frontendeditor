@@ -10,7 +10,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
     protected $recordBeingEdited = null;
 
     /**
-     * @var array
+     * @var mixed
      */
     protected $existingSelectors = null;
 
@@ -59,19 +59,25 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
     /**
      *
      * @param DataObject $recordBeingEdited
+     *
+     * @return FrontEndExtendedHasOneOrManyField
      */
     public function setRecordBeingEdited($recordBeingEdited)
     {
         $this->recordBeingEdited = $recordBeingEdited;
+        return $this;
     }
 
     /**
      *
      * @param array $existingSelectors
+     *
+     * @return FrontEndExtendedHasOneOrManyField
      */
     public function setExistingSelectors($existingSelectors)
     {
         $this->existingSelectors = $existingSelectors;
+        return $this;
     }
 
     /**
@@ -141,8 +147,8 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
         $fieldTypeClassName = $this->getSelectExistingFieldClassName();
         $source = null;
         $existingSelectorField = null;
-        if (isset($this->existingSelectors[$this->getCalculatedFieldName(true)])) {
-            $source = $this->existingSelectors[$this->getCalculatedFieldName(true)];
+        if ($this->existingSelectors) {
+            $source = $this->existingSelectors;
         } else {
             $foreignSingleton = $this->getForeignSingleton();
             if ($foreignSingleton->hasExtension('FrontEndDataExtension')) {
@@ -229,9 +235,15 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
         return $existingSelectorField;
     }
 
+    /**
+     *
+     * @param string $title
+     * @return FrontEndExtendedHasOneOrManyField
+     */
     public function setRightTitle($title)
     {
         parent::setRightTitle($title);
         $this->fieldHolderIsDone = false;
+        return $this;
     }
 }

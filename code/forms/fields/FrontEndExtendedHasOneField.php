@@ -34,9 +34,17 @@ class FrontEndExtendedHasOneField extends FrontEndExtendedHasOneOrManyField
         return parent::__construct($name, $title);
     }
 
+    /**
+     *
+     * @param string $hasOneClassName [description]
+     *
+     * @return FrontEndExtendedHasOneField
+     */
     public function setHasOneClassName($hasOneClassName)
     {
         $this->hasOneClassName = $hasOneClassName;
+
+        return $this;
     }
 
     public function getForeignClassName()

@@ -49,6 +49,10 @@ class FrontEndEditForm extends Form
             $customRelationFields = $this->recordBeingEdited->FrontEndCustomRelationFields();
             $existingSelectors = $this->recordBeingEdited->FrontEndCustomRelationsOptionProvider();
             foreach ($this->recordBeingEdited->has_one() as $hasOneField => $hasOneClassName) {
+                $myExistingSelectors = null;
+                if(isset($existingSelectors[$hasOneField])) {
+                    $myExistingSelectors = $existingSelectors[$hasOneField];
+                }
                 $hasOneFieldWithID = $hasOneField."ID";
                 $fields->removeByName($hasOneFieldWithID);
                 if (in_array($hasOneField, $customRelationFields)  || in_array($hasOneField, $removeFields)) {
@@ -57,7 +61,7 @@ class FrontEndEditForm extends Form
                     $hasOneFieldObject = FrontEndExtendedHasOneField::create($hasOneField, $fieldLabels[$hasOneField]);
                     $hasOneFieldObject->setHasOneClassName($hasOneClassName);
                     $hasOneFieldObject->setRecordBeingEdited($this->recordBeingEdited);
-                    $hasOneFieldObject->setExistingSelectors($existingSelectors);
+                    $hasOneFieldObject->setExistingSelectors($myExistingSelectors);
                     $fields->push($hasOneFieldObject);
                 }
             }
@@ -68,6 +72,10 @@ class FrontEndEditForm extends Form
                 (array) Config::inst()->get($this->recordBeingEdited->ClassName, "belongs_many_many") +
                 (array) $this->recordBeingEdited->has_many();
             foreach ($otherRelations as $hasManyField => $hasManyClassName) {
+                $myExistingSelectors = null;
+                if(isset($existingSelectors[$hasManyField])) {
+                    $myExistingSelectors = $existingSelectors[$hasManyField];
+                }
                 if (in_array($hasManyField, $customRelationFields) || in_array($hasManyField, $removeFields)) {
                     if (in_array($hasManyField, $customRelationFields)) {
                         $this->relationsBeingSaved[$hasManyField] = $hasManyField;
@@ -77,7 +85,7 @@ class FrontEndEditForm extends Form
                     $hasManyFieldObject = FrontEndExtendedHasManyField::create($hasManyField, $fieldLabels[$hasManyField]);
                     $hasManyFieldObject->setHasManyClassName($hasManyClassName);
                     $hasManyFieldObject->setRecordBeingEdited($this->recordBeingEdited);
-                    $hasManyFieldObject->setExistingSelectors($existingSelectors);
+                    $hasManyFieldObject->setExistingSelectors($myExistingSelectors);
                     $this->relationsBeingSaved[$hasManyField] = $hasManyField;
                     $fields->push($hasManyFieldObject);
                 }
@@ -146,7 +154,7 @@ class FrontEndEditForm extends Form
                             $tableName = $this->recordBeingEdited->baseTable();
                             $tableNameVersioned = $tableName;
                             if ($field && $tableName) {
-                                //the below does not seem to be required ... 
+                                //the below does not seem to be required ...
                                 // if (is_a($this->recordBeingEdited, Object::getCustomClass("SiteTree"))) {
                                 //     if (Versioned::current_stage() == "Live") {
                                 //         //$tableNameVersioned .= "_Live";

@@ -33,9 +33,17 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
         return parent::__construct($name, $title);
     }
 
+    /**
+     *
+     * @param string $hasManyClassName
+     *
+     * @return FrontEndExtendedHasManyField
+     */
     public function setHasManyClassName($hasManyClassName)
     {
         $this->hasManyClassName = $hasManyClassName;
+
+        return $this;
     }
 
 
