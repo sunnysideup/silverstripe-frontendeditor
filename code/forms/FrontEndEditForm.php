@@ -387,7 +387,7 @@ class FrontEndEditForm extends Form
                 }
             }
             if ($this->isAddAnother) {
-                return $this->controller->redirect(FrontEndEditorPage::get()->First()->Link());
+                return $this->controller->redirect(DataObject::get_one('FrontEndEditorPage')->Link());
             }
             $ajaxGetVariable = "";
             if (Director::is_ajax()) {
