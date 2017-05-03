@@ -94,6 +94,13 @@ interface FrontEndEditable
      * MyBelongsManyManyRelation1 => SS_Map
      * MyBelongsManyManyRelation2 => SS_List
      *
+     * add _CAN_BE_ADDED to the end of the relationship field name
+     * to separately define the ones that can be added ...
+     * e.g.
+     *    MyHasOneRelation1ID_CAN_BE_ADDED
+     *    MyHasManyRelation_CAN_BE_ADDED
+     *
+     *
      * @return array
      */
     public function FrontEndCustomRelationsOptionProvider();

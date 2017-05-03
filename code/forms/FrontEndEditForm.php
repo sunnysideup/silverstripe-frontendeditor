@@ -49,11 +49,12 @@ class FrontEndEditForm extends Form
             $customRelationFields = $this->recordBeingEdited->FrontEndCustomRelationFields();
             $existingSelectors = $this->recordBeingEdited->FrontEndCustomRelationsOptionProvider();
             foreach ($this->recordBeingEdited->has_one() as $hasOneField => $hasOneClassName) {
-                $myExistingSelectors = null;
-                if(isset($existingSelectors[$hasOneField])) {
-                    $myExistingSelectors = $existingSelectors[$hasOneField];
-                }
                 $hasOneFieldWithID = $hasOneField."ID";
+                $myExistingSelectors = null;
+                $addExistingCustomKey = $hasOneFieldWithID.'_CAN_BE_ADDED';
+                if(isset($existingSelectors[$addExistingCustomKey])) {
+                    $myExistingSelectors = $existingSelectors[$addExistingCustomKey];
+                }
                 $fields->removeByName($hasOneFieldWithID);
                 if (in_array($hasOneField, $customRelationFields)  || in_array($hasOneField, $removeFields)) {
                     //do nothing
@@ -73,8 +74,9 @@ class FrontEndEditForm extends Form
                 (array) $this->recordBeingEdited->has_many();
             foreach ($otherRelations as $hasManyField => $hasManyClassName) {
                 $myExistingSelectors = null;
-                if(isset($existingSelectors[$hasManyField])) {
-                    $myExistingSelectors = $existingSelectors[$hasManyField];
+                $addExistingCustomKey = $hasManyField.'_CAN_BE_ADDED';
+                if(isset($existingSelectors[$addExistingCustomKey])) {
+                    $myExistingSelectors = $existingSelectors[$addExistingCustomKey];
                 }
                 if (in_array($hasManyField, $customRelationFields) || in_array($hasManyField, $removeFields)) {
                     if (in_array($hasManyField, $customRelationFields)) {
