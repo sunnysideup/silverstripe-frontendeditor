@@ -98,7 +98,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
             if ($id) {
                 $this->recordBeingEdited = $model::get()->byID($id);
             }
-            if (!$this->recordBeingEdited) {
+            if (! $this->recordBeingEdited) {
                 $this->recordBeingEdited = $model::create();
             }
         }
@@ -180,7 +180,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         if (isset($_GET["ajax"]) && $_GET["ajax"]) {
             return $this->renderWith("FrontEndEditorPageAjaxVersion");
         }
-        if (!$this->recordBeingEdited) {
+        if (! $this->recordBeingEdited) {
             return $this->httpError(404);
         }
         if ($this->recordBeingEdited->ClassName == $this->Config()->get("default_model")) {
@@ -196,6 +196,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
             $title = "[NEW ".$this->recordBeingEdited->singular_name()."]";
         }
         $this->Title = "✎ ".$title;
+
         return array();
     }
 
