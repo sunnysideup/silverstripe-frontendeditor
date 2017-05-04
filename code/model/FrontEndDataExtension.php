@@ -115,8 +115,8 @@ class FrontEndDataExtension extends DataExtension
             $this->owner->FrontEndRootCanEditObject = $frontEndRootParentObjectAsString;
         }
         //to complete
-        if ($this->owner->ClassName == Config::inst()->get("FrontEndEditorPage_Controller", "default_model")) {
-        }
+        // if ($this->owner->ClassName == Config::inst()->get("FrontEndEditorPage_Controller", "default_model")) {
+        // }
         $this->owner->FrontEndEditorID = Member::currentUserID();
     }
 
@@ -257,14 +257,14 @@ class FrontEndDataExtension extends DataExtension
     public function FrontEndAddRootParentObject($rootObject, $write = false)
     {
         $this->owner->FrontEndRootCanEditObject = $rootObject->ClassName.','.$rootObject->ID;
-        if($write)
-        if($this->owner instanceof SiteTree) {
-            $this->owner->writeToStage('Stage');
-            $this->owner->publish('Stage', 'Live');
-        } else {
-            $this->owner->write();
+        if($write) {
+            if($this->owner instanceof SiteTree) {
+                $this->owner->writeToStage('Stage');
+                $this->owner->publish('Stage', 'Live');
+            } else {
+                $this->owner->write();
+            }
         }
-
         return $this->owner;
     }
 
