@@ -102,6 +102,25 @@ class FrontEndDataExtension extends DataExtension
         }
     }
 
+    /**
+     * @return string (HTML)
+     */
+    public function FrontEndEditIcon ($textOnly = false)
+    {
+        $code = '';
+        if($this->owner->hasMethod('FrontEndEditIconCode')) {
+            $code = $this->owner->FrontEndEditIconCode();
+        }
+        $html = '<span class="frontend-edit-icon" style="color: '.$this->owner->FrontEndEditColour().'">✎'.$code.'</span>';
+        if($textOnly) {
+
+            return strip_tags($html);
+        } else {
+
+            return $html;
+        }
+    }
+
     public function FrontEndRightTitleObjects()
     {
         return FrontEndEditorRightTitle::get()->filter(array("ObjectClassName" => $this->owner->ClassName));

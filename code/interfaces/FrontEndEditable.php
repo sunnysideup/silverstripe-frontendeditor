@@ -201,4 +201,20 @@ interface FrontEndEditable
      */
     // public function FinalUpdateFrontEndForm($form)
 
+
+    /**
+     * return a code or HTML snippet
+     *
+     * @return string (html)
+     */
+    public function FrontEndEditIconCode();
+
+    /**
+     * return an HTML colour
+     * e.g. "GREEN" or "#223223"
+     *
+     * @return string
+     */
+    public function FrontEndEditColour();
+
 }

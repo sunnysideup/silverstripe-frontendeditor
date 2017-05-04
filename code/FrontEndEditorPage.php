@@ -195,7 +195,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         if (!$title) {
             $title = "[NEW ".$this->recordBeingEdited->singular_name()."]";
         }
-        $this->Title = "✎ ".$title;
+        $this->Title = $title;
 
         return array();
     }

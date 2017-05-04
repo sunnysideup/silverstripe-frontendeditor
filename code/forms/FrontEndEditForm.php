@@ -37,6 +37,9 @@ class FrontEndEditForm extends Form
 
         //starting point
         $fields = $this->recordBeingEdited->getFrontEndFields();
+        $fields->unshift(
+            LiteralField::create('FrontEndEditIcon', $this->recordBeingEdited->FrontEndEditIcon())
+        );
 
         //dont add what we are later going to remove again...
         $removeFields = array_merge(
@@ -283,6 +286,13 @@ class FrontEndEditForm extends Form
                 $validator = array();
             }
         }
+        //set colour to forms border ...
+        $colour = $this->recordBeingEdited->FrontEndEditColour();
+        $this->setAttribute(
+            'style',
+            'border-color: '.$colour.';'
+        );
+        //build!
         parent::__construct($controller, $name, $fields, $actions, $validator);
         Requirements::javascript(THIRDPARTY_DIR."/jquery-form/jquery.form.js");
         Requirements::javascript("frontendeditor/javascript/FrontEndEditForm.js");
