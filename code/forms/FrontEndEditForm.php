@@ -38,7 +38,10 @@ class FrontEndEditForm extends Form
         //starting point
         $fields = $this->recordBeingEdited->getFrontEndFields();
         $fields->unshift(
-            LiteralField::create('FrontEndEditIcon', $this->recordBeingEdited->FrontEndEditIcon())
+            LiteralField::create(
+                'FrontEndEditIcon',
+                '<div class="edit-tab">'.$this->recordBeingEdited->FrontEndEditIcon().'</div>'
+            )
         );
 
         //dont add what we are later going to remove again...
