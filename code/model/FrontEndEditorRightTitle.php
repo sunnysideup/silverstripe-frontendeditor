@@ -88,7 +88,8 @@ class FrontEndEditorRightTitle extends DataObject
         );
         $obj = DataObject::get_one(
             'FrontEndEditorRightTitle',
-            $filter
+            $filter,
+            $cacheDataObjectGetOne = false
         );
         if (!$obj) {
             $obj = FrontEndEditorRightTitle::create($filter);
