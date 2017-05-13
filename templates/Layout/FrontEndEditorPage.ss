@@ -13,9 +13,9 @@
                     <% loop FrontEndEditorBreadCrumbs %>
                     <li class="position$Pos">
                         <% if Last %>
-                             $Title
+                            <span style="background-color: $FrontEndEditColour;">$Title</span>
                         <% else %>
-                            <a href="$FrontEndEditLink">$FrontEndEditIcon $Title</a>
+                            <a href="$FrontEndEditLink" style="background-color: $FrontEndEditColour;">$FrontEndEditIcon $Title</a>
                         <% end_if %>
                         </li>
                     <% end_loop %>
