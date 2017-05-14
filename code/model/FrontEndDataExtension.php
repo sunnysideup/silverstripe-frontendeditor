@@ -111,7 +111,7 @@ class FrontEndDataExtension extends DataExtension
         if($this->owner->hasMethod('FrontEndEditIconCode')) {
             $code = $this->owner->FrontEndEditIconCode();
         }
-        $html = '<span class="frontend-edit-icon" style="color: '.$this->owner->FrontEndEditColour().'">✎'.$code.'</span>';
+        $html = '<span class="frontend-edit-icon" style="color: '.$this->owner->FrontEndEditColour().'; border-color: '.$this->owner->FrontEndEditColour().'">✎'.$code.'</span>';
         if($textOnly) {
 
             return strip_tags($html);
@@ -206,7 +206,7 @@ class FrontEndDataExtension extends DataExtension
         $array[] = $this->owner;
         if ($this->owner->hasMethod("FrontEndParentObject")) {
             $parent = $this->owner->FrontEndParentObject();
-            while ($parent) {
+            while ($parent && $parent->exists()) {
                 $array[$parent->ClassName."-".$parent->ID] = $parent;
                 $parent = $parent->FrontEndParentObject();
             }
