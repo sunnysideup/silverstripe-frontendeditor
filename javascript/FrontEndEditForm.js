@@ -58,6 +58,9 @@ var FrontEndEditForm = {
 
     init: function(){
         //other stuff
+        if(typeof FrontEndEditFormFormSelector !== 'undefined') {
+            this.formSelector = FrontEndEditFormFormSelector;
+        }
         FrontEndEditForm.coreInits();
         FrontEndEditForm.checkCookies();
         FrontEndEditForm.dontTabOnAlsoEdit();

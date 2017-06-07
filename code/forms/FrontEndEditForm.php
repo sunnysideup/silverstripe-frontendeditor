@@ -300,8 +300,8 @@ class FrontEndEditForm extends Form
         Requirements::javascript(THIRDPARTY_DIR."/jquery-form/jquery.form.js");
         Requirements::javascript("frontendeditor/javascript/FrontEndEditForm.js");
         Requirements::customScript(
-            "FrontEndEditForm.formSelector = '#".$this->FormName()."'; ",
-            "FrontEndEditForm.formSelector"
+            "var FrontEndEditFormFormSelector = '#".$this->FormName()."'; ",
+            "FrontEndEditFormFormSelector"
         );
         if (($this->recordBeingEdited && $this->recordBeingEdited->ID) || (isset($_GET["reusedata"]) && $_GET["reusedata"])) {
             $this->loadDataFrom($this->recordBeingEdited);
