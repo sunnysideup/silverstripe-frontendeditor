@@ -268,7 +268,7 @@ class FrontEndEditForm extends Form
             );
         }
         if ($this->recordBeingEdited->canDelete()) {
-            $actions->push(FormAction::create("deleterecord", "delete"));
+            $actions->push(FormAction::create("deleterecord", "delete")->addExtraClass('delete-button'));
         }
 
 
