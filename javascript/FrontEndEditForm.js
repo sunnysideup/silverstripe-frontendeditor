@@ -71,11 +71,10 @@ var FrontEndEditForm = {
     },
 
     coreInits: function(){
-
         //mark data as changed after an update.
         jQuery(FrontEndEditForm.formSelector).on(
             "change",
-            FrontEndEditForm.formSelector+ " input, "+FrontEndEditForm.formSelector+ " select, "+FrontEndEditForm.formSelector+ " textarea",
+            "input,  select, textarea",
             function(){
                 if(FrontEndEditForm.debug) {console.debug("data has changed");}
                 FrontEndEditForm.changedData = true;
@@ -311,7 +310,7 @@ var FrontEndEditForm = {
                 }
                 jQuery("#FieldsToCompleteList").slideToggle(400,
                     function () {
-                        if(listItems.length > 0){
+                        if(listItems.length > 0 && false){
                             jQuery('#FieldsToCompleteList').empty();
                         }
                     }
