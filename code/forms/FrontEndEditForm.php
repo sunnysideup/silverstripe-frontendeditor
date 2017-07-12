@@ -324,7 +324,6 @@ class FrontEndEditForm extends Form
     {
         $this->retrieveRecordBeingEdited($data);
         if ($this->recordBeingEdited && $this->recordBeingEdited->canEdit()) {
-            $form->saveInto($this->recordBeingEdited);
 
             //start hack
             foreach ($this->recordBeingEdited->db() as $name => $type) {
