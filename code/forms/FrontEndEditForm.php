@@ -61,10 +61,13 @@ class FrontEndEditForm extends Form
                 if(isset($existingSelectors[$addExistingCustomKey])) {
                     $myExistingSelectors = $existingSelectors[$addExistingCustomKey];
                 }
-                $fields->removeByName($hasOneFieldWithID);
+                if (!in_array($hasOneField, $customRelationFields)) {
+                    $fields->removeByName($hasOneFieldWithID);
+                }
                 if (in_array($hasOneField, $customRelationFields)  || in_array($hasOneField, $removeFields)) {
                     //do nothing
                 } else {
+
                     $hasOneFieldObject = FrontEndExtendedHasOneField::create($hasOneField, $fieldLabels[$hasOneField]);
                     $hasOneFieldObject->setHasOneClassName($hasOneClassName);
                     $hasOneFieldObject->setRecordBeingEdited($this->recordBeingEdited);
