@@ -350,7 +350,7 @@ class FrontEndEditForm extends Form
             foreach ($this->recordBeingEdited->has_one() as $name => $type) {
                 $name = $name."ID";
                 if (isset($data[$name])) {
-                    $this->recordBeingEdited->$name = $data[$name];
+                    $this->recordBeingEdited->$name = (int)preg_replace("/[^0-9]/", "", $data[$name]);
                 }
             }
 
