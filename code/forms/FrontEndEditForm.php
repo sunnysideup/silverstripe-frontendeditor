@@ -54,7 +54,7 @@ class FrontEndEditForm extends Form
         if ($this->recordBeingEdited->exists()) {
             $customRelationFields = $this->recordBeingEdited->FrontEndCustomRelationFields();
             $existingSelectors = $this->recordBeingEdited->FrontEndCustomRelationsOptionProvider();
-            foreach ($this->recordBeingEdited->has_one() as $hasOneField => $hasOneClassName) {
+            foreach ($this->recordBeingEdited->hasOne() as $hasOneField => $hasOneClassName) {
                 $hasOneFieldWithID = $hasOneField."ID";
                 $myExistingSelectors = null;
                 $addExistingCustomKey = $hasOneFieldWithID.'_CAN_BE_ADDED';
@@ -78,9 +78,9 @@ class FrontEndEditForm extends Form
 
             //we do has_many last ...
             $otherRelations =
-                (array) $this->recordBeingEdited->many_many() +
+                (array) $this->recordBeingEdited->manyMany() +
                 (array) Config::inst()->get($this->recordBeingEdited->ClassName, "belongs_many_many") +
-                (array) $this->recordBeingEdited->has_many();
+                (array) $this->recordBeingEdited->hasMany();
             foreach ($otherRelations as $hasManyField => $hasManyClassName) {
                 $myExistingSelectors = null;
                 $addExistingCustomKey = $hasManyField.'_CAN_BE_ADDED';
@@ -102,13 +102,13 @@ class FrontEndEditForm extends Form
                 }
             }
         } else {
-            $db = $this->recordBeingEdited->has_one();
+            $db = $this->recordBeingEdited->hasOne();
             foreach ($db as $field => $class) {
                 unset($db[$field]);
                 $db[$field."ID"] = $class;
             }
-            $db += $this->recordBeingEdited->has_many();
-            $db += $this->recordBeingEdited->many_many();
+            $db += $this->recordBeingEdited->hasMany();
+            $db += $this->recordBeingEdited->manyMany();
             $db += (array)$this->recordBeingEdited->stat("belongs_many_many");
             foreach ($fields as $field) {
                 $fieldName = $field->getName();
@@ -347,7 +347,7 @@ class FrontEndEditForm extends Form
                 }
             }
             $this->relationsBeingSaved = explode(",", $data["RelationsBeingSaved"]);
-            foreach ($this->recordBeingEdited->has_one() as $name => $type) {
+            foreach ($this->recordBeingEdited->hasOne() as $name => $type) {
                 $name = $name."ID";
                 if (isset($data[$name])) {
                     $this->recordBeingEdited->$name = (int)preg_replace("/[^0-9]/", "", $data[$name]);
@@ -377,13 +377,17 @@ class FrontEndEditForm extends Form
 
             //more hack!
             //we can only add here, not remove...
+            $manyMany = $this->recordBeingEdited->manyMany();
             foreach ($this->relationsBeingSaved as $relationName) {
+                print_r($this->recordBeingEdited->many_many);
                 if ($relationName) {
                     if (isset($data[$relationName])) {
-                        //$this->recordBeingEdited->$relationName()->removeAll();
                         if (isset($data[$relationName]["GridState"])) {
                             //do nothing ..
                         } else {
+                            if(isset($manyMany[$relationName])) {
+                                $this->recordBeingEdited->$relationName()->removeAll();
+                            }
                             $this->recordBeingEdited->$relationName()->addMany($data[$relationName]);
                         }
                     }

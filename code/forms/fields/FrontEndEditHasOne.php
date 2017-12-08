@@ -34,7 +34,7 @@ class FrontEndEditHasOne extends FormField
                 }
             }
         } else {
-            $hasOneFields = $this->originatingRecord->has_one();
+            $hasOneFields = $this->originatingRecord->hasOne();
             $model = $hasOneFields[$this->getName()];
             $this->hasOneRelationRecord = Injector::inst()->create($model);
             if ($this->hasOneRelationRecord->canCreate()) {
