@@ -331,24 +331,26 @@ class FrontEndDataExtension extends DataExtension
 
     public function requireDefaultRecords()
     {
-        $fieldLabels = $this->owner->FieldLabels();
-        $rightTitles = Config::inst()->get($this->owner->ClassName, "field_labels_right");
-        if (!is_array($rightTitles)) {
-            $rightTitles = array();
-        }
-        $rightTitles = array_merge($rightTitles, $this->owner->RightTitlesForFrontEnd());
-        $fieldsToRemoveFromFrontEnd = array_merge(
-            (array) $this->owner->FieldsToRemoveFromFrontEnd(),
-            (array) $this->owner->FieldsToRemoveFromFrontEndDefaults()
-        );
-        foreach ($fieldLabels as $fieldName => $fieldLabel) {
-            if (!in_array($fieldName, $fieldsToRemoveFromFrontEnd)) {
-                DB::alteration_message("Adding right title for ".$this->owner->ClassName.".".$fieldName);
-                $obj = FrontEndEditorRightTitle::add_or_find_item(
-                    $this->owner->ClassName,
-                    $fieldName,
-                    isset($rightTitles[$fieldName]) ? $rightTitles[$fieldName] : ""
-                );
+        if(isset($_GET['righttitles'])) {
+            $fieldLabels = $this->owner->FieldLabels();
+            $rightTitles = Config::inst()->get($this->owner->ClassName, "field_labels_right");
+            if (!is_array($rightTitles)) {
+                $rightTitles = array();
+            }
+            $rightTitles = array_merge($rightTitles, $this->owner->RightTitlesForFrontEnd());
+            $fieldsToRemoveFromFrontEnd = array_merge(
+                (array) $this->owner->FieldsToRemoveFromFrontEnd(),
+                (array) $this->owner->FieldsToRemoveFromFrontEndDefaults()
+            );
+            foreach ($fieldLabels as $fieldName => $fieldLabel) {
+                if (!in_array($fieldName, $fieldsToRemoveFromFrontEnd)) {
+                    DB::alteration_message("Adding right title for ".$this->owner->ClassName.".".$fieldName);
+                    $obj = FrontEndEditorRightTitle::add_or_find_item(
+                        $this->owner->ClassName,
+                        $fieldName,
+                        isset($rightTitles[$fieldName]) ? $rightTitles[$fieldName] : ""
+                    );
+                }
             }
         }
     }
