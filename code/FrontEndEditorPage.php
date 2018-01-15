@@ -34,6 +34,7 @@ class FrontEndEditorPage extends Page
     /**
      * @param DataObject $recordBeingEdited
      * @param string $relationName
+     *
      * @return string
      */
     public function FrontEndAddRelationLink($recordBeingEdited, $relationName)
@@ -41,7 +42,37 @@ class FrontEndEditorPage extends Page
         return $this->Link("frontendaddrelation/".
             $recordBeingEdited->ClassName."/".
             $recordBeingEdited->ID."/".
-            "?goingto=".$relationName);
+            "?goingto=".$relationName
+        );
+    }
+
+    /**
+     * @param DataObject $recordBeingEdited
+     *
+     * @return string
+     */
+    public function FrontEndEditLink($recordBeingEdited)
+    {
+        return $this->FrontEndEditLinkFast(
+            $recordBeingEdited->ClassName,
+            $recordBeingEdited->ID
+        );
+    }
+
+    /**
+     * Link to edit item.
+     * @param string $className
+     * @param int $id
+     *
+     * @return string
+     */
+    public function FrontEndEditLinkFast($className, $id)
+    {
+        return $this->Link(
+            'edit/'.
+            $className.'/'.
+            $id
+        );
     }
 }
 
