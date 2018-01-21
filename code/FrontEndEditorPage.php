@@ -109,7 +109,10 @@ class FrontEndEditorPage_Controller extends Page_Controller
         "Form" => "->canEditCurrentRecord",
         "edit" => "->canEditCurrentRecord",
         "frontendaddrelation" => "->canEditCurrentRecord",
-        "frontendremoverelation" => "->canEditCurrentRecord"
+        "frontendremoverelation" => "->canEditCurrentRecord",
+        "startsequence" => true,
+        "gotopreviouspageinsequence" => true,
+        "gotonextpageinsequence" => true
     );
 
     public function init()
@@ -124,7 +127,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         if (!$model) {
             $model = $this->Config()->get("default_model");
         }
-        if ($model && class_exists($model)) {
+        if ($model && is_subclass_of($model, 'DataObject', true)) {
             $id = $this->request->param("OtherID");
             if ($id) {
                 $this->recordBeingEdited = $model::get()->byID($id);
@@ -509,4 +512,71 @@ class FrontEndEditorPage_Controller extends Page_Controller
         }
         return self::$_front_end_determine_relation_classname;
     }
+
+
+    #####################################
+    # SEQUENCES
+    #####################################
+
+    public function startsequence()
+    {
+        $className = $this->param('ID');
+        $startLink = $this->mySequence()
+            ->setSequenceProvider($className, $this->recordBeingEdited)
+            ->getPageLink($this->recordBeingEdited);
+        if($startLink) {
+            return $this->redirect($startLink);
+        }
+    }
+    public function gotopreviouspageinsequence()
+    {
+        $link = $this->mySequence()->goPreviousPage($this->recordBeingEdited);
+        return $this->redirect($link);
+    }
+
+    public function gotonextpageinsequence()
+    {
+        $link = $this->mySequence()->goNextPage($this->recordBeingEdited);
+        return $this->redirect($link);
+    }
+
+    protected function mySequence()
+    {
+        return FrontEndEditorPreviousAndNextProvider::inst($this->recordBeingEdited);
+    }
+
+    protected function hasSequencer()
+    {
+        return $this->mySequence() ? true : false;
+    }
+
+    public function NextSequenceLink()
+    {
+        return $this->Link('gotonextpageinsequence');
+    }
+
+    public function PreviousSequenceLink()
+    {
+        return $this->Link('gotopreviouspageinsequence');
+    }
+
+    public function PreviousPageInSequenceLink()
+    {
+        if($this->hasSequencer()) {
+            return $this->mySequence()->PreviousPageLink($this->recordBeingEdited);
+        }
+    }
+
+    public function NextPageInSequenceLink()
+    {
+        if($this->hasSequencer()) {
+            return $this->mySequence()->NextPageLink($this->recordBeingEdited);
+        }
+    }
+
+    public function ListOfSequences()
+    {
+        return $this->mySequence()->ListOfSequences($this->recordBeingEdited);
+    }
+
 }
