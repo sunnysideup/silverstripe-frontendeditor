@@ -518,65 +518,67 @@ class FrontEndEditorPage_Controller extends Page_Controller
     # SEQUENCES
     #####################################
 
-    public function startsequence()
+    public function startsequence() : SS_HTTPResponse
     {
         $className = $this->param('ID');
         $startLink = $this->mySequence()
             ->setSequenceProvider($className, $this->recordBeingEdited)
-            ->getPageLink($this->recordBeingEdited);
+            ->getPageLink();
         if($startLink) {
             return $this->redirect($startLink);
+        } else {
+            return $this->redirect('can-not-find-sequence')
         }
     }
-    public function gotopreviouspageinsequence()
+    public function gotopreviouspageinsequence() : SS_HTTPResponse
     {
-        $link = $this->mySequence()->goPreviousPage($this->recordBeingEdited);
+        $link = $this->mySequence()->goPreviousPage();
         return $this->redirect($link);
     }
 
-    public function gotonextpageinsequence()
+    public function gotonextpageinsequence() : SS_HTTPResponse
     {
-        $link = $this->mySequence()->goNextPage($this->recordBeingEdited);
+        $link = $this->mySequence()->goNextPage();
         return $this->redirect($link);
     }
 
-    protected function mySequence()
+    protected function mySequence() : FrontEndEditorPreviousAndNextProvider
     {
         return FrontEndEditorPreviousAndNextProvider::inst($this->recordBeingEdited);
     }
 
-    protected function hasSequencer()
+    protected function hasSequencer() : boolean
     {
         return $this->mySequence() ? true : false;
     }
 
-    public function NextSequenceLink()
+    public function NextSequenceLink() : string
     {
         return $this->Link('gotonextpageinsequence');
     }
 
-    public function PreviousSequenceLink()
+    public function PreviousSequenceLink() : string
     {
         return $this->Link('gotopreviouspageinsequence');
     }
 
-    public function PreviousPageInSequenceLink()
+    public function PreviousPageInSequenceLink() : string
     {
         if($this->hasSequencer()) {
-            return $this->mySequence()->PreviousPageLink($this->recordBeingEdited);
+            return $this->mySequence()->PreviousPageLink();
         }
     }
 
-    public function NextPageInSequenceLink()
+    public function NextPageInSequenceLink() : string
     {
         if($this->hasSequencer()) {
-            return $this->mySequence()->NextPageLink($this->recordBeingEdited);
+            return $this->mySequence()->NextPageLink();
         }
     }
 
-    public function ListOfSequences()
+    public function ListOfSequences() : ArrayList
     {
-        return $this->mySequence()->ListOfSequences($this->recordBeingEdited);
+        return $this->mySequence()->ListOfSequences();
     }
 
 }
