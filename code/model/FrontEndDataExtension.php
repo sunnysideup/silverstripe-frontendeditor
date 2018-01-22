@@ -204,7 +204,7 @@ class FrontEndDataExtension extends DataExtension
      */
     public function FrontEndEditorBreadCrumbs()
     {
-        $array = array();
+        $array = [];
         $al = ArrayList::create();
         $array[] = $this->owner;
         if ($this->owner->hasMethod("FrontEndParentObject")) {
@@ -233,7 +233,7 @@ class FrontEndDataExtension extends DataExtension
         return DataObject::get_one('FrontEndEditorPage')->FrontEndAddRelationLink($this->owner, $relationField);
     }
 
-    private static $_front_end_root_parent_object = array();
+    private static $_front_end_root_parent_object = [];
 
     /**
      *
@@ -261,14 +261,16 @@ class FrontEndDataExtension extends DataExtension
 
     /**
      *
-     * @return DataObject
+     * @return string
      */
-    public function FrontEndRootParentObjectAsString()
+    public function FrontEndRootParentObjectAsString() : string
     {
         $obj = $this->FrontEndRootParentObject();
         if ($obj && $obj->ID) {
             return $obj->ClassName.','.$obj->ID;
         }
+
+        return "";
     }
 
     /**
@@ -323,6 +325,7 @@ class FrontEndDataExtension extends DataExtension
      * (e.g. Page will include HomePage)
      * that share a particular root parent.
      * @param string $className [description]
+     *
      * @return DataList
      */
     public function FrontEndFindChildObjects($className) {
@@ -335,7 +338,7 @@ class FrontEndDataExtension extends DataExtension
             $fieldLabels = $this->owner->FieldLabels();
             $rightTitles = Config::inst()->get($this->owner->ClassName, "field_labels_right");
             if (!is_array($rightTitles)) {
-                $rightTitles = array();
+                $rightTitles = [];
             }
             $rightTitles = array_merge($rightTitles, $this->owner->RightTitlesForFrontEnd());
             $fieldsToRemoveFromFrontEnd = array_merge(

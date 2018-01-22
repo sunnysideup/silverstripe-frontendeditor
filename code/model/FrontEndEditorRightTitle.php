@@ -51,7 +51,7 @@ class FrontEndEditorRightTitle extends DataObject
 
     private static $default_sort = "ObjectClassName ASC, ObjectFieldName ASC";
 
-    private static $_cache_for_class_objects = array();
+    private static $_cache_for_class_objects = [];
 
 
     /**
@@ -62,7 +62,7 @@ class FrontEndEditorRightTitle extends DataObject
      */
     public static function get_entered_ones($className)
     {
-        $array = array();
+        $array = [];
         $objects = FrontEndEditorRightTitle::get()
             ->filter(array("ObjectClassName" => $className));
         foreach ($objects as $object) {
@@ -121,7 +121,7 @@ class FrontEndEditorRightTitle extends DataObject
         return $this->getClassNameNice().", ".$this->getFieldNameNice()." (".$this->ObjectFieldName.")";
     }
 
-    private static $_cache_for_class_names = array();
+    private static $_cache_for_class_names = [];
 
     protected function getClassNameObjectFromCache()
     {
@@ -142,7 +142,7 @@ class FrontEndEditorRightTitle extends DataObject
         return "ERROR IN FINDING NAME FOR CLASS: ".$this->ObjectClassName;
     }
 
-    private static $_cache_for_field_labels = array();
+    private static $_cache_for_field_labels = [];
 
     public function getFieldNameNice()
     {

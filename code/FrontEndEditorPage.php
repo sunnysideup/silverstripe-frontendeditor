@@ -140,6 +140,11 @@ class FrontEndEditorPage_Controller extends Page_Controller
 
     }
 
+    function index()
+    {
+        return [];
+    }
+
     public function ViewLink()
     {
         if ($this->recordBeingEdited->canView()) {
@@ -172,7 +177,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
     {
         $record = $this->RecordBeingEdited();
         if($record) {
-            $array = array();
+            $array = [];
             if($this->ViewLink()) {
                 $array['VIEW'] = array(
                     'Title' => 'View',
@@ -231,7 +236,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         }
         $this->Title = $title;
 
-        return array();
+        return [];
     }
 
 
@@ -439,7 +444,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
      *
      * @var array
      */
-    private static $_front_end_determine_relation_type = array();
+    private static $_front_end_determine_relation_type = [];
 
     /**
      * Works out the type of relations for the record being edited.
@@ -478,7 +483,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
      *
      * @var array
      */
-    private static $_front_end_determine_relation_classname = array();
+    private static $_front_end_determine_relation_classname = [];
 
     /**
      * Works out class name of the relation
@@ -520,14 +525,15 @@ class FrontEndEditorPage_Controller extends Page_Controller
 
     public function startsequence() : SS_HTTPResponse
     {
-        $className = $this->param('ID');
+        $className = $this->request->param('ID');
         $startLink = $this->mySequence()
-            ->setSequenceProvider($className, $this->recordBeingEdited)
+            ->setSequenceProvider($className)
+            ->StartSequence()
             ->getPageLink();
         if($startLink) {
             return $this->redirect($startLink);
         } else {
-            return $this->redirect('can-not-find-sequence')
+            return $this->redirect('can-not-find-sequence');
         }
     }
     public function gotopreviouspageinsequence() : SS_HTTPResponse

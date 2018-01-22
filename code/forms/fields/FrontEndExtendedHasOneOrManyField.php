@@ -124,7 +124,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
     }
 
 
-    public function FieldHolder($properties = array())
+    public function FieldHolder($properties = [])
     {
         $children = $this->getChildren();
         if ($children->count()) {
@@ -133,7 +133,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
             }
             $this->insertBefore($this->getHeadingField(), $children->First()->id());
 
-            return parent::FieldHolder($properties = array());
+            return parent::FieldHolder($properties = []);
         }
         return HiddenField::create("no field for ".$this->getCalculatedFieldName());
     }
@@ -153,7 +153,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
             $foreignSingleton = $this->getForeignSingleton();
             if ($foreignSingleton->hasExtension('FrontEndDataExtension')) {
                 $source = $foreignSingleton->FrontEndSiblings($this->recordBeingEdited->FrontEndRootParentObject(), true);
-                $newSource = array();
+                $newSource = [];
                 foreach ($source as $obj) {
                     $newSource[$obj->ID] = $obj->FrontEndShortTitle();
                 }

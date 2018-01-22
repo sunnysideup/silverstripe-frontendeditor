@@ -12,7 +12,7 @@ class FrontEndEditForm extends Form
 
     protected $recordBeingEdited = null;
 
-    protected $relationsBeingSaved = array();
+    protected $relationsBeingSaved = [];
 
     protected $isGoBack = false;
 
@@ -121,7 +121,7 @@ class FrontEndEditForm extends Form
         //right title
         $rightTitles = Config::inst()->get($this->recordBeingEdited->ClassName, "field_labels_right");
         if (!is_array($rightTitles)) {
-            $rightTitles = array();
+            $rightTitles = [];
         }
         $rightTitles = array_merge($rightTitles, FrontEndEditorRightTitle::get_entered_ones($this->recordBeingEdited->ClassName));
         $rightTitles = array_merge($rightTitles, $this->recordBeingEdited->RightTitlesForFrontEnd());
@@ -223,7 +223,7 @@ class FrontEndEditForm extends Form
 
 
         //headers
-        $headerArray = array();
+        $headerArray = [];
         $currentlyAddingTo = "";
         foreach ($fields as $field) {
             $fieldName = $field->ID();
@@ -236,7 +236,7 @@ class FrontEndEditForm extends Form
             if ($headerStartsHere && $headerIsStandard) {
                 //save last one ...
                 if (!isset($headerArray[$fieldName])) {
-                    $headerArray[$fieldName] = array();
+                    $headerArray[$fieldName] = [];
                     $currentlyAddingTo = $fieldName;
                 }
             }
@@ -289,7 +289,7 @@ class FrontEndEditForm extends Form
             if ($requiredFields && is_array($requiredFields)) {
                 $validator = RequiredFields::create($requiredFields);
             } else {
-                $validator = array();
+                $validator = [];
             }
         }
         //set colour to forms border ...
