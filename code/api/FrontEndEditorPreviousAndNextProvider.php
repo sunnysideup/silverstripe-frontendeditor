@@ -23,9 +23,10 @@ class FrontEndEditorPreviousAndNextProvider extends Object
         if(self::$_me_cached === null) {
             self::$_me_cached = Injector::inst()->get('FrontEndEditorPreviousAndNextProvider');
         }
-
-        if($currentRecordBeingEdited) {
-            $this->setCurrentRecordBeingEdited($currentRecordBeingEdited);
+        if(self::$_me_cached->IsOn()) {
+            if($currentRecordBeingEdited) {
+                self::$_me_cached->setCurrentRecordBeingEdited($currentRecordBeingEdited);
+            }
         }
 
         return self::$_me_cached;

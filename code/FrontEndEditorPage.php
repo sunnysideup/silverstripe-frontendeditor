@@ -523,6 +523,17 @@ class FrontEndEditorPage_Controller extends Page_Controller
     # SEQUENCES
     #####################################
 
+
+    public function mySequence() : FrontEndEditorPreviousAndNextProvider
+    {
+        return FrontEndEditorPreviousAndNextProvider::inst($this->recordBeingEdited);
+    }
+
+    public function HasSequence()
+    {
+        return $this->mySequence()->IsOn();
+    }
+
     public function startsequence() : SS_HTTPResponse
     {
         $className = $this->request->param('ID');
@@ -548,16 +559,6 @@ class FrontEndEditorPage_Controller extends Page_Controller
         return $this->redirect($link);
     }
 
-    protected function mySequence() : FrontEndEditorPreviousAndNextProvider
-    {
-        return FrontEndEditorPreviousAndNextProvider::inst($this->recordBeingEdited);
-    }
-
-    protected function hasSequencer() : boolean
-    {
-        return $this->mySequence() ? true : false;
-    }
-
     public function NextSequenceLink() : string
     {
         return $this->Link('gotonextpageinsequence');
@@ -570,16 +571,20 @@ class FrontEndEditorPage_Controller extends Page_Controller
 
     public function PreviousPageInSequenceLink() : string
     {
-        if($this->hasSequencer()) {
+        if($this->HasSequence()) {
             return $this->mySequence()->PreviousPageLink();
         }
+
+        return "";
     }
 
     public function NextPageInSequenceLink() : string
     {
-        if($this->hasSequencer()) {
+        if($this->HasSequence()) {
             return $this->mySequence()->NextPageLink();
         }
+
+        return "";
     }
 
     public function ListOfSequences() : ArrayList

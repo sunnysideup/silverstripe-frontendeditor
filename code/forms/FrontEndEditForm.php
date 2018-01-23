@@ -270,6 +270,7 @@ class FrontEndEditForm extends Form
                 FormAction::create('createnew', _t("FrontEndEditForm.CREATE", "create"))
             );
         }
+
         if ($this->recordBeingEdited->canDelete()) {
             $actions->push(FormAction::create("deleterecord", "delete")->addExtraClass('delete-button'));
         }
@@ -415,7 +416,11 @@ class FrontEndEditForm extends Form
                 $ajaxGetVariable = "?ajax=".rand(0, 9999999999999999999);
             }
             if($this->recordBeingEdited->hasMethod('FrontEndEditLink')) {
-                $this->controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
+                if($this->controller->HasSequence()) {
+                    $this->controller->redirect($this->controller->NextPageInSequenceLink().$ajaxGetVariable);
+                } else {
+                    $this->controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
+                }
             } else {
                 $this->controller->redirectBack();
             }

@@ -103,6 +103,74 @@ class FrontEndEditorRightTitle extends DataObject
         return $obj;
     }
 
+
+    /**
+     * Determine which properties on the DataObject are
+     * searchable, and map them to their default {@link FormField}
+     * representations. Used for scaffolding a searchform for {@link ModelAdmin}.
+     *
+     * Some additional logic is included for switching field labels, based on
+     * how generic or specific the field type is.
+     *
+     * Used by {@link SearchContext}.
+     *
+     * @param array $_params
+     *                       'fieldClasses': Associative array of field names as keys and FormField classes as values
+     *                       'restrictFields': Numeric array of a field name whitelist
+     *
+     * @return FieldList
+     */
+    public function scaffoldSearchFields($_params = null)
+    {
+        $fieldList = parent::scaffoldSearchFields($_params);
+
+        //for sales to action only show relevant ones ...
+        if(Controller::curr() && Controller::curr()->class === 'SalesAdmin') {
+            $statusOptions = OrderStep::admin_manageable_steps();
+        } else {
+            $statusOptions = OrderStep::get();
+        }
+        if ($statusOptions && $statusOptions->count()) {
+            $createdOrderStatusID = 0;
+            $preSelected = array();
+            $createdOrderStatus = $statusOptions->First();
+            if ($createdOrderStatus) {
+                $createdOrderStatusID = $createdOrderStatus->ID;
+            }
+            $arrayOfStatusOptions = clone $statusOptions->map('ID', 'Title');
+            $arrayOfStatusOptionsFinal = array();
+            if (count($arrayOfStatusOptions)) {
+                foreach ($arrayOfStatusOptions as $key => $value) {
+                    if (isset($_GET['q']['StatusID'][$key])) {
+                        $preSelected[$key] = $key;
+                    }
+                    $count = Order::get()
+                        ->Filter(array('StatusID' => intval($key)))
+                        ->count();
+                    if ($count < 1) {
+                        //do nothing
+                    } else {
+                        $arrayOfStatusOptionsFinal[$key] = $value." ($count)";
+                    }
+                }
+            }
+            $statusField = new CheckboxSetField(
+                'StatusID',
+                Injector::inst()->get('OrderStep')->i18n_singular_name(),
+                $arrayOfStatusOptionsFinal,
+                $preSelected
+            );
+            $fieldList->push($statusField);
+        }
+        $fieldList->push(new DropdownField('CancelledByID', 'Cancelled', array(-1 => '(Any)', 1 => 'yes', 0 => 'no')));
+
+        //allow changes
+        $this->extend('scaffoldSearchFields', $fieldList, $_params);
+
+        return $fieldList;
+    }
+
+
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
