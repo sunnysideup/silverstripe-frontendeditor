@@ -29,7 +29,7 @@ class FrontEndEditorRightTitle extends DataObject
 
     private static $field_labels = array(
         "ObjectClassName" => "Class Name Code",
-        "ObjectFieldName" => "FIeld Name Code",
+        "ObjectFieldName" => "Field Name Code",
         "ClassNameNice" => "Class",
         "FieldNameNice" => "Field",
         "LongDescription" => "Extended Description - use with care if necessary"
@@ -37,6 +37,7 @@ class FrontEndEditorRightTitle extends DataObject
 
     private static $summary_fields = array(
         "ClassNameNice" => "Class",
+        "ObjectClassName" => "Class",
         "FieldNameNice" => "Field",
         "ObjectFieldName" => "Code",
         "ShortDescription" => "Description",
@@ -49,6 +50,19 @@ class FrontEndEditorRightTitle extends DataObject
         "ShortDescription" => "PartialMatchFilter"
     );
 
+
+    private static $singular_name = 'Field Explanation';
+    public function i18n_singular_name()
+    {
+        return self::$singular_name;
+    }
+
+    private static $plural_name = 'Field Explanations';
+    public function i18n_plural_name()
+    {
+        return self::$plural_name;
+    }
+
     private static $default_sort = "ObjectClassName ASC, ObjectFieldName ASC";
 
     private static $_cache_for_class_objects = [];
@@ -58,7 +72,7 @@ class FrontEndEditorRightTitle extends DataObject
      *
      * @param string $className
      *
-     * @return FrontEndEditorRightTitle
+     * @return array
      */
     public static function get_entered_ones($className)
     {
@@ -104,6 +118,8 @@ class FrontEndEditorRightTitle extends DataObject
     }
 
 
+
+
     /**
      * Determine which properties on the DataObject are
      * searchable, and map them to their default {@link FormField}
@@ -124,45 +140,40 @@ class FrontEndEditorRightTitle extends DataObject
     {
         $fieldList = parent::scaffoldSearchFields($_params);
 
-        //for sales to action only show relevant ones ...
-        if(Controller::curr() && Controller::curr()->class === 'SalesAdmin') {
-            $statusOptions = OrderStep::admin_manageable_steps();
-        } else {
-            $statusOptions = OrderStep::get();
+        $objectNames = array_unique(FrontEndEditorRightTitle::get()->column('ObjectClassName'));
+        $newList = ['' => '-- ANY --'];
+        foreach($objectNames as $key => $value) {
+            $newList[$value] = $this->getClassNameNice($value);
         }
-        if ($statusOptions && $statusOptions->count()) {
-            $createdOrderStatusID = 0;
-            $preSelected = array();
-            $createdOrderStatus = $statusOptions->First();
-            if ($createdOrderStatus) {
-                $createdOrderStatusID = $createdOrderStatus->ID;
+        asort($newList);
+        $fieldList->replaceField(
+            'ObjectClassName',
+            DropdownField::create(
+                'ObjectClassName',
+                'Class',
+                $newList
+            )
+        );
+
+        $rows = DB::query('SELECT DISTINCT CONCAT("ObjectClassName", \',\', "ObjectFieldName") AS COMBO FROM FrontEndEditorRightTitle');
+        $newList = ['' => '-- ANY --'];
+        foreach($rows as $row) {
+            $combo = $row['COMBO'];
+            list($className, $fieldName) = explode(',', $combo);
+            if($className && $fieldName) {
+                $newList[$fieldName] = $this->getFieldNameNice($className, $fieldName).
+                ' ('.$this->getClassNameNice($className).')';
             }
-            $arrayOfStatusOptions = clone $statusOptions->map('ID', 'Title');
-            $arrayOfStatusOptionsFinal = array();
-            if (count($arrayOfStatusOptions)) {
-                foreach ($arrayOfStatusOptions as $key => $value) {
-                    if (isset($_GET['q']['StatusID'][$key])) {
-                        $preSelected[$key] = $key;
-                    }
-                    $count = Order::get()
-                        ->Filter(array('StatusID' => intval($key)))
-                        ->count();
-                    if ($count < 1) {
-                        //do nothing
-                    } else {
-                        $arrayOfStatusOptionsFinal[$key] = $value." ($count)";
-                    }
-                }
-            }
-            $statusField = new CheckboxSetField(
-                'StatusID',
-                Injector::inst()->get('OrderStep')->i18n_singular_name(),
-                $arrayOfStatusOptionsFinal,
-                $preSelected
-            );
-            $fieldList->push($statusField);
         }
-        $fieldList->push(new DropdownField('CancelledByID', 'Cancelled', array(-1 => '(Any)', 1 => 'yes', 0 => 'no')));
+        asort($newList);
+        $fieldList->replaceField(
+            'ObjectFieldName',
+            DropdownField::create(
+                'ObjectFieldName',
+                'Field',
+                $newList
+            )
+        );
 
         //allow changes
         $this->extend('scaffoldSearchFields', $fieldList, $_params);
@@ -181,6 +192,8 @@ class FrontEndEditorRightTitle extends DataObject
         $fields->addFieldToTab("Root.Main", new ReadonlyField("ObjectFieldName", "Code"), "ShortDescription");
         $fields->addFieldToTab("Root.Main", new ReadonlyField("DefaultValue", "Default"), "ShortDescription");
         $fields->addFieldToTab("Root.Main", new TextareaField("ShortDescription", "Short Description"), "LongDescription");
+        $fields->dataFieldByName('LongDescription')->setRows(3);
+        
         return $fields;
     }
 
@@ -191,41 +204,57 @@ class FrontEndEditorRightTitle extends DataObject
 
     private static $_cache_for_class_names = [];
 
-    protected function getClassNameObjectFromCache()
+    protected function getClassNameObjectFromCache($className = null)
     {
-        if (!isset(self::$_cache_for_class_names[$this->ObjectClassName])) {
-            if (!class_exists($this->ObjectClassName)) {
+        if($className === null) {
+            $className = $this->ObjectClassName;
+        }
+        if (!isset(self::$_cache_for_class_names[$className])) {
+            if (!class_exists($className)) {
+                $className = 'DataObject';
                 $this->ObjectClassName = "DataObject";
             }
-            self::$_cache_for_class_names[$this->ObjectClassName] = Injector::inst()->get($this->ObjectClassName);
+            self::$_cache_for_class_names[$className] = Injector::inst()->get($className);
         }
-        return self::$_cache_for_class_names[$this->ObjectClassName];
+
+        return self::$_cache_for_class_names[$className];
     }
 
-    public function getClassNameNice()
+    public function getClassNameNice($className = null)
     {
-        if ($obj = $this->getClassNameObjectFromCache()) {
-            return $obj->singular_name();
+        if($className === null) {
+            $className = $this->ObjectClassName;
         }
-        return "ERROR IN FINDING NAME FOR CLASS: ".$this->ObjectClassName;
+        if ($obj = $this->getClassNameObjectFromCache($className)) {
+            return $obj->i18n_singular_name();
+        }
+        return "ERROR IN FINDING NAME FOR CLASS: ".$className;
     }
 
     private static $_cache_for_field_labels = [];
 
-    public function getFieldNameNice()
+    public function getFieldNameNice($className = null, $fieldName = null)
     {
-        if (!isset(self::$_cache_for_field_labels[$this->ObjectClassName])) {
-            if ($obj = $this->getClassNameObjectFromCache()) {
-                self::$_cache_for_field_labels[$this->ObjectClassName] = $obj->FieldLabels();
+        if($className === null) {
+            $className = $this->ObjectClassName;
+        }
+        if($fieldName === null) {
+            $fieldName = $this->ObjectFieldName;
+        }
+        if (!isset(self::$_cache_for_field_labels[$className])) {
+            if ($obj = $this->getClassNameObjectFromCache($className)) {
+                self::$_cache_for_field_labels[$className] = $obj->FieldLabels();
             }
         }
-        if (isset(self::$_cache_for_field_labels[$this->ObjectClassName])) {
-            if ($array = self::$_cache_for_field_labels[$this->ObjectClassName]) {
-                if (isset($array[$this->ObjectFieldName])) {
-                    return $array[$this->ObjectFieldName];
+        if (isset(self::$_cache_for_field_labels[$className])) {
+            if ($array = self::$_cache_for_field_labels[$className]) {
+                if (isset($array[$fieldName])) {
+
+                    return $array[$fieldName];
                 }
             }
         }
+
         return "ERROR";
     }
 

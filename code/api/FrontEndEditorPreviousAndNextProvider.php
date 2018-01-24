@@ -120,7 +120,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      *
      * @return bool
      */
-    public function isReady() : boolean
+    public function isReady()
     {
         return $this->isOn() && $this->getCurrentRecordBeingEdited() ? true : false;
     }

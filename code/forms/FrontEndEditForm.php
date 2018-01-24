@@ -125,6 +125,17 @@ class FrontEndEditForm extends Form
         }
         $rightTitles = array_merge($rightTitles, FrontEndEditorRightTitle::get_entered_ones($this->recordBeingEdited->ClassName));
         $rightTitles = array_merge($rightTitles, $this->recordBeingEdited->RightTitlesForFrontEnd());
+        $recordDescription = FrontEndEditorClassExplanation::add_or_find_item(
+            $this->recordBeingEdited->ClassName
+        );
+        if($recordDescription->HasDescription()) {
+            $fields->unshift(
+                LiteralField::create(
+                    'Introduction',
+                    '<div class="form-intro">'.$recordDescription->BestDescription().'</div>'
+                )
+            );
+        }
         foreach ($rightTitles as $fieldName => $rightTitle) {
             $field = $fields->fieldByName($fieldName);
             if ($field) {

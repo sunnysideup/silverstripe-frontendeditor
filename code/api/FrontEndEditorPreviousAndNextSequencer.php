@@ -23,7 +23,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends Object
      * This is for the whole sequence, not just one of the steps ....
      * @return bool
      */
-    public function canView($member = null) : boolean
+    public function canView($member = null)
     {
         return Permission::check('Admin', 'any', $member);
     }
