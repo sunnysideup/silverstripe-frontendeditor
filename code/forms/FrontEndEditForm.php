@@ -118,32 +118,47 @@ class FrontEndEditForm extends Form
             }
         }
 
-        //right title
-        $rightTitles = Config::inst()->get($this->recordBeingEdited->ClassName, "field_labels_right");
-        if (!is_array($rightTitles)) {
-            $rightTitles = [];
-        }
-        $rightTitles = array_merge($rightTitles, FrontEndEditorRightTitle::get_entered_ones($this->recordBeingEdited->ClassName));
-        $rightTitles = array_merge($rightTitles, $this->recordBeingEdited->RightTitlesForFrontEnd());
+        //record description
         $recordDescription = FrontEndEditorClassExplanation::add_or_find_item(
             $this->recordBeingEdited->ClassName
         );
         if($recordDescription->HasDescription()) {
-            $fields->unshift(
-                LiteralField::create(
-                    'Introduction',
-                    '<div class="form-intro">'.$recordDescription->BestDescription().'</div>'
+        $fields->unshift(
+            LiteralField::create(
+                'Introduction',
+                '<div class="form-intro">'.$recordDescription->BestDescription().'</div>'
                 )
             );
         }
-        foreach ($rightTitles as $fieldName => $rightTitle) {
-            $field = $fields->fieldByName($fieldName);
-            if ($field) {
-                $obj = FrontEndEditorRightTitle::add_or_find_item(
+
+        //right titles ...
+        $rightTitles = Config::inst()->get($this->recordBeingEdited->ClassName, "field_labels_right");
+        if (! is_array($rightTitles)) {
+            $rightTitles = [];
+        }
+        $rightTitles = array_merge($rightTitles, $this->recordBeingEdited->RightTitlesForFrontEnd());
+
+        //add defaults for right titles
+        foreach($fields as $field) {
+            if($field->hasData()) {
+                $fieldName = $field->ID();
+                $obj = FrontEndEditorRightTitle::add_or_find_field(
                     $this->recordBeingEdited->ClassName,
                     $fieldName,
-                    $rightTitle
+                    isset($rightTitles[$fieldName]) ? $rightTitles[$fieldName] : ''
                 );
+            }
+        }
+
+        //add data back in ...
+        $rightTitles = array_merge($rightTitles, FrontEndEditorRightTitle::get_entered_ones($this->recordBeingEdited->ClassName));
+        foreach ($rightTitles as $fieldName => $rightTitle) {
+            $obj = FrontEndEditorRightTitle::add_or_find_field(
+                $this->recordBeingEdited->ClassName,
+                $fieldName
+            );
+            $field = $fields->fieldByName($fieldName);
+            if ($field) {
                 if ($field instanceof CheckboxField ||$field instanceof GridField) {
                     $field->setDescription($obj->BestDescription());
                 } else {
@@ -152,6 +167,7 @@ class FrontEndEditForm extends Form
             }
         }
 
+        //place holders
         $placeHolders = $this->recordBeingEdited->PlaceHoldersForFrontEnd();
         foreach ($placeHolders as $fieldName => $placeHolder) {
             $field = $fields->fieldByName($fieldName);
@@ -271,13 +287,13 @@ class FrontEndEditForm extends Form
 
         //actions
         if ($this->recordBeingEdited->exists()) {
-            $actions = new FieldList(
+            $actions = FieldList::create(
                 FormAction::create('save', _t("FrontEndEditForm.SAVE", "save"))
                 //to be completed ...
                 //FormAction::create('saveandaddanother', "save and add another")
             );
         } else {
-            $actions = new FieldList(
+            $actions = FieldList::create(
                 FormAction::create('createnew', _t("FrontEndEditForm.CREATE", "create"))
             );
         }
@@ -391,7 +407,6 @@ class FrontEndEditForm extends Form
             //we can only add here, not remove...
             $manyMany = $this->recordBeingEdited->manyMany();
             foreach ($this->relationsBeingSaved as $relationName) {
-                print_r($this->recordBeingEdited->many_many);
                 if ($relationName) {
                     if (isset($data[$relationName])) {
                         if (isset($data[$relationName]["GridState"])) {

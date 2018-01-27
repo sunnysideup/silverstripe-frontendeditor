@@ -56,7 +56,7 @@ class FrontEndDataExtension extends DataExtension
         }
         //$fields->removeByName("FrontEndRootCanEditObject");
         $rootParentObject = $this->FrontEndRootParentObject();
-        if ($rootParentObject && ($rootParentObject->ID != $this->owner->ID ||  $rootParentObject->ClassName != $this->owner->ClassName)) {
+        if ($rootParentObject && (! $rootParentObject->FrontEndIsRoot())) {
             $fields->addFieldToTab(
                 'Root.FrontEnd',
                 $field2 = ReadonlyField::create(
@@ -71,21 +71,30 @@ class FrontEndDataExtension extends DataExtension
 
     public function updateSettingsFields($fields)
     {
-        $fields->addFieldsToTab('Root.FrontEnd', array(
-            new GridField(
-                "RightTitleEditor",
-                _t("FrontEndEditor.FIELD_EXPLANATIONS", "Field Explanations"),
-                $this->owner->FrontEndRightTitleObjects(),
-                $config = GridFieldConfig_RecordEditor::create()
-            ),
-            new LiteralField("FrontEndRootCanEditObjectLink", "
-                <h2>".
-                    _t("FrontEndDataExtension.RELATES_TO", "Relates to")."
-                    <a href=\"".$this->FrontEndRootParentObject()->FrontEndEditLink()."\">".$this->FrontEndRootParentObject()->FrontEndShortTitle()."</a>
-                </h2>
-                <p>".$this->FrontEndRootParentObject()->FrontEndExtendedTitle()."</p>"
+        $fields->addFieldsToTab(
+            'Root.FrontEnd',
+            array(
+                GridField::create(
+                    "ClassExplanation",
+                    _t("FrontEndEditor.CLASS_EXPLANATIONS", "Class Explanations"),
+                    FrontEndEditorClassExplanation::get()->filter(['ObjectClassName' => $this->ClassName]),
+                    $config = GridFieldConfig_RecordEditor::create()
+                ),
+                GridField::create(
+                    "RightTitleEditor",
+                    _t("FrontEndEditor.FIELD_EXPLANATIONS", "Field Explanations"),
+                    $this->owner->FrontEndRightTitleObjects(),
+                    $config = GridFieldConfig_RecordEditor::create()
+                ),
+                LiteralField::create("FrontEndRootCanEditObjectLink", "
+                    <h2>".
+                        _t("FrontEndDataExtension.RELATES_TO", "Relates to")."
+                        <a href=\"".$this->FrontEndRootParentObject()->FrontEndEditLink()."\">".$this->FrontEndRootParentObject()->FrontEndShortTitle()."</a>
+                    </h2>
+                    <p>".$this->FrontEndRootParentObject()->FrontEndExtendedTitle()."</p>"
+                )
             )
-        ));
+        );
     }
 
     /**
@@ -131,15 +140,11 @@ class FrontEndDataExtension extends DataExtension
 
     public function onBeforeWrite()
     {
-        $frontEndRootParentObjectAsString = $this->FrontEndRootParentObjectAsString();
         //debug::log("---".$frontEndRootParentObjectAsString);
-        if ($this->owner->FrontEndRootCanEditObject != $frontEndRootParentObjectAsString) {
-            $this->owner->FrontEndRootCanEditObject = $frontEndRootParentObjectAsString;
-        }
+        $this->owner->FrontEndRootCanEditObject = $this->FrontEndRootParentObjectAsString();
         //to complete
         // if ($this->owner->ClassName == Config::inst()->get("FrontEndEditorPage_Controller", "default_model")) {
         // }
-        $this->owner->FrontEndEditorID = Member::currentUserID();
     }
 
     public function canCreate($member)
@@ -211,7 +216,12 @@ class FrontEndDataExtension extends DataExtension
             $parent = $this->owner->FrontEndParentObject();
             while ($parent && $parent->exists()) {
                 $array[$parent->ClassName."-".$parent->ID] = $parent;
-                $parent = $parent->FrontEndParentObject();
+                if($parent->FrontEndIsRoot()) {
+                    $parent = null;
+                    break;
+                } else {
+                    $parent = $parent->FrontEndParentObject();
+                }
             }
         }
         $array = array_reverse($array);
@@ -241,22 +251,41 @@ class FrontEndDataExtension extends DataExtension
      */
     public function FrontEndRootParentObject()
     {
-        $uid = $this->owner->ClassName."-".$this->owner->ID;
+        $uid = $this->owner->FrontEndUID();
         if (!isset(self::$_front_end_root_parent_object[$uid])) {
             $returnObject = $this->owner;
             if ($this->owner->hasMethod("FrontEndParentObject")) {
                 $parent = $this->owner->FrontEndParentObject();
                 $x = 0;
-                while ($parent && $x < 99 && $parent->hasMethod("FrontEndParentObject")) {
+                while (
+                    $parent &&
+                    $x < 99 &&
+                    $parent->hasMethod("FrontEndParentObject")
+
+                ) {
                     $x++;
-                    $returnObject = $parent;
+                    if($uid === $parent->FrontEndUID()) {
+                        $parent = null;
+                    } else {
+                        $returnObject = $parent;
+                        $parent = $parent->FrontEndParentObject();
+                    }
                     //debug::log($parent->ClassName.$parent->ID."-------asdf-----");
-                    $parent = $parent->FrontEndParentObject();
                 }
             }
             self::$_front_end_root_parent_object[$uid] = $returnObject;
         }
         return self::$_front_end_root_parent_object[$uid];
+    }
+
+    public function FrontEndIsRoot()
+    {
+        $parent = $this->owner->FrontEndRootParentObject();
+        if($parent) {
+            return $parent->FrontEndUID() === $this->owner->FrontEndUID();
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -265,9 +294,9 @@ class FrontEndDataExtension extends DataExtension
      */
     public function FrontEndRootParentObjectAsString() : string
     {
-        $obj = $this->FrontEndRootParentObject();
+        $obj = $this->owner->FrontEndRootParentObject();
         if ($obj && $obj->ID) {
-            return $obj->ClassName.','.$obj->ID;
+            return FrontEndEditorSessionManager::object_to_string($obj);
         }
 
         return "";
@@ -280,7 +309,7 @@ class FrontEndDataExtension extends DataExtension
      */
     public function FrontEndAddRootParentObject($rootObject, $write = false)
     {
-        $this->owner->FrontEndRootCanEditObject = $rootObject->ClassName.','.$rootObject->ID;
+        $this->owner->FrontEndRootCanEditObject = FrontEndEditorSessionManager::object_to_string($rootObject->ClassName);
         if($write) {
             if($this->owner instanceof SiteTree) {
                 $this->owner->writeToStage('Stage');
@@ -290,6 +319,11 @@ class FrontEndDataExtension extends DataExtension
             }
         }
         return $this->owner;
+    }
+
+    public function FrontEndUID()
+    {
+        return FrontEndEditorSessionManager::object_to_string($this->owner);
     }
 
     public function FrontEndShortAndExtendedTitle()
@@ -306,15 +340,16 @@ class FrontEndDataExtension extends DataExtension
     {
         $className = $this->owner->ClassName;
         if ($rootParent) {
-            $rootObjectAsString = $rootParent->FrontEndRootParentObjectAsString();
+            $myObj = $rootParent;
         } else {
-            $rootObjectAsString = $this->owner->FrontEndRootParentObjectAsString();
+            $myObj = $this->owner;
         }
+        $rootObjectAsString = $myObj->FrontEndRootParentObjectAsString();
         $list = $className::get()->filter(array("FrontEndRootCanEditObject" => $rootObjectAsString));
-        if (!$includeMe) {
+        if (! $includeMe) {
             $list = $list->exclude(array("ID" => $this->owner->ID));
         }
-        if (!$rootObjectAsString) {
+        if (! $rootObjectAsString) {
             $list = $list->filter(array("ID" => 0));
         }
         return $list;
@@ -348,7 +383,7 @@ class FrontEndDataExtension extends DataExtension
             foreach ($fieldLabels as $fieldName => $fieldLabel) {
                 if (!in_array($fieldName, $fieldsToRemoveFromFrontEnd)) {
                     DB::alteration_message("Adding right title for ".$this->owner->ClassName.".".$fieldName);
-                    $obj = FrontEndEditorRightTitle::add_or_find_item(
+                    $obj = FrontEndEditorRightTitle::add_or_find_field(
                         $this->owner->ClassName,
                         $fieldName,
                         isset($rightTitles[$fieldName]) ? $rightTitles[$fieldName] : ""

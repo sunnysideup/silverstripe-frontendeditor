@@ -15,6 +15,7 @@ class FrontEndEditorAdmin extends ModelAdmin
     private static $menu_title = 'Front End Editor';
 
     private static $managed_models = array(
+        'FrontEndEditorSequencerExplanation',
         'FrontEndEditorClassExplanation',
         'FrontEndEditorRightTitle'
     );

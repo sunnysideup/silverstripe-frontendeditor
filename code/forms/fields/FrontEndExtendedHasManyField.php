@@ -64,7 +64,7 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     protected function hasEmptyStringForSelection()
     {

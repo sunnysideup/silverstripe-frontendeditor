@@ -107,7 +107,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
     }
 
     /**
-     * @param boolean $withID
+     * @param bool $withID
      * @return string
      */
     protected function getCalculatedFieldName($withID = false)
@@ -116,7 +116,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     protected function hasEmptyStringForSelection()
     {

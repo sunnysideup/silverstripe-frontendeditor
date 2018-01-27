@@ -111,6 +111,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         "frontendaddrelation" => "->canEditCurrentRecord",
         "frontendremoverelation" => "->canEditCurrentRecord",
         "startsequence" => true,
+        "stopsequence" => true,
         "gotopreviouspageinsequence" => true,
         "gotonextpageinsequence" => true
     );
@@ -180,8 +181,8 @@ class FrontEndEditorPage_Controller extends Page_Controller
             $array = [];
             if($this->ViewLink()) {
                 $array['VIEW'] = array(
-                    'Title' => 'View',
-                    'Description' => 'Read-only',
+                    'Title' => 'Read Only',
+                    'Description' => 'Non Editable version of the data you are entering',
                     'Link' => $this->ViewLink()
                 );
             }
@@ -523,22 +524,53 @@ class FrontEndEditorPage_Controller extends Page_Controller
     # SEQUENCES
     #####################################
 
-
-    public function mySequence() : FrontEndEditorPreviousAndNextProvider
+    /**
+     * @param string|null $sequencerClassName
+     * @return FrontEndEditorPreviousAndNextSequencer
+     */
+    public function PreviousAndNextProvider($sequencerClassName = null) : FrontEndEditorPreviousAndNextProvider
     {
-        return FrontEndEditorPreviousAndNextProvider::inst($this->recordBeingEdited);
+        return FrontEndEditorPreviousAndNextProvider::inst($sequencerClassName, $this->recordBeingEdited);
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function StopSequenceLink() : string
+    {
+        return $this->link('stopsequence');
+    }
+
+    /**
+     *
+     * @return FrontEndEditorPreviousAndNextSequencer [description]
+     */
+    public function CurrentSequence()
+    {
+        if($this->HasSequence()) {
+            return $this->PreviousAndNextProvider()->getSequencer();
+        }
     }
 
     public function HasSequence()
     {
-        return $this->mySequence()->IsOn();
+        if(FrontEndEditorSessionManager::get_sequencer()) {
+            return $this->PreviousAndNextProvider()->HasSequencer();
+        }
     }
 
-    public function startsequence() : SS_HTTPResponse
+    public function stopsequence($request)
+    {
+        FrontEndEditorSessionManager::clear_sequencer();
+        FrontEndEditorSessionManager::clear_record_being_edited();
+        return [];
+    }
+
+    public function startsequence($request) : SS_HTTPResponse
     {
         $className = $this->request->param('ID');
-        $startLink = $this->mySequence()
-            ->setSequenceProvider($className)
+        $startLink = $this->PreviousAndNextProvider($className)
             ->StartSequence()
             ->getPageLink();
         if($startLink) {
@@ -547,15 +579,17 @@ class FrontEndEditorPage_Controller extends Page_Controller
             return $this->redirect('can-not-find-sequence');
         }
     }
-    public function gotopreviouspageinsequence() : SS_HTTPResponse
+    public function gotopreviouspageinsequence($request) : SS_HTTPResponse
     {
-        $link = $this->mySequence()->goPreviousPage();
+        $link = $this->PreviousAndNextProvider()->goPreviousPage();
+
         return $this->redirect($link);
     }
 
-    public function gotonextpageinsequence() : SS_HTTPResponse
+    public function gotonextpageinsequence($request) : SS_HTTPResponse
     {
-        $link = $this->mySequence()->goNextPage();
+        $link = $this->PreviousAndNextProvider()->goNextPage();
+
         return $this->redirect($link);
     }
 
@@ -572,7 +606,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function PreviousPageInSequenceLink() : string
     {
         if($this->HasSequence()) {
-            return $this->mySequence()->PreviousPageLink();
+            return $this->PreviousAndNextProvider()->PreviousPageLink();
         }
 
         return "";
@@ -581,7 +615,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function NextPageInSequenceLink() : string
     {
         if($this->HasSequence()) {
-            return $this->mySequence()->NextPageLink();
+            return $this->PreviousAndNextProvider()->NextPageLink();
         }
 
         return "";
@@ -589,7 +623,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
 
     public function ListOfSequences() : ArrayList
     {
-        return $this->mySequence()->ListOfSequences();
+        return $this->PreviousAndNextProvider()->ListOfSequences();
     }
 
 }

@@ -1,85 +1,77 @@
 <?php
 
-class FrontEndEditorClassExplanation extends DataObject
+class FrontEndEditorExplanationsBaseClass extends DataObject
 {
     private static $db = array(
         "ObjectClassName" => "Varchar(100)",
-        "LongDescription" => "HTMLText"
+        "ObjectFieldName" => "Varchar(100)",
+        "ShortDescription" => "Varchar(255)",
+        "LongDescription" => "HTMLText",
+        "DefaultValue" => "Varchar(255)"
     );
 
     private static $indexes = array(
+        "ObjectClassName" => true,
+        "ObjectFieldName" => true,
         "Unique" => array(
             "type" => "unique",
-            "value" => "\"ObjectClassName\""
+            "value" => "\"ObjectClassName\", \"ObjectFieldName\"",
         )
     );
 
     private static $casting = array(
         "Title" => "Varchar",
         "ClassNameNice" => "Varchar",
+        "FieldNameNice" => "Varchar",
         "HasLongDescription" => "Boolean",
         "HasLongDescriptionNice" => "Varchar"
     );
 
-    private static $field_labels = array(
-        "ObjectClassName" => "Class Name Code",
-        "ClassNameNice" => "Class",
-        "LongDescription" => "Introduction to class"
-    );
-
-    private static $summary_fields = array(
-        "ClassNameNice" => "Class",
-        "HasLongDescriptionNice" => "Long description"
-    );
 
     private static $searchable_fields = array(
-        "ObjectClassName" => "PartialMatchFilter"
+        "ObjectClassName" => "PartialMatchFilter",
+        "ShortDescription" => "PartialMatchFilter"
     );
 
     private static $default_sort = "ObjectClassName ASC";
 
-    private static $singular_name = 'Data-Entry Explanation for Class';
-    public function i18n_singular_name()
-    {
-        return self::$singular_name;
-    }
-
-    private static $plural_name = 'Data-Entry Explanations for Classes';
-    public function i18n_plural_name()
-    {
-        return self::$plural_name;
-    }
-
-    private static $_cache_for_class_objects = [];
+    protected static $_cache_for_explanation_objects = [];
 
     /**
      *
      * @param string $className
-     * @param string $fieldName
+     * @param string $type
 
      *
-     * @return FrontEndEditorClassExplanation
+     * @return FrontEndEditorExplanationsBaseClass
      */
-    public static function add_or_find_item($className)
+    public static function add_or_find_item($className, $type = '') : FrontEndEditorExplanationsBaseClass
     {
-        $filter = array(
-            "ObjectClassName" => $className
-        );
-        $obj = DataObject::get_one(
-            'FrontEndEditorClassExplanation',
-            $filter,
-            $cacheDataObjectGetOne = false
-        );
-        if (! $obj) {
-            $obj = FrontEndEditorClassExplanation::create($filter);
+        if(! $type || $type === 'FrontEndEditorExplanationsBaseClass') {
+            user_error('A type must be provided!');
         }
-        $id = $obj->write();
+        $key = $type.'_'.$className;
+        if(isset(self::$_cache_for_explanation_objects[$key])) {
+            //do nothing
+        } else {
+            $filter = array(
+                "ObjectClassName" => $className
+            );
+            $obj = DataObject::get_one(
+                $type,
+                $filter,
+                $cacheDataObjectGetOne = false
+            );
+            if (! $obj) {
+                $obj = $type::create($filter);
+            }
+            $id = $obj->write();
 
-        $obj = DataObject::get_one('FrontEndEditorClassExplanation', ['ID' => $id]);
+            self::$_cache_for_explanation_objects[$key] = DataObject::get_one($type, ['ID' => $id]);
+        }
 
-        return $obj;
+        return self::$_cache_for_explanation_objects[$key];
     }
-
 
     /**
      * Determine which properties on the DataObject are
@@ -100,8 +92,9 @@ class FrontEndEditorClassExplanation extends DataObject
     public function scaffoldSearchFields($_params = null)
     {
         $fieldList = parent::scaffoldSearchFields($_params);
+        $fieldLabels = $this->FieldLabels();
 
-        $objectNames = array_unique(FrontEndEditorClassExplanation::get()->column('ObjectClassName'));
+        $objectNames = array_unique(FrontEndEditorExplanationsBaseClass::get()->column('ObjectClassName'));
         $newList = ['' => '-- ANY --'];
         foreach($objectNames as $key => $value) {
             $newList[$value] = $this->getClassNameNice($value);
@@ -111,14 +104,18 @@ class FrontEndEditorClassExplanation extends DataObject
             'ObjectClassName',
             DropdownField::create(
                 'ObjectClassName',
-                'Class',
+                $fieldLabels['ObjectClassName'],
                 $newList
             )
         );
 
+        $fieldList->push(
+            TextField::create('ShortDescription', 'Short Description')
+        );
+
 
         //allow changes
-        $this->extend('scaffoldSearchFields', $fieldList, $_params);
+        $this->extend('UpdateSearchFields', $fieldList, $_params);
 
         return $fieldList;
     }
@@ -127,51 +124,61 @@ class FrontEndEditorClassExplanation extends DataObject
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
+        $fieldLabels = $this->FieldLabels();
         $fields->removeByName("ObjectClassName");
         $fields->removeByName("ObjectFieldName");
-        $fields->addFieldToTab("Root.Main", new ReadonlyField("ObjectClassName", "Class"), "LongDescription");
-        $fields->addFieldToTab("Root.Main", new ReadonlyField("ClassNameNice", "Class Proper"), "LongDescription");
-        $list = FrontEndEditorRightTitle::get()->filter(['ObjectClassName' => $this->ObjectClassName]);
-        if($list->count()) {
-            $fields->addFieldToTab(
-                "Root.Fields",
-                GridField::create(
-                    'Fields',
-                    'Fields',
-                    $list,
-                    GridFieldConfig_RecordEditor::create()
-                )
-            );
-        }
+        $fields->removeByName("DefaultValue");
+        $fields->addFieldToTab("Root.Main", ReadonlyField::create("ObjectClassName",$fieldLabels['ObjectClassName']), "ShortDescription");
+        $fields->addFieldToTab("Root.Main", ReadonlyField::create("ClassNameNice", $fieldLabels['ClassNameNice']), "ShortDescription");
+
         $fields->dataFieldByName('LongDescription')->setRows(3);
 
         return $fields;
     }
 
-    public function getTitle()
+    /**
+     *
+     * @return string
+     */
+    public function getTitle() : string
     {
         return $this->getClassNameNice()." (".$this->ObjectClassName.")";
     }
 
-    private static $_cache_for_class_names = [];
+    /**
+     * caching variable for objects`
+     * @var array
+     */
+    private static $_cache_for_class_objects = [];
 
+    /**
+     *
+     * @param  string|null $className
+     *
+     * @return FrontEndEditble (DataObject)
+     */
     protected function getClassNameObjectFromCache($className = null)
     {
         if($className === null) {
             $className = $this->ObjectClassName;
         }
-        if (!isset(self::$_cache_for_class_names[$className])) {
-            if (!class_exists($className)) {
+        if (! isset(self::$_cache_for_class_objects[$className])) {
+            if (! class_exists($className)) {
                 $className = 'DataObject';
                 $this->ObjectClassName = "DataObject";
             }
-            self::$_cache_for_class_names[$className] = Injector::inst()->get($className);
+            self::$_cache_for_class_objects[$className] = Injector::inst()->get($className);
         }
 
-        return self::$_cache_for_class_names[$className];
+        return self::$_cache_for_class_objects[$className];
     }
 
-    public function getClassNameNice($className = null)
+    /**
+     *
+     * @param  [type] $className [description]
+     * @return [type]            [description]
+     */
+    public function getClassNameNice($className = null) : string
     {
         if($className === null) {
             $className = $this->ObjectClassName;
@@ -184,13 +191,19 @@ class FrontEndEditorClassExplanation extends DataObject
 
     /**
      * @casted variable
-     * @return boolean
+     *
+     * @return bool
      */
-    public function HasLongDescription()
+    public function HasLongDescription() : bool
     {
         return $this->getHasLongDescription();
     }
-    public function getHasLongDescription()
+
+    /**
+     * @casted variable
+     * @return bool
+     */
+    public function getHasLongDescription() : bool
     {
         return strlen($this->LongDescription) > 10 ? true : false;
     }
@@ -199,11 +212,11 @@ class FrontEndEditorClassExplanation extends DataObject
      * @casted variable
      * @return string
      */
-    public function HasLongDescriptionNice()
+    public function HasLongDescriptionNice() : string
     {
         return $this->getHasLongDescriptionNice();
     }
-    public function getHasLongDescriptionNice()
+    public function getHasLongDescriptionNice() : string
     {
         return $this->HasLongDescription() ? "yes" : "no";
     }
@@ -212,25 +225,32 @@ class FrontEndEditorClassExplanation extends DataObject
      *
      * @return string|null
      */
-    public function BestDescription()
+    public function BestDescription() : string
     {
         if ($this->getHasLongDescription()) {
             return $this->LongDescription;
+        } else {
+            return $this->ShortDescription;
         }
+        return '';
     }
 
     /**
      *
-     * @return boolean
+     * @return bool
      */
-    public function HasDescription()
+    public function HasDescription()  : bool
     {
         if ($this->getHasLongDescription()) {
             return true;
+        } else {
+            if ($this->ShortDescription) {
+                return true;
+            }
         }
-
         return false;
     }
+
 
     public function canCreate($member = null)
     {
@@ -244,5 +264,10 @@ class FrontEndEditorClassExplanation extends DataObject
         }
 
         return false;
+    }
+
+    protected static function get_my_static_class()
+    {
+        return 'ddd';
     }
 }
