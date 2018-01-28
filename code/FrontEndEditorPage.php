@@ -74,6 +74,9 @@ class FrontEndEditorPage extends Page
             $id
         );
     }
+
+
+
 }
 
 class FrontEndEditorPage_Controller extends Page_Controller
@@ -194,14 +197,17 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 );
             }
             $rootParentObject = $record->FrontEndRootParentObject();
-            if($rootParentObject && $rootParentObject->exists()) {
-                if($record->hasMethod('CMSEditLink')) {
-                    $array['ROOT'] = array(
-                        'Title' => $rootParentObject->getTitle(),
-                        'Description' => 'The root parent of this object',
-                        'Link' => $rootParentObject->FrontEndEditLink()
-                    );
-                }
+            if(
+                $rootParentObject &&
+                $rootParentObject->exists() &&
+                ! $record->FrontEndIsRoot() &&
+                $rootParentObject->hasMethod('FrontEndEditLink')
+            ) {
+                $array['ROOT'] = array(
+                    'Title' => $rootParentObject->getTitle(),
+                    'Description' => 'The root parent of this object',
+                    'Link' => $rootParentObject->FrontEndEditLink()
+                );
             }
             $array = $record->FrontEndAlternativeViewLinks($array);
             if(count($array)) {
@@ -524,27 +530,62 @@ class FrontEndEditorPage_Controller extends Page_Controller
     # SEQUENCES
     #####################################
 
+
+    public function stopsequence($request)
+    {
+        FrontEndEditorSessionManager::clear_sequencer();
+        FrontEndEditorSessionManager::clear_record_being_edited();
+        return [];
+    }
+    public function startsequence($request) : SS_HTTPResponse
+
+    {
+        $className = $this->request->param('ID');
+        $startLink = $this->PreviousAndNextProvider($className)
+            ->StartSequence()
+            ->getPageLink();
+        self::set_note_current_record(true);
+        if($startLink) {
+            return $this->redirect($startLink);
+        } else {
+            return $this->redirect('can-not-find-sequence');
+        }
+    }
+    public function gotopreviouspageinsequence($request) : SS_HTTPResponse
+    {
+        self::set_note_current_record(true);
+        $link = $this->PreviousAndNextProvider()->goPreviousPage();
+
+        return $this->redirect($link);
+    }
+
+    public function gotonextpageinsequence($request) : SS_HTTPResponse
+    {
+        self::set_note_current_record(true);
+        $link = $this->PreviousAndNextProvider()->goNextPage();
+
+        return $this->redirect($link);
+    }
+
+
     /**
+     * provides the FrontEndEditorPreviousAndNextProvider class
+     * that helps going back and forth between items
+     *
      * @param string|null $sequencerClassName
-     * @return FrontEndEditorPreviousAndNextSequencer
+     *
+     * @return FrontEndEditorPreviousAndNextProvider
      */
     public function PreviousAndNextProvider($sequencerClassName = null) : FrontEndEditorPreviousAndNextProvider
     {
         return FrontEndEditorPreviousAndNextProvider::inst($sequencerClassName, $this->recordBeingEdited);
     }
 
-    /**
-     *
-     * @return string
-     */
-    public function StopSequenceLink() : string
-    {
-        return $this->link('stopsequence');
-    }
 
     /**
+     * provides the actual sequence of pages.
      *
-     * @return FrontEndEditorPreviousAndNextSequencer [description]
+     * @return FrontEndEditorPreviousAndNextSequencer|null
      */
     public function CurrentSequence()
     {
@@ -560,49 +601,37 @@ class FrontEndEditorPage_Controller extends Page_Controller
         }
     }
 
-    public function stopsequence($request)
+    /**
+     *
+     * @return string
+     */
+    public function StopSequenceLink() : string
     {
-        FrontEndEditorSessionManager::clear_sequencer();
-        FrontEndEditorSessionManager::clear_record_being_edited();
-        return [];
+        return $this->link('stopsequence');
     }
 
-    public function startsequence($request) : SS_HTTPResponse
-    {
-        $className = $this->request->param('ID');
-        $startLink = $this->PreviousAndNextProvider($className)
-            ->StartSequence()
-            ->getPageLink();
-        if($startLink) {
-            return $this->redirect($startLink);
-        } else {
-            return $this->redirect('can-not-find-sequence');
-        }
-    }
-    public function gotopreviouspageinsequence($request) : SS_HTTPResponse
-    {
-        $link = $this->PreviousAndNextProvider()->goPreviousPage();
-
-        return $this->redirect($link);
-    }
-
-    public function gotonextpageinsequence($request) : SS_HTTPResponse
-    {
-        $link = $this->PreviousAndNextProvider()->goNextPage();
-
-        return $this->redirect($link);
-    }
-
+    /**
+     * you must use this link to go to PREV / NEXT
+     * @return string
+     */
     public function NextSequenceLink() : string
     {
         return $this->Link('gotonextpageinsequence');
     }
 
+    /**
+     * You muse use this link to go to PREV / NEXT PAGE
+     * @return string
+     */
     public function PreviousSequenceLink() : string
     {
         return $this->Link('gotopreviouspageinsequence');
     }
 
+    /**
+     *
+     * @return string
+     */
     public function PreviousPageInSequenceLink() : string
     {
         if($this->HasSequence()) {
@@ -612,6 +641,10 @@ class FrontEndEditorPage_Controller extends Page_Controller
         return "";
     }
 
+    /**
+     *
+     * @return string
+     */
     public function NextPageInSequenceLink() : string
     {
         if($this->HasSequence()) {
@@ -619,6 +652,13 @@ class FrontEndEditorPage_Controller extends Page_Controller
         }
 
         return "";
+    }
+
+    public function AllPages()
+    {
+        if($this->HasSequence()) {
+            return $this->PreviousAndNextProvider()->AllPages();
+        }
     }
 
     public function ListOfSequences() : ArrayList

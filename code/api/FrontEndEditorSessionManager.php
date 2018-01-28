@@ -137,6 +137,23 @@ class FrontEndEditorSessionManager extends Object
         );
     }
 
+    public static function set_note_current_record(bool $bool)
+    {
+        return Session::set(
+            'FrontEndEditorPreviousAndNextSequencerNoteCurrentRecord',
+            $bool
+        );
+    }
+
+
+    public static function get_note_current_record(bool $bool) : bool
+    {
+        Session::get(
+            'FrontEndEditorPreviousAndNextSequencerNoteCurrentRecord'
+        ) ? true : false;
+    }
+
+
     public static function clear_record_being_edited()
     {
         Session::set(
@@ -151,22 +168,37 @@ class FrontEndEditorSessionManager extends Object
 
     public static function set_record_being_edited($object)
     {
-        Session::set(
-            'FrontEndEditorPreviousAndNextSequencerCurrentRecordBeingEdited',
-            self::object_to_string($object)
-        );
+        if(self::get_note_current_record() && $object) {
+            Session::set(
+                'FrontEndEditorPreviousAndNextSequencerCurrentRecordBeingEdited',
+                self::object_to_string($object)
+            );
+            //dont allow it to be set again
+            self::set_note_current_record(false);
+        }
     }
 
-    public static function get_record_being_edited()
+    public static function get_record_being_edited($asString = false)
     {
         $string = Session::get(
             'FrontEndEditorPreviousAndNextSequencerCurrentRecordBeingEdited'
         );
         if($string) {
-            return self::string_to_object($string);
+            if($asString) {
+                return $tring;
+            } else {
+                return self::string_to_object($string);
+            }
+        } else {
+            return 'DataObject,0';
         }
     }
 
+    /**
+     * this method is used by FrontEndUID
+     * @param  DataObject $object
+     * @return string
+     */
     public static function object_to_string($object) : string
     {
         if($object) {

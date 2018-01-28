@@ -340,7 +340,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     {
         if($pageNumberOrFrontEndUID === null) {
             $pageNumberOrFrontEndUID = $this->FrontEndUID();
-        }
+        }   
         foreach($this->AllPages() as $count => $item) {
             if(
                 $count === $pageNumberOrFrontEndUID ||
