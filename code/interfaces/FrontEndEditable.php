@@ -4,6 +4,14 @@
 
 interface FrontEndEditable
 {
+    /**
+     *
+     * @param  FrontEndEditable            $parentObject DataObject
+     * @param  string                      $className    ClassName to create
+     * @param  array                      $allParams    [description]
+     * @return FrontEndEditable               [description]
+     */
+    public static function add_child_to_parent($parentObject, $className, $allParams);
 
     /**
      * required fields for front end...

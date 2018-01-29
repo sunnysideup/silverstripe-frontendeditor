@@ -56,6 +56,14 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     abstract public function i18n_plural_name();
 
     /**
+     * It is very like you will need to extend this method!
+     * @param  string $className
+     *
+     * @return FrontEndEditable|null
+     */
+    abstract public function AddChild($className);
+
+    /**
      * @return string
      */
     public function Link(): string
@@ -76,7 +84,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     public function canView($member = null) : bool
     {
         $obj = $this->getCurrentRecordBeingEdited();
-        if($obj && $obj->canEdit($member)) {
+        if($obj && $obj instanceof FrontEndEditable && $obj->canEdit($member)) {
             return true;
         }
 
@@ -224,15 +232,6 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
 
     }
 
-    /**
-     * It is very like you will need to extend this method!
-     * @param  string $className
-     *
-     * @return FrontEndEditable|null
-     */
-    abstract public function AddChild($className);
-
-
 
     /**
      * returns a datalist of objects of a particular class
@@ -246,7 +245,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     {
         $parent = $this->FrontEndParentObject();
         if($parent && $parent->exists()) {
-            return $parent->FrontEndFindChildObjects($className)
+            return $parent->FrontEndFindChildObjects($className);
         }
         return ArrayList::create();
     }

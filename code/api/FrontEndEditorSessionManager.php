@@ -190,7 +190,7 @@ class FrontEndEditorSessionManager extends Object
                 return self::string_to_object($string);
             }
         } else {
-            return 'DataObject,0';
+            return '';
         }
     }
 
