@@ -71,6 +71,14 @@ class FrontEndEditorPreviousAndNextProvider extends Object
         return $arrayList;
     }
 
+    public function ArrayOfClassesToSequence()
+    {
+        $sequencer = $this->getSequencer();
+        if($sequencer) {
+            return $sequencer->ArrayOfClassesToSequence()
+        }
+    }
+
     /**
      *
      * @var string
@@ -291,6 +299,17 @@ class FrontEndEditorPreviousAndNextProvider extends Object
         return ArrayList::create();
     }
 
+
+    public function AddAnotherOfThisClass($className = null)
+    {
+        $obj = $this->getSequencer();
+        if($obj) {
+            return $obj->AddAnotherOfThisClass($className);
+        }
+
+
+    }
+
     /**
      *
      * @return string
@@ -340,7 +359,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     {
         if($pageNumberOrFrontEndUID === null) {
             $pageNumberOrFrontEndUID = $this->FrontEndUID();
-        }   
+        }
         foreach($this->AllPages() as $count => $item) {
             if(
                 $count === $pageNumberOrFrontEndUID ||

@@ -61,7 +61,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      *
      * @return FrontEndEditable|null
      */
-    abstract public function AddChild($className);
+    abstract public function AddAnotherOfThisClass($className);
 
     /**
      * @return string

@@ -7,6 +7,8 @@ class FrontEndEditForm extends Form
         "createnew",
         "save",
         "saveandgoback",
+        "saveandgonext",
+        "saveandaddanother",
         "deleterecord"
     );
 
@@ -15,6 +17,8 @@ class FrontEndEditForm extends Form
     protected $relationsBeingSaved = [];
 
     protected $isGoBack = false;
+
+    protected $isGoNext = false;
 
     protected $isAddAnother = false;
 
@@ -285,30 +289,6 @@ class FrontEndEditForm extends Form
             $fields->insertBefore($formField, $insertBefore);
         }
 
-        //actions
-        if ($this->recordBeingEdited->exists()) {
-            $actions = FieldList::create(
-                FormAction::create('save', _t("FrontEndEditForm.SAVE", "save"))
-                //to be completed ...
-                //FormAction::create('saveandaddanother', "save and add another")
-            );
-        } else {
-            $actions = FieldList::create(
-                FormAction::create('createnew', _t("FrontEndEditForm.CREATE", "create"))
-            );
-        }
-
-        if ($this->recordBeingEdited->canDelete()) {
-            $actions->push(FormAction::create("deleterecord", "delete")->addExtraClass('delete-button'));
-        }
-
-
-        //broken
-        if ($this->previousObject()) {
-            $actions->push(
-                new FormAction('saveandgoback', "save and go back")
-            );
-        }
 
         //required fields
         $validator = $this->recordBeingEdited->getFrontEndValidator();
@@ -327,6 +307,7 @@ class FrontEndEditForm extends Form
             'border-color: '.$colour.';'
         );
         //build!
+        $actions = $this->selectActions();
         parent::__construct($controller, $name, $fields, $actions, $validator);
         Requirements::javascript(THIRDPARTY_DIR."/jquery-form/jquery.form.js");
         Requirements::javascript("frontendeditor/javascript/FrontEndEditForm.js");
@@ -344,6 +325,54 @@ class FrontEndEditForm extends Form
         if($recordBeingEdited && $recordBeingEdited->hasMethod('FinalUpdateFrontEndForm')) {
             $recordBeingEdited->FinalUpdateFrontEndForm($this);
         }
+    }
+
+    protected function selectActions()
+    {
+
+        //actions
+        $actions = FieldList::create();
+
+        if ($this->recordBeingEdited->exists()) {
+            $actions->push(
+                FormAction::create('save', _t("FrontEndEditForm.SAVE", "save"))
+                    ->addExtraClass('save-button')
+            );
+        } else {
+            $actions->push(
+                FormAction::create('createnew', _t("FrontEndEditForm.CREATE", "create"))
+                    ->addExtraClass('create-button add-button')
+            );
+        }
+
+        if ($this->recordBeingEdited->canDelete()) {
+            $actions->push(
+                FormAction::create("deleterecord", _t("FrontEndEditForm.DELETE", "delete"))
+                    ->addExtraClass('delete-button')
+            );
+        }
+
+        //broken
+        if ($this-hasPreviousObject()) {
+            $actions->push(
+                FormAction::create('saveandgoback', _t("FrontEndEditForm.SAVE_AND_GO_BACK", "save and go back"))
+                    ->addExtraClass('save-and-go-prev-button prev-and-next')
+            );
+        }
+        if ($this->hasNextObject()) {
+            $actions->push(
+                FormAction::create('saveandgonext', _t("FrontEndEditForm.SAVE_AND_NEXT", "save and go next"))
+                    ->addExtraClass('save-and-go-next-button prev-and-next')
+            );
+        }
+        if ($this->canAddAnother()) {
+            $actions->push(
+                FormAction::create('saveandaddanother', _t("FrontEndEditForm.SAVE_AND_NEXT", "save and add another"))
+                    ->addExtraClass('save-and-add-another-button add-button')
+            );
+        }
+
+        return $actions;
     }
 
     public function createnew($data, $form)
@@ -390,7 +419,7 @@ class FrontEndEditForm extends Form
             $validationResult = $this->recordBeingEdited->doValidate();
             if ($validationResult && !$validationResult->valid()) {
                 $form->sessionMessage("ERROR - Could not save data: ".$validationResult->message(), "bad");
-                if (!$this->recordBeingEdited->ID) {
+                if (! $this->recordBeingEdited->ID) {
                     return $this->controller->redirect($this->controller->Link()."?reusedata=1");
                 } else {
                     return $this->controller->redirectBack();
@@ -428,25 +457,42 @@ class FrontEndEditForm extends Form
                 $this->recordBeingEdited->write();
             }
             $form->sessionMessage(_t("FrontEndEditor.SAVED", "Details have been saved."), "good");
-            if ($this->isGoBack) {
-                if ($previousObject = $this->previousObject()) {
-                    $this->clearPreviousObject();
-                    return $this->controller->redirect($previousObject->FrontEndEditLink());
-                }
-            }
-            if ($this->isAddAnother) {
-                return $this->controller->redirect(DataObject::get_one('FrontEndEditorPage')->Link());
-            }
+
+
             $ajaxGetVariable = "";
             if (Director::is_ajax()) {
                 $ajaxGetVariable = "?ajax=".rand(0, 9999999999999999999);
             }
-            if($this->recordBeingEdited->hasMethod('FrontEndEditLink')) {
-                if($this->controller->HasSequence()) {
-                    $this->controller->redirect($this->controller->NextPageInSequenceLink().$ajaxGetVariable);
+
+            if ($this->isGoBack) {
+                if($controller->HasSequence()) {
+                    return $this->controller->redirect($this->controller->PreviousSequenceLink().$ajaxGetVariable);
                 } else {
-                    $this->controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
+                    if ($previousObject = $this->previousObject()) {
+                        $this->clearPreviousObject();
+                        return $this->controller->redirect($previousObject->FrontEndEditLink().$ajaxGetVariable);
+                    }
                 }
+            }
+
+            if ($this->isGoNext) {
+                if($controller->HasSequence()) {
+                    return $this->controller->redirect($this->controller->NextSequenceLink().$ajaxGetVariable);
+                } else {
+                    if ($nextObject = $this->nextObject()) {
+                        return $this->controller->redirect($nextObject->FrontEndEditLink().$ajaxGetVariable);
+                    }
+                }
+            }
+            elseif ($this->isAddAnother) {
+                $obj = $this->controller->addAnother();
+                if($obj) {
+                    return $this->controller->redirect($obj->FrontEndEditLink().$ajaxGetVariable);
+                }
+            }
+
+            if($this->recordBeingEdited->hasMethod('FrontEndEditLink')) {
+                $this->controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
             } else {
                 $this->controller->redirectBack();
             }
@@ -491,13 +537,23 @@ class FrontEndEditForm extends Form
         return $this->save($data, $form);
     }
 
+    public function saveandgonext($data, $form)
+    {
+        $this->isGoNext = true;
+        return $this->save($data, $form);
+    }
+
     /**
      *
      * @return null | DataObject
      */
     public function previousObject()
     {
-        return FrontEndEditorSessionManager::previous_object($this->recordBeingEdited);
+        if($this->controller->HasSequence()) {
+            $this->controller->previousObjectInSequence();
+        } else {
+            return FrontEndEditorSessionManager::previous_object($this->recordBeingEdited);
+        }
     }
 
     /**
@@ -507,6 +563,33 @@ class FrontEndEditForm extends Form
     {
         FrontEndEditorSessionManager::clear_previous_object();
     }
+
+    /**
+     *
+     * @return null | DataObject
+     */
+    public function nextObject()
+    {
+        if($this->controller->HasSequence()) {
+            $this->controller->nextObjectInSequence();
+        } else {
+            // return FrontEndEditorSessionManager::previous_object($this->recordBeingEdited);
+        }
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function canAddAnother()
+    {
+        if($this->controller->HasSequence()) {
+            $this->controller->canAddAnother();
+        } else {
+            false;
+        }
+    }
+
 
     /**
      * retrieve the object being edited from the data

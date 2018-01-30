@@ -666,4 +666,11 @@ class FrontEndEditorPage_Controller extends Page_Controller
         return $this->PreviousAndNextProvider()->ListOfSequences();
     }
 
+    public function FrontEndAddAnother()
+    {
+        if($this->HasSequence()) {
+            return $this->PreviousAndNextProvider()->AddAnother();
+        }
+    }
+
 }
