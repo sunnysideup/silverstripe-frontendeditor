@@ -15,18 +15,24 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
 {
 
     /**
-     *
+     * <code>
      * This is the key method you need to extend ...
      *      MyBusinessOpeningHours => [
      *          'Min' => 0
      *          'Max' => 99,
      *          'Parameters' => MIXED
-     *      ]
+     *      ],
      *      MyScientificResults => [
      *          'Min' => 5
      *          'Max' => 5,
      *          'Parameters' => MIXED
      *      ]
+     * </code>
+     *
+     * Where MyBusinessOpeningHours and MyScientificResults are FrontEndEditable DataObjects.
+     *
+     *
+     *
      * If items already exists then the existing ones will be used....
      * @param string $className - set ClassName to get the data for only one item
      * @return array

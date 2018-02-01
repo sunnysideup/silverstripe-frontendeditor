@@ -78,7 +78,7 @@ class FrontEndDataExtension extends DataExtension
                 GridField::create(
                     "ClassExplanation",
                     _t("FrontEndEditor.CLASS_EXPLANATIONS", "Class Explanations"),
-                    FrontEndEditorClassExplanation::get()->filter(['ObjectClassName' => $this->ClassName]),
+                    ArrayList::create()->push($this->FrontEndEditorClassExplanation()),
                     $config = GridFieldConfig_RecordEditor::create()
                 ),
                 GridField::create(
@@ -100,6 +100,14 @@ class FrontEndDataExtension extends DataExtension
         );
     }
 
+    public function FrontEndEditorClassExplanation()
+    {
+        return FrontEndEditorClassExplanation::get()
+                  ->filter(
+                      ['ObjectClassName' => ($this->ClassName ? $this->ClassName : get_class($this->owner)]
+                  )
+              )->first();
+    }
     /**
      *
      * @return string | null

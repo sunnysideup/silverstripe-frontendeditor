@@ -596,7 +596,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         if (FrontEndEditorSessionManager::get_sequencer()) {
             return $this->PreviousAndNextProvider()->HasSequencer();
         }
-        
+
         return false;
     }
 
@@ -625,5 +625,15 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function PreviousSequenceLink() : string
     {
         return $this->Link('gotopreviouspageinsequence');
+    }
+
+    public function ListOfSequences()
+    {
+        return $this->PreviousAndNextProvider()->ListOfSequences();
+    }
+
+    public function AllPages()
+    {
+        return $this->PreviousAndNextProvider()->AllPages();
     }
 }

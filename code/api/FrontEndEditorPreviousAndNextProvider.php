@@ -202,7 +202,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
             $links = $this->AllPages();
             $linksAsArray = $links->toArray();
             //find new page number
-            $currentPageNumber = $this->getPageNumber();
+            $currentPageNumber = $this->getPageNumber() - 1;
             $newPageNumber = $currentPageNumber + $newRecordBeingEditedOrRelativePageNumber;
             if (isset($linksAsArray[$newPageNumber])) {
                 $item = $linksAsArray[$newPageNumber];

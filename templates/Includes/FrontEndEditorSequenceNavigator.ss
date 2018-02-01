@@ -9,20 +9,17 @@
     <% end_with %>
         <p>
             <a href="$PreviousSequenceLink" class="previous">$PreviousPageObject.Title</a>
-            <a href="$NextSequenceLink" class="next">$NextPageObject.Titl</a>
+            <a href="$NextSequenceLink" class="next">$NextPageObject.Title</a>
         </p>
-    <% with $PreviousAndNextProvider %>
     <% if $AllPages %>
         <ul>
             <% loop $AllPages %><li><a href="$FrontEndEditLink">$Title</a></li><% end_loop %>
         </ul>
     <% end_if %>
-    <% end_with %>
     <p>
         <a href="$StopSequenceLink">Quit Sequence Editing</a>
     </p>
 <% else %>
-    <% with $PreviousAndNextProvider %>
     <% if $ListOfSequences %>
     <div class="readOnlyLink list-of-sequences">
         <h3>Start a data-entry wizard:</h3>
@@ -31,6 +28,5 @@
         </ul>
     </div>
     <% end_if %>
-    <% end_with %>
 <% end_if %>
 </div>
