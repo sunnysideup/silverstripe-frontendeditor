@@ -2,7 +2,6 @@
 
 class FrontEndEditorSequencerExplanation extends FrontEndEditorExplanationsBaseClass
 {
-
     private static $field_labels = array(
         "ObjectClassName" => "Sequence Code",
         "ClassNameNice" => "Sequence Name",
@@ -39,6 +38,4 @@ class FrontEndEditorSequencerExplanation extends FrontEndEditorExplanationsBaseC
 
         return $fields;
     }
-
-
 }

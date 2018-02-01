@@ -62,7 +62,7 @@ class FrontEndEditForm extends Form
                 $hasOneFieldWithID = $hasOneField."ID";
                 $myExistingSelectors = null;
                 $addExistingCustomKey = $hasOneFieldWithID.'_CAN_BE_ADDED';
-                if(isset($existingSelectors[$addExistingCustomKey])) {
+                if (isset($existingSelectors[$addExistingCustomKey])) {
                     $myExistingSelectors = $existingSelectors[$addExistingCustomKey];
                 }
                 if (!in_array($hasOneField, $customRelationFields)) {
@@ -71,7 +71,6 @@ class FrontEndEditForm extends Form
                 if (in_array($hasOneField, $customRelationFields)  || in_array($hasOneField, $removeFields)) {
                     //do nothing
                 } else {
-
                     $hasOneFieldObject = FrontEndExtendedHasOneField::create($hasOneField, $fieldLabels[$hasOneField]);
                     $hasOneFieldObject->setHasOneClassName($hasOneClassName);
                     $hasOneFieldObject->setRecordBeingEdited($this->recordBeingEdited);
@@ -88,7 +87,7 @@ class FrontEndEditForm extends Form
             foreach ($otherRelations as $hasManyField => $hasManyClassName) {
                 $myExistingSelectors = null;
                 $addExistingCustomKey = $hasManyField.'_CAN_BE_ADDED';
-                if(isset($existingSelectors[$addExistingCustomKey])) {
+                if (isset($existingSelectors[$addExistingCustomKey])) {
                     $myExistingSelectors = $existingSelectors[$addExistingCustomKey];
                 }
                 if (in_array($hasManyField, $customRelationFields) || in_array($hasManyField, $removeFields)) {
@@ -126,8 +125,8 @@ class FrontEndEditForm extends Form
         $recordDescription = FrontEndEditorClassExplanation::add_or_find_item(
             $this->recordBeingEdited->ClassName
         );
-        if($recordDescription->HasDescription()) {
-        $fields->unshift(
+        if ($recordDescription->HasDescription()) {
+            $fields->unshift(
             LiteralField::create(
                 'Introduction',
                 '<div class="form-intro">'.$recordDescription->BestDescription().'</div>'
@@ -143,8 +142,8 @@ class FrontEndEditForm extends Form
         $rightTitles = array_merge($rightTitles, $this->recordBeingEdited->RightTitlesForFrontEnd());
 
         //add defaults for right titles
-        foreach($fields as $field) {
-            if($field->hasData()) {
+        foreach ($fields as $field) {
+            if ($field->hasData()) {
                 $fieldName = $field->ID();
                 $obj = FrontEndEditorRightTitle::add_or_find_field(
                     $this->recordBeingEdited->ClassName,
@@ -322,7 +321,7 @@ class FrontEndEditForm extends Form
                 $this->loadDataFrom($oldData);
             }
         }
-        if($recordBeingEdited && $recordBeingEdited->hasMethod('FinalUpdateFrontEndForm')) {
+        if ($recordBeingEdited && $recordBeingEdited->hasMethod('FinalUpdateFrontEndForm')) {
             $recordBeingEdited->FinalUpdateFrontEndForm($this);
         }
     }
@@ -393,8 +392,7 @@ class FrontEndEditForm extends Form
                     } else {
                         $this->recordBeingEdited->$name = true;
                     }
-                }
-                elseif ($type === 'Date') {
+                } elseif ($type === 'Date') {
                     $value = DateField::create('MyDate')->setValue($data[$name])->dataValue();
                     $this->recordBeingEdited->$name = $value;
                 } elseif (isset($data[$name])) {
@@ -441,7 +439,7 @@ class FrontEndEditForm extends Form
                         if (isset($data[$relationName]["GridState"])) {
                             //do nothing ..
                         } else {
-                            if(isset($manyMany[$relationName])) {
+                            if (isset($manyMany[$relationName])) {
                                 $this->recordBeingEdited->$relationName()->removeAll();
                             }
                             $this->recordBeingEdited->$relationName()->addMany($data[$relationName]);
@@ -465,7 +463,7 @@ class FrontEndEditForm extends Form
             }
 
             if ($this->isGoBack) {
-                if($controller->HasSequence()) {
+                if ($controller->HasSequence()) {
                     return $this->controller->redirect($this->controller->PreviousSequenceLink().$ajaxGetVariable);
                 } else {
                     if ($previousObject = $this->previousObject()) {
@@ -476,22 +474,21 @@ class FrontEndEditForm extends Form
             }
 
             if ($this->isGoNext) {
-                if($controller->HasSequence()) {
+                if ($controller->HasSequence()) {
                     return $this->controller->redirect($this->controller->NextSequenceLink().$ajaxGetVariable);
                 } else {
                     if ($nextObject = $this->nextObject()) {
                         return $this->controller->redirect($nextObject->FrontEndEditLink().$ajaxGetVariable);
                     }
                 }
-            }
-            elseif ($this->isAddAnother) {
+            } elseif ($this->isAddAnother) {
                 $obj = $this->controller->addAnother();
-                if($obj) {
+                if ($obj) {
                     return $this->controller->redirect($obj->FrontEndEditLink().$ajaxGetVariable);
                 }
             }
 
-            if($this->recordBeingEdited->hasMethod('FrontEndEditLink')) {
+            if ($this->recordBeingEdited->hasMethod('FrontEndEditLink')) {
                 $this->controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
             } else {
                 $this->controller->redirectBack();
@@ -552,7 +549,7 @@ class FrontEndEditForm extends Form
      */
     public function HasNextPage($className = null) : bool
     {
-        if($this->controller->HasSequence()) {
+        if ($this->controller->HasSequence()) {
             return $this
                 ->controller
                 ->PreviousAndNextSequencer()
@@ -571,7 +568,7 @@ class FrontEndEditForm extends Form
      */
     public function HasPreviousPage($className = null) : bool
     {
-        if($this->controller->HasSequence()) {
+        if ($this->controller->HasSequence()) {
             return $this
                 ->controller
                 ->PreviousAndNextSequencer()
@@ -587,7 +584,7 @@ class FrontEndEditForm extends Form
      */
     public function CanAddAnotherOfThisClass()
     {
-        if($this->controller->HasSequence()) {
+        if ($this->controller->HasSequence()) {
             return $this
                 ->controller
                 ->PreviousAndNextSequencer()
@@ -639,7 +636,7 @@ class FrontEndEditForm extends Form
     public function PreviousAndNextSequencer()
     {
         $provider = $this->controller->PreviousAndNextProvider();
-        if($provider) {
+        if ($provider) {
             return $provider->getSequencer();
         }
     }

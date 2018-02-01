@@ -2,7 +2,6 @@
 
 class FrontEndEditorClassExplanation extends FrontEndEditorExplanationsBaseClass
 {
-
     private static $field_labels = array(
         "ObjectClassName" => "DataObject Code",
         "ClassNameNice" => "DataObject",

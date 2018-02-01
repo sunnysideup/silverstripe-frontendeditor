@@ -69,7 +69,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     public function Link(): string
     {
         $page = DataObject::get_one('FrontEndEditorPage');
-        if($page) {
+        if ($page) {
             return $page->Link('startsequence/'.strtolower(get_class($this)));
         }
 
@@ -84,7 +84,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     public function canView($member = null) : bool
     {
         $obj = $this->getCurrentRecordBeingEdited();
-        if($obj && $obj instanceof FrontEndEditable && $obj->canEdit($member)) {
+        if ($obj && $obj instanceof FrontEndEditable && $obj->canEdit($member)) {
             return true;
         }
 
@@ -99,14 +99,14 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function getPageLink($item = null) : string
     {
-        if($item === null) {
+        if ($item === null) {
             $item = $this->getCurrentRecordBeingEdited();
         }
-        if($item) {
+        if ($item) {
             return $item->FrontEndEditLink();
         } else {
             $page = DataObject::get_one('FrontEndEditorPage');
-            if($page) {
+            if ($page) {
                 return $page->Link();
             }
         }
@@ -130,21 +130,21 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function AllPages($className = null) : ArrayList
     {
-        if($this->_allPages === null) {
+        if ($this->_allPages === null) {
             $currentObject = $this->getCurrentRecordBeingEdited();
-            if($currentObject) {
+            if ($currentObject) {
                 $parent = $this->FrontEndParentObject();
-                if($parent) {
+                if ($parent) {
                     $this->_allPages = ArrayList::create();
                     $array = $this->ArrayOfClassesToSequence();
-                    foreach($array as $myClassName => $configs) {
-                        if($className === null || $className === $myClassName) {
+                    foreach ($array as $myClassName => $configs) {
+                        if ($className === null || $className === $myClassName) {
                             $items =  $this->FrontEndFindChildObjects($myClassName)->sort(['ID' => 'ASC'])->limit(50);
                             $count = $items->count();
-                            if($count === 0) {
+                            if ($count === 0) {
                                 // $this->_allPages->push($className::create());
                             } else {
-                                foreach($items as $count => $item) {
+                                foreach ($items as $count => $item) {
                                     $this->_allPages->push($item);
                                 }
                             }
@@ -153,7 +153,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
                 }
             }
         }
-        if(! $this->_allPages) {
+        if (! $this->_allPages) {
             return ArrayList::create();
         }
 
@@ -178,8 +178,8 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         $position = 0;
         $currentRcurrentRecordBeingEdited = $this->getCurrentRecordBeingEdited();
         $allPages = $this->AllPages($className);
-        foreach($allPages as $count => $page) {
-            if($page->FrontEndUID() === $currentRcurrentRecordBeingEdited->FrontEndUID()) {
+        foreach ($allPages as $count => $page) {
+            if ($page->FrontEndUID() === $currentRcurrentRecordBeingEdited->FrontEndUID()) {
                 $position = $count;
                 break;
             }
@@ -199,7 +199,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function PreviousPageObject()
     {
-        if($this->HasPreviousPage()) {
+        if ($this->HasPreviousPage()) {
             $pos = $this->CurrentRecordPositionInSequence() - 1;
 
             return $this->getPageItem($pos);
@@ -216,7 +216,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function NextPageObject()
     {
-        if($this->HasNextPage()) {
+        if ($this->HasNextPage()) {
             $pos = $this->CurrentRecordPositionInSequence() + 1;
 
             return $this->getPageItem($pos);
@@ -233,7 +233,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function setCurrentRecordBeingEdited($currentRecordBeingEdited) : FrontEndEditorPreviousAndNextSequencer
     {
-        if($currentRecordBeingEdited && $currentRecordBeingEdited->exists()) {
+        if ($currentRecordBeingEdited && $currentRecordBeingEdited->exists()) {
             $this->currentRecordBeingEdited = $currentRecordBeingEdited;
             FrontEndEditorSessionManager::set_record_being_edited($currentRecordBeingEdited);
         }
@@ -247,14 +247,14 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function getCurrentRecordBeingEdited()
     {
-        if($this->currentRecordBeingEdited && $this->currentRecordBeingEdited->exists()) {
+        if ($this->currentRecordBeingEdited && $this->currentRecordBeingEdited->exists()) {
             //do nothing
         } else {
             $this->currentRecordBeingEdited = FrontEndEditorSessionManager::get_record_being_edited();
         }
 
-        return $this->currentRecordBeingEdited;;
-
+        return $this->currentRecordBeingEdited;
+        ;
     }
 
     public function TotalNumberOfPages() : int
@@ -276,7 +276,6 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         $count = $existingChildren->count();
 
         return $count < $config['Min'];
-
     }
 
     /**
@@ -292,7 +291,6 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         $count = $existingChildren->count();
 
         return $count < $config['Max'];
-
     }
 
     /**
@@ -306,7 +304,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     public function FrontEndFindChildObjects($className) : ArrayList
     {
         $parent = $this->FrontEndParentObject();
-        if($parent && $parent->exists()) {
+        if ($parent && $parent->exists()) {
             return $parent->FrontEndFindChildObjects($className);
         }
         return ArrayList::create();
@@ -319,9 +317,9 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     protected function FrontEndParentObject()
     {
-        if(self::$_rootParent_cache === null) {
+        if (self::$_rootParent_cache === null) {
             $currentObject = $this->getCurrentRecordBeingEdited();
-            if($currentObject) {
+            if ($currentObject) {
                 self::$_rootParent_cache = $this->FrontEndParentObject();
             }
         }
@@ -338,11 +336,11 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function getPageItem($pageNumberOrFrontEndUID) : FrontEndEditable
     {
-        if($pageNumberOrFrontEndUID === null) {
+        if ($pageNumberOrFrontEndUID === null) {
             $pageNumberOrFrontEndUID = $this->FrontEndUID();
         }
-        foreach($this->AllPages() as $count => $item) {
-            if(
+        foreach ($this->AllPages() as $count => $item) {
+            if (
                 (int) $count === (int) $pageNumberOrFrontEndUID ||
                 (string) $item->FrontEndUID() === (string) $pageNumberOrFrontEndUID
             ) {
@@ -360,8 +358,8 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     protected function getPageNumber() : int
     {
         $string = $this->FrontEndUID();
-        foreach($this->AllPages() as $count => $item) {
-            if($item->FrontEndUID() === $string) {
+        foreach ($this->AllPages() as $count => $item) {
+            if ($item->FrontEndUID() === $string) {
                 return $count + 1;
             }
         }
@@ -376,5 +374,4 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
 
         return FrontEndEditorSessionManager::object_to_string($obj);
     }
-
 }

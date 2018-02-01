@@ -25,13 +25,13 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public static function inst($sequencerClassName = null, $currentRecordBeingEdited = null) : FrontEndEditorPreviousAndNextProvider
     {
-        if(self::$_me_cached === null) {
+        if (self::$_me_cached === null) {
             self::$_me_cached = Injector::inst()->get('FrontEndEditorPreviousAndNextProvider');
         }
-        if($sequencerClassName) {
+        if ($sequencerClassName) {
             self::$_me_cached->setSequenceProvider($sequencerClassName);
         }
-        if($currentRecordBeingEdited) {
+        if ($currentRecordBeingEdited) {
             self::$_me_cached->setCurrentRecordBeingEdited($currentRecordBeingEdited);
         }
 
@@ -51,12 +51,12 @@ class FrontEndEditorPreviousAndNextProvider extends Object
         $list = ClassInfo::subclassesFor('FrontEndEditorPreviousAndNextSequencer');
         unset($list['FrontEndEditorPreviousAndNextSequencer']);
         $currentSequencerClassName = $this->getClassName();
-        foreach($list as $className) {
+        foreach ($list as $className) {
             $class = Injector::inst()->get($className);
-            if($class->canView($member)) {
+            if ($class->canView($member)) {
                 $explanation = FrontEndEditorSequencerExplanation::add_or_find_item($className);
                 $class->Description = $explanation->ShortDescription;
-                if($class->class === $currentSequencerClassName) {
+                if ($class->class === $currentSequencerClassName) {
                     $class->LinkingMode = 'current';
                 } else {
                     $class->LinkingMode = 'link';
@@ -91,7 +91,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     {
         $list = ClassInfo::subclassesFor('FrontEndEditorPreviousAndNextSequencer');
         $list = array_change_key_case($list);
-        if(isset($list[$className]) && $className !== 'FrontEndEditorPreviousAndNextSequencer') {
+        if (isset($list[$className]) && $className !== 'FrontEndEditorPreviousAndNextSequencer') {
             $className = $list[$className];
             $this->sequencerClassName = $className;
             FrontEndEditorSessionManager::set_sequencer($className);
@@ -150,9 +150,9 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function getSequencer()
     {
-        if(self::$_my_sequencer === null) {
+        if (self::$_my_sequencer === null) {
             $className = $this->getClassName();
-            if($className) {
+            if ($className) {
                 self::$_my_sequencer = Injector::inst()->get($className);
             }
         }
@@ -166,8 +166,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     protected function getClassName(): string
     {
-
-        if(! $this->sequencerClassName) {
+        if (! $this->sequencerClassName) {
             $this->sequencerClassName = FrontEndEditorSessionManager::get_sequencer();
         }
 
@@ -198,14 +197,14 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     public function setPage($newRecordBeingEditedOrRelativePageNumber) : FrontEndEditorPreviousAndNextProvider
     {
         $item = null;
-        if(is_int($newRecordBeingEditedOrRelativePageNumber)) {
+        if (is_int($newRecordBeingEditedOrRelativePageNumber)) {
             //find all links
             $links = $this->AllPages();
             $linksAsArray = $links->toArray();
             //find new page number
             $currentPageNumber = $this->getPageNumber();
             $newPageNumber = $currentPageNumber + $newRecordBeingEditedOrRelativePageNumber;
-            if(isset($linksAsArray[$newPageNumber])) {
+            if (isset($linksAsArray[$newPageNumber])) {
                 $item = $linksAsArray[$newPageNumber];
             } else {
                 //run again to show error
@@ -213,14 +212,14 @@ class FrontEndEditorPreviousAndNextProvider extends Object
 
                 return $this;
             }
-        } elseif($newRecordBeingEditedOrRelativePageNumber instanceof FrontEndEditable) {
+        } elseif ($newRecordBeingEditedOrRelativePageNumber instanceof FrontEndEditable) {
             $item = $newRecordBeingEditedOrRelativePageNumber;
         } else {
             user_error('Page set is not valid: '.print_r($newRecordBeingEditedOrRelativePageNumber, 1));
 
             return $this;
         }
-        if($item !== null) {
+        if ($item !== null) {
             $this->setCurrentRecordBeingEdited($item);
         } else {
             user_error('Could not find item');
@@ -248,7 +247,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     public function getPageLink($offSetFromCurrent = 0) : string
     {
         $item = null;
-        if($offSetFromCurrent !== 0) {
+        if ($offSetFromCurrent !== 0) {
             $item = $this->getPageItem($offSetFromCurrent);
         }
         return $this->runOnSequencer('getPageLink', '404-page-not-found-for-sequencer', $item);
@@ -412,10 +411,10 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     public function runOnSequencer($method, $backupValue, $param1 = null, $param2 = null, $param3 = null)
     {
         $sequencer = $this->getSequencer();
-        if($sequencer) {
-            if($param1 !== null) {
-                if($param2 !== null) {
-                    if($param3 !== null) {
+        if ($sequencer) {
+            if ($param1 !== null) {
+                if ($param2 !== null) {
+                    if ($param3 !== null) {
                         return $sequencer->$method($param1, $param2, $param3);
                     }
                     return $sequencer->$method($param1, $param2);
@@ -427,6 +426,4 @@ class FrontEndEditorPreviousAndNextProvider extends Object
 
         return $backupValue;
     }
-
-
 }

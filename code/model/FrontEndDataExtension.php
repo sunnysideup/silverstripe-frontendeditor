@@ -62,7 +62,8 @@ class FrontEndDataExtension extends DataExtension
                 $field2 = ReadonlyField::create(
                     "ParentRootCanEdit",
                     "Root",
-                    "<a target=\"_blank\" href=\"".$rootParentObject->CMSEditLink()."\">Open <em>".$rootParentObject->getTitle()."</em></a>")
+                    "<a target=\"_blank\" href=\"".$rootParentObject->CMSEditLink()."\">Open <em>".$rootParentObject->getTitle()."</em></a>"
+                )
             );
             $field2->dontEscape = true;
         }
@@ -86,7 +87,9 @@ class FrontEndDataExtension extends DataExtension
                     $this->owner->FrontEndRightTitleObjects(),
                     $config = GridFieldConfig_RecordEditor::create()
                 ),
-                LiteralField::create("FrontEndRootCanEditObjectLink", "
+                LiteralField::create(
+                    "FrontEndRootCanEditObjectLink",
+                    "
                     <h2>".
                         _t("FrontEndDataExtension.RELATES_TO", "Relates to")."
                         <a href=\"".$this->FrontEndRootParentObject()->FrontEndEditLink()."\">".$this->FrontEndRootParentObject()->FrontEndShortTitle()."</a>
@@ -114,21 +117,18 @@ class FrontEndDataExtension extends DataExtension
     /**
      * @return string (HTML)
      */
-    public function FrontEndEditIcon ($textOnly = false, $short = false)
+    public function FrontEndEditIcon($textOnly = false, $short = false)
     {
         $code = '';
-        if($short) {
+        if ($short) {
             $code = '✎';
-        }
-        elseif($this->owner->hasMethod('FrontEndEditIconCode')) {
+        } elseif ($this->owner->hasMethod('FrontEndEditIconCode')) {
             $code = '✎'.$this->owner->FrontEndEditIconCode();
         }
         $html = '<span class="frontend-edit-icon" style="color: '.$this->owner->FrontEndEditColour().'; border-color: '.$this->owner->FrontEndEditColour().'">'.$code.'</span>';
-        if($textOnly) {
-
+        if ($textOnly) {
             return strip_tags($html);
         } else {
-
             return $html;
         }
     }
@@ -216,7 +216,7 @@ class FrontEndDataExtension extends DataExtension
             $parent = $this->owner->FrontEndParentObject();
             while ($parent && $parent->exists()) {
                 $array[$parent->ClassName."-".$parent->ID] = $parent;
-                if($parent->FrontEndIsRoot()) {
+                if ($parent->FrontEndIsRoot()) {
                     $parent = null;
                     break;
                 } else {
@@ -264,7 +264,7 @@ class FrontEndDataExtension extends DataExtension
 
                 ) {
                     $x++;
-                    if($uid === $parent->FrontEndUID()) {
+                    if ($uid === $parent->FrontEndUID()) {
                         $parent = null;
                     } else {
                         $returnObject = $parent;
@@ -281,7 +281,7 @@ class FrontEndDataExtension extends DataExtension
     public function FrontEndIsRoot()
     {
         $parent = $this->owner->FrontEndRootParentObject();
-        if($parent) {
+        if ($parent) {
             return $parent->FrontEndUID() === $this->owner->FrontEndUID();
         } else {
             return true;
@@ -310,8 +310,8 @@ class FrontEndDataExtension extends DataExtension
     public function FrontEndAddRootParentObject($rootObject, $write = false)
     {
         $this->owner->FrontEndRootCanEditObject = FrontEndEditorSessionManager::object_to_string($rootObject->ClassName);
-        if($write) {
-            if($this->owner instanceof SiteTree) {
+        if ($write) {
+            if ($this->owner instanceof SiteTree) {
                 $this->owner->writeToStage('Stage');
                 $this->owner->publish('Stage', 'Live');
             } else {
@@ -363,13 +363,14 @@ class FrontEndDataExtension extends DataExtension
      *
      * @return DataList
      */
-    public function FrontEndFindChildObjects($className) {
+    public function FrontEndFindChildObjects($className)
+    {
         return $className::get()->filter(array('FrontEndRootCanEditObject' => $this->owner->FrontEndRootCanEditObject));
     }
 
     public function requireDefaultRecords()
     {
-        if(isset($_GET['righttitles'])) {
+        if (isset($_GET['righttitles'])) {
             $fieldLabels = $this->owner->FieldLabels();
             $rightTitles = Config::inst()->get($this->owner->ClassName, "field_labels_right");
             if (!is_array($rightTitles)) {

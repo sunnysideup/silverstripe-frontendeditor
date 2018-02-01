@@ -168,7 +168,7 @@ class FrontEndEditorSessionManager extends Object
 
     public static function set_record_being_edited($object)
     {
-        if(self::get_note_current_record() && $object) {
+        if (self::get_note_current_record() && $object) {
             Session::set(
                 'FrontEndEditorPreviousAndNextSequencerCurrentRecordBeingEdited',
                 self::object_to_string($object)
@@ -183,8 +183,8 @@ class FrontEndEditorSessionManager extends Object
         $string = Session::get(
             'FrontEndEditorPreviousAndNextSequencerCurrentRecordBeingEdited'
         );
-        if($string) {
-            if($asString) {
+        if ($string) {
+            if ($asString) {
                 return $tring;
             } else {
                 return self::string_to_object($string);
@@ -201,8 +201,7 @@ class FrontEndEditorSessionManager extends Object
      */
     public static function object_to_string($object) : string
     {
-        if($object) {
-
+        if ($object) {
             return $object->ClassName.','.$object->ID;
         }
 
@@ -211,13 +210,10 @@ class FrontEndEditorSessionManager extends Object
 
     public static function string_to_object($string)
     {
-        if($string) {
+        if ($string) {
             list($className, $id) = explode(',', $string);
 
             return $className::get()->byID($id);
         }
     }
-
-
-
 }

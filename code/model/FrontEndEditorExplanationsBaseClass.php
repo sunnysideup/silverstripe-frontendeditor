@@ -47,11 +47,11 @@ class FrontEndEditorExplanationsBaseClass extends DataObject
      */
     public static function add_or_find_item($className, $type = '') : FrontEndEditorExplanationsBaseClass
     {
-        if(! $type || $type === 'FrontEndEditorExplanationsBaseClass') {
+        if (! $type || $type === 'FrontEndEditorExplanationsBaseClass') {
             user_error('A type must be provided!');
         }
         $key = $type.'_'.$className;
-        if(isset(self::$_cache_for_explanation_objects[$key])) {
+        if (isset(self::$_cache_for_explanation_objects[$key])) {
             //do nothing
         } else {
             $filter = array(
@@ -96,7 +96,7 @@ class FrontEndEditorExplanationsBaseClass extends DataObject
 
         $objectNames = array_unique(FrontEndEditorExplanationsBaseClass::get()->column('ObjectClassName'));
         $newList = ['' => '-- ANY --'];
-        foreach($objectNames as $key => $value) {
+        foreach ($objectNames as $key => $value) {
             $newList[$value] = $this->getClassNameNice($value);
         }
         asort($newList);
@@ -128,7 +128,7 @@ class FrontEndEditorExplanationsBaseClass extends DataObject
         $fields->removeByName("ObjectClassName");
         $fields->removeByName("ObjectFieldName");
         $fields->removeByName("DefaultValue");
-        $fields->addFieldToTab("Root.Main", ReadonlyField::create("ObjectClassName",$fieldLabels['ObjectClassName']), "ShortDescription");
+        $fields->addFieldToTab("Root.Main", ReadonlyField::create("ObjectClassName", $fieldLabels['ObjectClassName']), "ShortDescription");
         $fields->addFieldToTab("Root.Main", ReadonlyField::create("ClassNameNice", $fieldLabels['ClassNameNice']), "ShortDescription");
 
         $fields->dataFieldByName('LongDescription')->setRows(3);
@@ -159,7 +159,7 @@ class FrontEndEditorExplanationsBaseClass extends DataObject
      */
     protected function getClassNameObjectFromCache($className = null)
     {
-        if($className === null) {
+        if ($className === null) {
             $className = $this->ObjectClassName;
         }
         if (! isset(self::$_cache_for_class_objects[$className])) {
@@ -180,7 +180,7 @@ class FrontEndEditorExplanationsBaseClass extends DataObject
      */
     public function getClassNameNice($className = null) : string
     {
-        if($className === null) {
+        if ($className === null) {
             $className = $this->ObjectClassName;
         }
         if ($obj = $this->getClassNameObjectFromCache($className)) {

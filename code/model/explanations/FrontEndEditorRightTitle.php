@@ -2,7 +2,6 @@
 
 class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
 {
-
     private static $field_labels = array(
         "ObjectClassName" => "DataObject Code",
         "ObjectFieldName" => "Field Name Code",
@@ -73,7 +72,7 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
             $obj->DefaultValue = $defaultValue;
             $obj->ShortDescription = $defaultValue;
         }
-        if($defaultValue) {
+        if ($defaultValue) {
             if ($obj->DefaultValue !== $defaultValue) {
                 $obj->DefaultValue = $defaultValue;
             }
@@ -112,10 +111,10 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
             WHERE "ClassName" = \'FrontEndEditorRightTitle\'
         ');
         $newList = ['' => '-- ANY --'];
-        foreach($rows as $row) {
+        foreach ($rows as $row) {
             $combo = $row['COMBO'];
             list($className, $fieldName) = explode(',', $combo);
-            if($className && $fieldName) {
+            if ($className && $fieldName) {
                 $newList[$fieldName] = $this->getFieldNameNice($className, $fieldName).
                 ' ('.$this->getClassNameNice($className).')';
             }
@@ -159,10 +158,10 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
 
     public function getFieldNameNice($className = null, $fieldName = null)
     {
-        if($className === null) {
+        if ($className === null) {
             $className = $this->ObjectClassName;
         }
-        if($fieldName === null) {
+        if ($fieldName === null) {
             $fieldName = $this->ObjectFieldName;
         }
         if (!isset(self::$_cache_for_field_labels[$className])) {
@@ -173,7 +172,6 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
         if (isset(self::$_cache_for_field_labels[$className])) {
             if ($array = self::$_cache_for_field_labels[$className]) {
                 if (isset($array[$fieldName])) {
-
                     return $array[$fieldName];
                 }
             }
@@ -195,7 +193,7 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
             if ($this->ShortDescription) {
                 return $this->ShortDescription;
             }
-            if($this->DefaultValue) {
+            if ($this->DefaultValue) {
                 return $this->DefaultValue;
             }
         }

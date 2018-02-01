@@ -39,7 +39,8 @@ class FrontEndEditorPage extends Page
      */
     public function FrontEndAddRelationLink($recordBeingEdited, $relationName)
     {
-        return $this->Link("frontendaddrelation/".
+        return $this->Link(
+            "frontendaddrelation/".
             $recordBeingEdited->ClassName."/".
             $recordBeingEdited->ID."/".
             "?goingto=".$relationName
@@ -74,9 +75,6 @@ class FrontEndEditorPage extends Page
             $id
         );
     }
-
-
-
 }
 
 class FrontEndEditorPage_Controller extends Page_Controller
@@ -141,10 +139,9 @@ class FrontEndEditorPage_Controller extends Page_Controller
             }
         }
         Requirements::javascript("mysite/javascript/RecentlyEdited.js");
-
     }
 
-    function index()
+    public function index()
     {
         return [];
     }
@@ -166,8 +163,8 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function Form()
     {
         $form = FrontEndEditForm::create($this, "Form", $this->recordBeingEdited);
-        if($this->recordBeingEdited){
-            if($this->recordBeingEdited->hasMethod("ExtraClassesForFrontEndForm")) {
+        if ($this->recordBeingEdited) {
+            if ($this->recordBeingEdited->hasMethod("ExtraClassesForFrontEndForm")) {
                 $form->addExtraClass($this->recordBeingEdited->ExtraClassesForFrontEndForm());
             }
         }
@@ -180,16 +177,16 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function AlternativeViewLinks()
     {
         $record = $this->RecordBeingEdited();
-        if($record) {
+        if ($record) {
             $array = [];
-            if($this->ViewLink()) {
+            if ($this->ViewLink()) {
                 $array['VIEW'] = array(
                     'Title' => 'Read Only',
                     'Description' => 'Non Editable version of the data you are entering',
                     'Link' => $this->ViewLink()
                 );
             }
-            if($record->hasMethod('CMSEditLink')) {
+            if ($record->hasMethod('CMSEditLink')) {
                 $array['EDIT'] = array(
                     'Title' => 'CMS',
                     'Description' => 'Edit this record in the CMS (back-end)',
@@ -197,7 +194,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 );
             }
             $rootParentObject = $record->FrontEndRootParentObject();
-            if(
+            if (
                 $rootParentObject &&
                 $rootParentObject->exists() &&
                 ! $record->FrontEndIsRoot() &&
@@ -210,9 +207,9 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 );
             }
             $array = $record->FrontEndAlternativeViewLinks($array);
-            if(count($array)) {
+            if (count($array)) {
                 $al = ArrayList::create();
-                foreach($array as $item) {
+                foreach ($array as $item) {
                     $al->push(ArrayData::create($item));
                 }
                 return $al;
@@ -292,7 +289,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 }
                 $foreignObject->write();
             }
-        //the else is important so that
+            //the else is important so that
         } else {
             switch ($type) {
                 case "belongs_to":
@@ -312,7 +309,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 $foreignObject->delete();
             }
         }
-        if(Director::is_ajax()) {
+        if (Director::is_ajax()) {
             return 'success';
         } else {
             return $this->redirectBack();
@@ -539,14 +536,13 @@ class FrontEndEditorPage_Controller extends Page_Controller
     }
 
     public function startsequence($request) : SS_HTTPResponse
-
     {
         $className = $this->request->param('ID');
         $startLink = $this->PreviousAndNextProvider($className)
             ->StartSequence()
             ->getPageLink();
         self::set_note_current_record(true);
-        if($startLink) {
+        if ($startLink) {
             return $this->redirect($startLink);
         } else {
             return $this->redirect('can-not-find-sequence');
@@ -590,14 +586,14 @@ class FrontEndEditorPage_Controller extends Page_Controller
      */
     public function CurrentSequence()
     {
-        if($this->HasSequence()) {
+        if ($this->HasSequence()) {
             return $this->PreviousAndNextProvider()->getSequencer();
         }
     }
 
     public function HasSequence(): bool
     {
-        if(FrontEndEditorSessionManager::get_sequencer()) {
+        if (FrontEndEditorSessionManager::get_sequencer()) {
             return $this->PreviousAndNextProvider()->HasSequencer();
         }
         
@@ -630,5 +626,4 @@ class FrontEndEditorPage_Controller extends Page_Controller
     {
         return $this->Link('gotopreviouspageinsequence');
     }
-
 }
