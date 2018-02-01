@@ -73,10 +73,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
 
     public function ArrayOfClassesToSequence()
     {
-        $sequencer = $this->getSequencer();
-        if($sequencer) {
-            return $sequencer->ArrayOfClassesToSequence()
-        }
+        return $this->runOnSequencer('ArrayOfClassesToSequence', []);
     }
 
     /**
@@ -113,11 +110,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function setCurrentRecordBeingEdited($currentRecordBeingEdited) : FrontEndEditorPreviousAndNextProvider
     {
-        //set in custom sequencer
-        $obj = $this->getSequencer();
-        if($obj) {
-            $obj->setCurrentRecordBeingEdited($currentRecordBeingEdited);
-        }
+        $this->runOnSequencer('setCurrentRecordBeingEdited', null, $currentRecordBeingEdited);
 
         return $this;
     }
@@ -128,17 +121,14 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function getCurrentRecordBeingEdited()
     {
-        $obj = $this->getSequencer();
-        if($obj) {
-            return $obj->getCurrentRecordBeingEdited();
-        }
+        return $this->runOnSequencer('getCurrentRecordBeingEdited', null);
     }
 
     /**
      * a sequencer has been set ...
      * @return bool
      */
-    public function HasSequencer(): bool
+    public function HasSequencer() : bool
     {
         return $this->getSequencer() ? true : false;
     }
@@ -192,10 +182,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function StartSequence() : FrontEndEditorPreviousAndNextProvider
     {
-        $obj = $this->getSequencer();
-        if($obj) {
-            $obj->StartSequence();
-        }
+        $this->runOnSequencer('StartSequence', null);
 
         return $this;
     }
@@ -264,11 +251,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
         if($offSetFromCurrent !== 0) {
             $item = $this->getPageItem($offSetFromCurrent);
         }
-        $obj = $this->getSequencer();
-        if($obj) {
-            return $obj->getPageLink($item);
-        }
-        return '404-page-not-found-for-sequencer';
+        return $this->runOnSequencer('getPageLink', '404-page-not-found-for-sequencer', $item);
     }
 
     /**
@@ -277,46 +260,38 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function TotalNumberOfPages() : int
     {
-        $obj = $this->getSequencer();
-        if($obj) {
-            return $obj->TotalNumberOfPages();
-        }
-
-        return 0;
+        return $this->runOnSequencer('TotalNumberOfPages', 0);
     }
 
     /**
-     *
+     * @param string $className OPTIONAL
      * @return ArrayList
      */
-    public function AllPages() : ArrayList
+    public function AllPages($className = null) : ArrayList
     {
-        $obj = $this->getSequencer();
-        if($obj) {
-            return $obj->AllPages();
-        }
-
-        return ArrayList::create();
-    }
-
-
-    public function AddAnotherOfThisClass($className = null)
-    {
-        $obj = $this->getSequencer();
-        if($obj) {
-            return $obj->AddAnotherOfThisClass($className);
-        }
-
-
+        return $this->runOnSequencer('AllPages', ArrayList::create(), $className);
     }
 
     /**
      *
-     * @return string
+     * @param string $className (OPTIONAL)
+     *
+     * @return FrontEndEditable|null
      */
-    public function PreviousLink() : string
+    public function AddAnotherOfThisClass($className = null)
     {
-        return $this->getPageLink(-1);
+        return $this->runOnSequencer('AddAnotherOfThisClass', null, $className);
+    }
+
+    /**
+     * is there another page to work through?
+     *
+     * @param  string|null $classNMame
+     * @return bool
+     */
+    public function HasNextPage($className = null) : bool
+    {
+        return $this->runOnSequencer('HasNextPage', false, $className);
     }
 
     /**
@@ -326,6 +301,14 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     public function NextPageLink() : string
     {
         return $this->getPageLink(1);
+    }
+
+    /**
+     * @return FrontEndEditable|null
+     */
+    public function NextPageObject()
+    {
+        return $this->runOnSequencer('NextPageObject', null);
     }
 
     /**
@@ -340,6 +323,34 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     }
 
     /**
+     * is there a previous page to work through?
+     *
+     * @param  string|null $classNMame
+     * @return bool
+     */
+    public function HasPreviousPage($className = null) : bool
+    {
+        return $this->runOnSequencer('HasPreviousPage', false, $className);
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function PreviousLink() : string
+    {
+        return $this->getPageLink(-1);
+    }
+
+    /**
+     * @return FrontEndEditable|null
+     */
+    public function PreviousPageObject()
+    {
+        return $this->runOnSequencer('PreviousPageObject', null);
+    }
+
+    /**
      *
      * @return string
      */
@@ -350,26 +361,27 @@ class FrontEndEditorPreviousAndNextProvider extends Object
         return $this->getPageLink(0);
     }
 
+
+
     /**
-     * @param int|string|null
+     * @param string $className
      *
-     * @return FrontEndEditable
+     * @return FrontEndEditable|null
+     */
+    protected function CanAddAnotherOfThisClass($className) : bool
+    {
+        return $this->runOnSequencer('CanAddAnotherOfThisClass', false, $className);
+    }
+
+
+    /**
+     * @param int|string|null $pageNumberOrFrontEndUID
+     *
+     * @return FrontEndEditable|null
      */
     protected function getPageItem($pageNumberOrFrontEndUID) : FrontEndEditable
     {
-        if($pageNumberOrFrontEndUID === null) {
-            $pageNumberOrFrontEndUID = $this->FrontEndUID();
-        }
-        foreach($this->AllPages() as $count => $item) {
-            if(
-                $count === $pageNumberOrFrontEndUID ||
-                $item->FrontEndUID() === $pageNumberOrFrontEndUID
-            ) {
-                return $item;
-            }
-        }
-
-        return user_error('Can not find page item for '.$pageNumberOrFrontEndUID);
+        return $this->runOnSequencer('getPageItem', null, $pageNumberOrFrontEndUID);
     }
 
     /**
@@ -378,21 +390,42 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     protected function getPageNumber() : int
     {
-        $string = $this->FrontEndUID();
-        foreach($this->AllPages() as $count => $item) {
-            if($item->FrontEndUID() === $string) {
-                return $count + 1;
-            }
-        }
-
-        return 0;
+        return $this->runOnSequencer('getPageNumber', 0);
     }
 
     protected function FrontEndUID() : string
     {
-        $obj = $this->getCurrentRecordBeingEdited();
+        return $this->runOnSequencer('FrontEndUID', 'DataObject,0');
+    }
 
-        return FrontEndEditorSessionManager::object_to_string($obj);
+    /**
+     * run a method in the sequencer ..
+     *
+     * @param  string $method      the method to run
+     * @param  mixed $backupValue  what to return when there is no sequencer
+     * @param  mixed $param1       first parameter
+     * @param  mixed $param2       second parameter
+     * @param  mixed $param3       third parameter
+     *
+     * @return mixed
+     */
+    public function runOnSequencer($method, $backupValue, $param1 = null, $param2 = null, $param3 = null)
+    {
+        $sequencer = $this->getSequencer();
+        if($sequencer) {
+            if($param1 !== null) {
+                if($param2 !== null) {
+                    if($param3 !== null) {
+                        return $sequencer->$method($param1, $param2, $param3);
+                    }
+                    return $sequencer->$method($param1, $param2);
+                }
+                return $sequencer->$method($param1);
+            }
+            return $sequencer->$method();
+        }
+
+        return $backupValue;
     }
 
 

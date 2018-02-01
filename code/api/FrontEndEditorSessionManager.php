@@ -74,7 +74,7 @@ class FrontEndEditorSessionManager extends Object
      *
      * @return null|DataObject
      */
-    public static function previous_object($currentRecord = null)
+    public static function previous_object_based_on_browsing($currentRecord = null)
     {
         $sequenceNumber = Session::get("FrontEndGoBackSequenceNumber")-1;
         $data = explode(",", Session::get("FrontEndGoBackObjectDetails".$sequenceNumber));
@@ -98,7 +98,7 @@ class FrontEndEditorSessionManager extends Object
         }
     }
 
-    public static function clear_previous_object()
+    public static function clear_previous_object_based_on_browsing()
     {
         $sequenceNumber = Session::get("FrontEndGoBackSequenceNumber");
         Session::set("FrontEndGoBackSequenceNumber", $sequenceNumber - 1);

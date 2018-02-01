@@ -21,5 +21,4 @@ class FrontEndEditorAdmin extends ModelAdmin
     );
 
     private static $menu_icon = 'frontendeditor/images/treeicons/FrontEndEditorAdmin.png';
-
 }

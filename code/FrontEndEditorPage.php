@@ -537,6 +537,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         FrontEndEditorSessionManager::clear_record_being_edited();
         return [];
     }
+
     public function startsequence($request) : SS_HTTPResponse
 
     {
@@ -594,11 +595,13 @@ class FrontEndEditorPage_Controller extends Page_Controller
         }
     }
 
-    public function HasSequence()
+    public function HasSequence(): bool
     {
         if(FrontEndEditorSessionManager::get_sequencer()) {
             return $this->PreviousAndNextProvider()->HasSequencer();
         }
+        
+        return false;
     }
 
     /**
@@ -626,51 +629,6 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function PreviousSequenceLink() : string
     {
         return $this->Link('gotopreviouspageinsequence');
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function PreviousPageInSequenceLink() : string
-    {
-        if($this->HasSequence()) {
-            return $this->PreviousAndNextProvider()->PreviousPageLink();
-        }
-
-        return "";
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function NextPageInSequenceLink() : string
-    {
-        if($this->HasSequence()) {
-            return $this->PreviousAndNextProvider()->NextPageLink();
-        }
-
-        return "";
-    }
-
-    public function AllPages()
-    {
-        if($this->HasSequence()) {
-            return $this->PreviousAndNextProvider()->AllPages();
-        }
-    }
-
-    public function ListOfSequences() : ArrayList
-    {
-        return $this->PreviousAndNextProvider()->ListOfSequences();
-    }
-
-    public function FrontEndAddAnother()
-    {
-        if($this->HasSequence()) {
-            return $this->PreviousAndNextProvider()->AddAnother();
-        }
     }
 
 }

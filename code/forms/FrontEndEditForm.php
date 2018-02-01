@@ -24,7 +24,7 @@ class FrontEndEditForm extends Form
 
     public function __construct($controller, $name, $recordBeingEdited)
     {
-
+        $this->controller = $controller;
         //get the right record
         $this->recordBeingEdited = $recordBeingEdited;
         $this->addExtraClass($recordBeingEdited);
@@ -353,19 +353,19 @@ class FrontEndEditForm extends Form
         }
 
         //broken
-        if ($this-hasPreviousObject()) {
+        if ($this->HasPreviousPage()) {
             $actions->push(
                 FormAction::create('saveandgoback', _t("FrontEndEditForm.SAVE_AND_GO_BACK", "save and go back"))
                     ->addExtraClass('save-and-go-prev-button prev-and-next')
             );
         }
-        if ($this->hasNextObject()) {
+        if ($this->HasNextPage()) {
             $actions->push(
                 FormAction::create('saveandgonext', _t("FrontEndEditForm.SAVE_AND_NEXT", "save and go next"))
                     ->addExtraClass('save-and-go-next-button prev-and-next')
             );
         }
-        if ($this->canAddAnother()) {
+        if ($this->CanAddAnotherOfThisClass()) {
             $actions->push(
                 FormAction::create('saveandaddanother', _t("FrontEndEditForm.SAVE_AND_NEXT", "save and add another"))
                     ->addExtraClass('save-and-add-another-button add-button')
@@ -543,16 +543,57 @@ class FrontEndEditForm extends Form
         return $this->save($data, $form);
     }
 
+
     /**
+     * is there another page to work through?
      *
-     * @return null | DataObject
+     * @param  string|null $classNMame
+     * @return bool
      */
-    public function previousObject()
+    public function HasNextPage($className = null) : bool
     {
         if($this->controller->HasSequence()) {
-            $this->controller->previousObjectInSequence();
+            return $this
+                ->controller
+                ->PreviousAndNextSequencer()
+                ->HasNextPage($className);
         } else {
-            return FrontEndEditorSessionManager::previous_object($this->recordBeingEdited);
+            return false;
+            // return FrontEndEditorSessionManager::previous_object_based_on_browsing($this->recordBeingEdited);
+        }
+    }
+
+    /**
+     * is there a previous page to work through?
+     *
+     * @param  string|null $classNMame
+     * @return bool
+     */
+    public function HasPreviousPage($className = null) : bool
+    {
+        if($this->controller->HasSequence()) {
+            return $this
+                ->controller
+                ->PreviousAndNextSequencer()
+                ->HasPreviousPage($className);
+        } else {
+            return FrontEndEditorSessionManager::previous_object_based_on_browsing($this->recordBeingEdited) ? true : false;
+        }
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function CanAddAnotherOfThisClass()
+    {
+        if($this->controller->HasSequence()) {
+            return $this
+                ->controller
+                ->PreviousAndNextSequencer()
+                ->CanAddAnotherOfThisClass($this->recordBeingEdited->ClassName);
+        } else {
+            return false;
         }
     }
 
@@ -561,35 +602,47 @@ class FrontEndEditForm extends Form
      */
     public function clearPreviousObject()
     {
-        FrontEndEditorSessionManager::clear_previous_object();
+        FrontEndEditorSessionManager::clear_previous_object_based_on_browsing();
+    }
+
+
+    // /**
+    //  *
+    //  * @return bool
+    //  */
+    // public function MustAddAnotherOfThisClass()
+    // {
+    //     if($this->controller->HasSequence()) {
+    //         return $this
+    //             ->controller
+    //             ->PreviousAndNextSequencer()
+    //             ->runOnSequencer(
+    //                 'MustAddAnotherOfThisClass',
+    //                 false,
+    //                 $this->recordBeingEdited->ClassName
+    //             );
+    //     }
+    // }
+
+
+    /**
+     * @return FrontEndEditorPreviousAndNextProvider|null
+     */
+    public function PreviousAndNextProvider()
+    {
+        return $this->controller->PreviousAndNextProvider();
     }
 
     /**
-     *
-     * @return null | DataObject
+     * @return FrontEndEditorPreviousAndNextSequencer|null
      */
-    public function nextObject()
+    public function PreviousAndNextSequencer()
     {
-        if($this->controller->HasSequence()) {
-            $this->controller->nextObjectInSequence();
-        } else {
-            // return FrontEndEditorSessionManager::previous_object($this->recordBeingEdited);
+        $provider = $this->controller->PreviousAndNextProvider();
+        if($provider) {
+            return $provider->getSequencer();
         }
     }
-
-    /**
-     *
-     * @return bool
-     */
-    public function canAddAnother()
-    {
-        if($this->controller->HasSequence()) {
-            $this->controller->canAddAnother();
-        } else {
-            false;
-        }
-    }
-
 
     /**
      * retrieve the object being edited from the data

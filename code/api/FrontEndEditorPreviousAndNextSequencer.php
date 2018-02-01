@@ -131,10 +131,8 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     public function AllPages($className = null) : ArrayList
     {
         if($this->_allPages === null) {
-            echo 'A';
             $currentObject = $this->getCurrentRecordBeingEdited();
             if($currentObject) {
-                echo 'B';
                 $parent = $this->FrontEndParentObject();
                 if($parent) {
                     $this->_allPages = ArrayList::create();
@@ -167,9 +165,62 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         $allPages = $this->AllPages($className)->count();
     }
 
-    public function CurrentRecordPositionInClassName($className)
+    /**
+     * first position = 1
+     * last position = pages.count
+     *
+     * @param string|null $className OPTIONAL
+     *
+     * @return int
+     */
+    public function CurrentRecordPositionInSequence($className = null) : int
     {
-        $allPages = $this->AllPages($className)->count();
+        $position = 0;
+        $currentRcurrentRecordBeingEdited = $this->getCurrentRecordBeingEdited();
+        $allPages = $this->AllPages($className);
+        foreach($allPages as $count => $page) {
+            if($page->FrontEndUID() === $currentRcurrentRecordBeingEdited->FrontEndUID()) {
+                $position = $count;
+                break;
+            }
+        }
+
+        return $position;
+    }
+
+    public function HasPreviousPage() : bool
+    {
+        return $this->CurrentRecordPositionInSequence() > 1;
+    }
+
+
+    /**
+     * @return FrontEndEditable|null
+     */
+    public function PreviousPageObject()
+    {
+        if($this->HasPreviousPage()) {
+            $pos = $this->CurrentRecordPositionInSequence() - 1;
+
+            return $this->getPageItem($pos);
+        }
+    }
+
+    public function HasNextPage() : bool
+    {
+        return $this->CurrentRecordPositionInSequence() < $this->TotalNumberOfPages();
+    }
+
+    /**
+     * @return FrontEndEditable|null
+     */
+    public function NextPageObject()
+    {
+        if($this->HasNextPage()) {
+            $pos = $this->CurrentRecordPositionInSequence() + 1;
+
+            return $this->getPageItem($pos);
+        }
     }
 
     protected $currentRecordBeingEdited = null;
@@ -212,7 +263,13 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     }
 
 
-    public function MustAddChild($className) : bool
+    /**
+     * do we have to add another child for this Class?
+     *
+     * @param  string $className
+     * @return bool
+     */
+    public function MustAddAnotherOfThisClass($className) : bool
     {
         $existingChildren = $this->FrontEndFindChildObjects();
         $config = $this->ArrayOfClassesToSequence($className);
@@ -222,7 +279,13 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
 
     }
 
-    public function CanAddChild($className) : bool
+    /**
+     * can we add another child for this Class?
+     *
+     * @param  string $className
+     * @return bool
+     */
+    public function CanAddAnotherOfThisClass($className) : bool
     {
         $existingChildren = $this->FrontEndFindChildObjects();
         $config = $this->ArrayOfClassesToSequence($className);
@@ -231,7 +294,6 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         return $count < $config['Max'];
 
     }
-
 
     /**
      * returns a datalist of objects of a particular class
@@ -252,6 +314,9 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
 
     protected $_rootParent_cache = null;
 
+    /**
+     * @return FrontEndEditable
+     */
     protected function FrontEndParentObject()
     {
         if(self::$_rootParent_cache === null) {
@@ -264,5 +329,52 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         return self::$_rootParent_cache;
     }
 
+
+
+    /**
+     * @param int|string|null
+     *
+     * @return FrontEndEditable
+     */
+    public function getPageItem($pageNumberOrFrontEndUID) : FrontEndEditable
+    {
+        if($pageNumberOrFrontEndUID === null) {
+            $pageNumberOrFrontEndUID = $this->FrontEndUID();
+        }
+        foreach($this->AllPages() as $count => $item) {
+            if(
+                (int) $count === (int) $pageNumberOrFrontEndUID ||
+                (string) $item->FrontEndUID() === (string) $pageNumberOrFrontEndUID
+            ) {
+                return $item;
+            }
+        }
+
+        return user_error('Can not find page item for '.$pageNumberOrFrontEndUID);
+    }
+
+    /**
+     *
+     * @return int
+     */
+    protected function getPageNumber() : int
+    {
+        $string = $this->FrontEndUID();
+        foreach($this->AllPages() as $count => $item) {
+            if($item->FrontEndUID() === $string) {
+                return $count + 1;
+            }
+        }
+
+        return 0;
+    }
+
+
+    protected function FrontEndUID(): string
+    {
+        $obj = $this->getCurrentRecordBeingEdited();
+
+        return FrontEndEditorSessionManager::object_to_string($obj);
+    }
 
 }

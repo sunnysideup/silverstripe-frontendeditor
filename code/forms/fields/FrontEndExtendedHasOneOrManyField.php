@@ -166,7 +166,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
             $dropdownSource = null;
             if ($source && $source instanceof FormField) {
                 $existingSelectorField = $source;
-                //do nothing
+            //do nothing
             } elseif ($source && $source instanceof SS_Map) {
                 if ($source->count()) {
                     $dropdownSource = $source->toArray();
@@ -175,7 +175,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
                 if ($source->count()) {
                     if ($source->first() instanceof FrontEndEditable) {
                         $dropdownSource = $source->map('ID', 'FrontEndShortTitle');
-                        if($dropdownSource instanceof SS_Map) {
+                        if ($dropdownSource instanceof SS_Map) {
                             $dropdownSource = $dropdownSource->toArray();
                         }
                     }
@@ -184,8 +184,8 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
                 $dropdownSource = $source;
             }
             if ($dropdownSource && count($dropdownSource)) {
-                foreach($dropdownSource as $id => $sourceItem) {
-                    if($id && ! $sourceItem) {
+                foreach ($dropdownSource as $id => $sourceItem) {
+                    if ($id && ! $sourceItem) {
                         $dropdownSource[$id] = "# ".$id;
                     }
                 }

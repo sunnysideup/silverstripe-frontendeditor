@@ -80,11 +80,11 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
             $hasManyFieldWithID = $this->getCalculatedFieldName(true);
             $hasManyClassName = $this->getForeignClassName();
             //if object exists:
-            if($this->recordBeingEdited) {
+            if ($this->recordBeingEdited) {
                 $hasManyObjectSingleton = $this->getForeignSingleton();
                 if ($hasManyObjectSingleton->hasExtension('FrontEndDataExtension')) {
                     $customRelationFields = $this->recordBeingEdited->FrontEndCustomRelationsOptionProvider();
-                    if(
+                    if (
                         isset($customRelationFields[$hasManyField]) &&
                         $customRelationFields[$hasManyField] instanceof SS_List
                     ) {
@@ -99,7 +99,7 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
                                 $deleteAlternatives = $this->recordBeingEdited->FrontEndDeleteAlternatives();
                                 //note the difference between NULL and FALSE
                                 $deleteAlternative = isset($deleteAlternatives[$hasManyField]) ? $deleteAlternatives[$hasManyField] : null;
-                                if($deleteAlternative !== false) {
+                                if ($deleteAlternative !== false) {
                                     if ($hasManyObject->canDelete()) {
                                         $deleteLink = "<a class=\"frontEndRemoveLink\" href=\"".$this->recordBeingEdited->FrontEndRemoveRelationLink($hasManyField, $hasManyObject->ID)."\">✗</a>";
                                     }
