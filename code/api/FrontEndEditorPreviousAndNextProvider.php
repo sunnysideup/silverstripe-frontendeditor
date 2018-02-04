@@ -429,7 +429,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
         return $backupValue;
     }
 
-    function debug()
+    public function debug()
     {
         $html = '';
         $html .= '<h1>There is an active sequence</h1>';
@@ -451,5 +451,4 @@ class FrontEndEditorPreviousAndNextProvider extends Object
 
         return $html;
     }
-
 }

@@ -250,7 +250,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     public function getCurrentRecordBeingEdited()
     {
         self::$_count++;
-        if(self::$_count > 100) {
+        if (self::$_count > 100) {
             user_error("STOP");
         }
         if ($this->currentRecordBeingEdited && $this->currentRecordBeingEdited->exists()) {
@@ -311,7 +311,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         $parent = $this->FrontEndParentObject();
         if ($parent && $parent->exists()) {
             $list = $parent->FrontEndFindChildObjects($className);
-            if($list instanceof ArrayList) {
+            if ($list instanceof ArrayList) {
                 return $list;
             }
         }

@@ -568,7 +568,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function debugsequencer()
     {
         $html = '';
-        if($this->HasSequence()) {
+        if ($this->HasSequence()) {
             $html .= $this->PreviousAndNextProvider()->debug();
         } else {
             $html .= '<h1>There is no active sequence</h1>';
