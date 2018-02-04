@@ -551,7 +551,6 @@ class FrontEndEditForm extends Form
     {
         if ($this->controller->HasSequence()) {
             return $this
-                ->controller
                 ->PreviousAndNextSequencer()
                 ->HasNextPage($className);
         } else {
@@ -570,7 +569,6 @@ class FrontEndEditForm extends Form
     {
         if ($this->controller->HasSequence()) {
             return $this
-                ->controller
                 ->PreviousAndNextSequencer()
                 ->HasPreviousPage($className);
         } else {
@@ -586,7 +584,6 @@ class FrontEndEditForm extends Form
     {
         if ($this->controller->HasSequence()) {
             return $this
-                ->controller
                 ->PreviousAndNextSequencer()
                 ->CanAddAnotherOfThisClass($this->recordBeingEdited->ClassName);
         } else {

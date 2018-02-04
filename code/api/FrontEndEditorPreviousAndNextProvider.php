@@ -51,24 +51,26 @@ class FrontEndEditorPreviousAndNextProvider extends Object
         $list = ClassInfo::subclassesFor('FrontEndEditorPreviousAndNextSequencer');
         unset($list['FrontEndEditorPreviousAndNextSequencer']);
         $currentSequencerClassName = $this->getClassName();
+        $al = ArrayList::create();
         foreach ($list as $className) {
-            $class = Injector::inst()->get($className);
-            if ($class->canView($member)) {
+            $classObject = Injector::inst()->get($className);
+            if ($classObject->canView($member)) {
                 $explanation = FrontEndEditorSequencerExplanation::add_or_find_item($className);
-                $class->Description = $explanation->ShortDescription;
-                if ($class->class === $currentSequencerClassName) {
-                    $class->LinkingMode = 'current';
+                $array['Title'] = $classObject->Title();
+                $array['Description'] = $explanation->ShortDescription;
+                $array['Link'] = $classObject->Link();
+                if ($classObject->class === $currentSequencerClassName) {
+                    $array['LinkingMode'] = 'current';
                 } else {
-                    $class->LinkingMode = 'link';
+                    $array['LinkingMode'] = 'link';
                 }
-                $array[] = $class;
+                $al->push(ArrayData::create($array));
             }
         }
-        $arrayList = ArrayList::create($array);
 
-        $this->extend('UpdateListOfSequences', $arrayList);
+        $this->extend('UpdateListOfSequences', $al);
 
-        return $arrayList;
+        return $al;
     }
 
     public function ArrayOfClassesToSequence()
@@ -426,4 +428,28 @@ class FrontEndEditorPreviousAndNextProvider extends Object
 
         return $backupValue;
     }
+
+    function debug()
+    {
+        $html = '';
+        $html .= '<h1>There is an active sequence</h1>';
+        $html .= '<hr />';
+        $html .= '<pre>';
+        $html .= '<hr /><h3>Previous And Next Provider</h3>';
+        $html .= '<hr />';
+        $html .= print_r($this, 1);
+        $html .= '<hr /><h3>Current Sequence</h3>';
+        $html .= '<hr />';
+        $html .= print_r($this->getSequencer(), 1);
+        $html .= '<hr /><h3>All Pages</h3>';
+        $html .= '<hr />';
+        $html .= print_r($this->AllPages(), 1);
+        $html .= '<hr /><h3>List of Sequences</h3>';
+        $html .= '<hr />';
+        $html .= print_r($this->ListOfSequences(), 1);
+        $html .= '</pre>';
+
+        return $html;
+    }
+
 }

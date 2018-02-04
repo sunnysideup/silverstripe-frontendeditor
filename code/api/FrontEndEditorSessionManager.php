@@ -137,6 +137,10 @@ class FrontEndEditorSessionManager extends Object
         );
     }
 
+    /**
+     * set if the should the current record be recorded YES or NO?
+     * @param bool $bool [description]
+     */
     public static function set_note_current_record(bool $bool)
     {
         return Session::set(
@@ -146,9 +150,14 @@ class FrontEndEditorSessionManager extends Object
     }
 
 
-    public static function get_note_current_record(bool $bool) : bool
+
+    /**
+     * get if the should the current record be recorded YES or NO?
+     * @return bool [description]
+     */
+    public static function get_note_current_record() : bool
     {
-        Session::get(
+        return Session::get(
             'FrontEndEditorPreviousAndNextSequencerNoteCurrentRecord'
         ) ? true : false;
     }

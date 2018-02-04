@@ -50,14 +50,9 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     abstract public function Title() : string;
 
-    /**
-     * e.g. Allows a merchant to enter all rates relating to their area.
-     * @return string
-     */
-    abstract public function Description() : string;
-
     private static $singular_name = 'Please override';
     abstract public function i18n_singular_name();
+
     private static $plural_name = 'Please override';
     abstract public function i18n_plural_name();
 
@@ -76,7 +71,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     {
         $page = DataObject::get_one('FrontEndEditorPage');
         if ($page) {
-            return $page->Link('startsequence/'.strtolower(get_class($this)));
+            return $page->Link('startsequence/'.strtolower(get_class($this)).'/');
         }
 
         return '404-front-end-editor-page-not-found';
@@ -247,12 +242,17 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         return $this;
     }
 
+    private static $_count = 0;
     /**
      *
      * @return FrontEndEditable|null
      */
     public function getCurrentRecordBeingEdited()
     {
+        self::$_count++;
+        if(self::$_count > 100) {
+            user_error("STOP");
+        }
         if ($this->currentRecordBeingEdited && $this->currentRecordBeingEdited->exists()) {
             //do nothing
         } else {
@@ -260,7 +260,6 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         }
 
         return $this->currentRecordBeingEdited;
-        ;
     }
 
     public function TotalNumberOfPages() : int
@@ -292,7 +291,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function CanAddAnotherOfThisClass($className) : bool
     {
-        $existingChildren = $this->FrontEndFindChildObjects();
+        $existingChildren = $this->FrontEndFindChildObjects($className);
         $config = $this->ArrayOfClassesToSequence($className);
         $count = $existingChildren->count();
 
@@ -311,26 +310,31 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     {
         $parent = $this->FrontEndParentObject();
         if ($parent && $parent->exists()) {
-            return $parent->FrontEndFindChildObjects($className);
+            $list = $parent->FrontEndFindChildObjects($className);
+            if($list instanceof ArrayList) {
+                return $list;
+            }
         }
+
         return ArrayList::create();
     }
 
-    protected $_rootParent_cache = null;
+    protected static $_root_parent_cache = null;
 
     /**
      * @return FrontEndEditable
      */
     protected function FrontEndParentObject()
     {
-        if (self::$_rootParent_cache === null) {
+        if (self::$_root_parent_cache === null) {
+            self::$_root_parent_cache = false;
             $currentObject = $this->getCurrentRecordBeingEdited();
             if ($currentObject) {
-                self::$_rootParent_cache = $this->FrontEndParentObject();
+                self::$_root_parent_cache = $currentObject->FrontEndParentObject();
             }
         }
 
-        return self::$_rootParent_cache;
+        return self::$_root_parent_cache;
     }
 
 

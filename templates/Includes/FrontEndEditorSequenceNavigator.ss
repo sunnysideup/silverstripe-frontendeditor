@@ -4,7 +4,7 @@
     <% with $CurrentSequence %>
         <p>
             <a title="$Description.ATT">$Title</a>
-            <span class="steps-in-sequence">Step $CurrentRecordPositionInSequence / $TotalNumberOfPages.</span>
+            <% if $TotalNumberOfPages %><span class="steps-in-sequence">Step $CurrentRecordPositionInSequence / $TotalNumberOfPages.</span><% end_if %>
         </p>
     <% end_with %>
         <p>

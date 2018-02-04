@@ -114,7 +114,8 @@ class FrontEndEditorPage_Controller extends Page_Controller
         "startsequence" => true,
         "stopsequence" => true,
         "gotopreviouspageinsequence" => true,
-        "gotonextpageinsequence" => true
+        "gotonextpageinsequence" => true,
+        "debugsequencer" => 'ADMIN'
     );
 
     public function init()
@@ -541,7 +542,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         $startLink = $this->PreviousAndNextProvider($className)
             ->StartSequence()
             ->getPageLink();
-        self::set_note_current_record(true);
+        FrontEndEditorSessionManager::set_note_current_record(true);
         if ($startLink) {
             return $this->redirect($startLink);
         } else {
@@ -550,7 +551,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
     }
     public function gotopreviouspageinsequence($request) : SS_HTTPResponse
     {
-        self::set_note_current_record(true);
+        FrontEndEditorSessionManager::set_note_current_record(true);
         $link = $this->PreviousAndNextProvider()->goPreviousPage();
 
         return $this->redirect($link);
@@ -558,10 +559,23 @@ class FrontEndEditorPage_Controller extends Page_Controller
 
     public function gotonextpageinsequence($request) : SS_HTTPResponse
     {
-        self::set_note_current_record(true);
+        FrontEndEditorSessionManager::set_note_current_record(true);
         $link = $this->PreviousAndNextProvider()->goNextPage();
 
         return $this->redirect($link);
+    }
+
+    public function debugsequencer()
+    {
+        $html = '';
+        if($this->HasSequence()) {
+            $html .= $this->PreviousAndNextProvider()->debug();
+        } else {
+            $html .= '<h1>There is no active sequence</h1>';
+        }
+        $this->Content = $html;
+        $this->Form = $html;
+        return [];
     }
 
 

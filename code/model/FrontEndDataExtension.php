@@ -103,10 +103,10 @@ class FrontEndDataExtension extends DataExtension
     public function FrontEndEditorClassExplanation()
     {
         return FrontEndEditorClassExplanation::get()
-                  ->filter(
-                      ['ObjectClassName' => ($this->ClassName ? $this->ClassName : get_class($this->owner)]
-                  )
-              )->first();
+            ->filter(
+              ['ObjectClassName' => ($this->ClassName ? $this->ClassName : get_class($this->owner))]
+            )
+            ->first();
     }
     /**
      *
