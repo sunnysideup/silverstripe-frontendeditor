@@ -17,12 +17,13 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
 
-    public function getFrontEndFields()
+    public function getFrontEndFields($params = NULL)
     {
         $fields = FieldList::create();
         $fields->push(
             LiteralField::create(
                 'Intro',
+                'tba'
             )
         );
     }
@@ -33,7 +34,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
      */
     public function getFrontEndValidator()
     {
-        return null
+        return null;
     }
 
     /**
