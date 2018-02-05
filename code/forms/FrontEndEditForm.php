@@ -381,6 +381,7 @@ class FrontEndEditForm extends Form
 
     public function save($data, $form)
     {
+        $controller = $this->controller;
         $this->retrieveRecordBeingEdited($data);
         if ($this->recordBeingEdited && $this->recordBeingEdited->canEdit()) {
 
@@ -418,9 +419,9 @@ class FrontEndEditForm extends Form
             if ($validationResult && !$validationResult->valid()) {
                 $form->sessionMessage("ERROR - Could not save data: ".$validationResult->message(), "bad");
                 if (! $this->recordBeingEdited->ID) {
-                    return $this->controller->redirect($this->controller->Link()."?reusedata=1");
+                    return $controller->redirect($controller->Link()."?reusedata=1");
                 } else {
-                    return $this->controller->redirectBack();
+                    return $controller->redirectBack();
                 }
             }
 
@@ -464,38 +465,38 @@ class FrontEndEditForm extends Form
 
             if ($this->isGoBack) {
                 if ($controller->HasSequence()) {
-                    return $this->controller->redirect($this->controller->PreviousSequenceLink().$ajaxGetVariable);
+                    return $controller->redirect($controller->PreviousSequenceLink().$ajaxGetVariable);
                 } else {
                     if ($previousObject = $this->previousObject()) {
                         $this->clearPreviousObject();
-                        return $this->controller->redirect($previousObject->FrontEndEditLink().$ajaxGetVariable);
+                        return $controller->redirect($previousObject->FrontEndEditLink().$ajaxGetVariable);
                     }
                 }
             }
 
             if ($this->isGoNext) {
                 if ($controller->HasSequence()) {
-                    return $this->controller->redirect($this->controller->NextSequenceLink().$ajaxGetVariable);
+                    return $controller->redirect($controller->NextSequenceLink().$ajaxGetVariable);
                 } else {
                     if ($nextObject = $this->nextObject()) {
-                        return $this->controller->redirect($nextObject->FrontEndEditLink().$ajaxGetVariable);
+                        return $controller->redirect($nextObject->FrontEndEditLink().$ajaxGetVariable);
                     }
                 }
             } elseif ($this->isAddAnother) {
-                $obj = $this->controller->addAnother();
+                $obj = $controller->addAnother();
                 if ($obj) {
-                    return $this->controller->redirect($obj->FrontEndEditLink().$ajaxGetVariable);
+                    return $controller->redirect($obj->FrontEndEditLink().$ajaxGetVariable);
                 }
             }
 
             if ($this->recordBeingEdited->hasMethod('FrontEndEditLink')) {
-                $this->controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
+                $controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
             } else {
-                $this->controller->redirectBack();
+                $controller->redirectBack();
             }
         } else {
             $form->sessionMessage("Sorry, you do not have enough permissions to edit this record.", "good");
-            $this->controller->redirectBack();
+            $controller->redirectBack();
         }
     }
 
@@ -583,9 +584,10 @@ class FrontEndEditForm extends Form
     public function CanAddAnotherOfThisClass()
     {
         if ($this->controller->HasSequence()) {
+            $currentRecordIsNew = $this->recordBeingEdited->exists() ? false : true;
             return $this
                 ->PreviousAndNextSequencer()
-                ->CanAddAnotherOfThisClass($this->recordBeingEdited->ClassName);
+                ->CanAddAnotherOfThisClass($this->recordBeingEdited->ClassName, $currentRecordIsNew);
         } else {
             return false;
         }

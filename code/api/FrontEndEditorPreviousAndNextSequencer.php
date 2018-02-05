@@ -143,6 +143,13 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
                             $items =  $this->FrontEndFindChildObjects($myClassName)->sort(['ID' => 'ASC'])->limit(50);
                             $count = $items->count();
                             if ($count === 0) {
+                                $obj = Injector::inst()->get($myClassName);
+                                $obj->Title = $this->createStatement($obj, $configs);
+                                if ($obj->Title) {
+                                    $this->_allPages->push(
+                                        $obj
+                                    );
+                                }
                                 // $this->_allPages->push($className::create());
                             } else {
                                 foreach ($items as $count => $item) {
@@ -186,7 +193,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
             }
         }
 
-        return $position;
+        return $position + 1;
     }
 
     public function HasPreviousPage() : bool
@@ -287,14 +294,18 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      * can we add another child for this Class?
      *
      * @param  string $className
+     * @param  bool $$currentRecordIsNew
+     *
      * @return bool
      */
-    public function CanAddAnotherOfThisClass($className) : bool
+    public function CanAddAnotherOfThisClass($className, $currentRecordIsNew = false) : bool
     {
         $existingChildren = $this->FrontEndFindChildObjects($className);
         $config = $this->ArrayOfClassesToSequence($className);
         $count = $existingChildren->count();
-
+        if ($currentRecordIsNew) {
+            $count++;
+        }
         return $count < $config['Max'];
     }
 
@@ -310,6 +321,12 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     {
         $parent = $this->FrontEndParentObject();
         if ($parent && $parent->exists()) {
+            if ($parent->ClassName === $className) {
+                $al = ArrayList::create();
+                $al->push($parent);
+
+                return $al;
+            }
             $list = $parent->FrontEndFindChildObjects($className);
             if ($list instanceof ArrayList) {
                 return $list;
@@ -365,7 +382,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      *
      * @return int
      */
-    protected function getPageNumber() : int
+    public function getPageNumber() : int
     {
         $string = $this->FrontEndUID();
         foreach ($this->AllPages() as $count => $item) {
@@ -383,5 +400,33 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         $obj = $this->getCurrentRecordBeingEdited();
 
         return FrontEndEditorSessionManager::object_to_string($obj);
+    }
+
+    protected function createStatement($obj, $configs)
+    {
+        if (! isset($configs['Min'])) {
+            $configs['Min'] = 0;
+        }
+        if (! isset($configs['Max'])) {
+            $configs['Max'] = 0;
+        }
+        if ($configs['Min'] > $configs['Max']) {
+            $configs['Min'] = $configs['Max'];
+        }
+        if ((int) $configs['Max'] === 0) {
+            return '';
+        }
+        if ((int) $configs['Max'] === 1) {
+            $name = $obj->i18n_singular_name();
+        } else {
+            $name = $obj->i18n_plural_name();
+        }
+        if ((int) $configs['Min'] === 0) {
+            return 'create up to '.$configs['Max'] .' new '.$name;
+        } elseif ((int) $configs['Min'] === (int) $configs['Max']) {
+            return 'create '.($configs['Max'] > 1 ? $configs['Max'] : '') .' new '.$name;
+        } else {
+            return 'create between '.$configs['Min'] .' - '.$configs['Max'] .' new '.$name;
+        }
     }
 }

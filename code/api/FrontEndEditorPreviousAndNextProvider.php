@@ -208,6 +208,9 @@ class FrontEndEditorPreviousAndNextProvider extends Object
             $newPageNumber = $currentPageNumber + $newRecordBeingEditedOrRelativePageNumber;
             if (isset($linksAsArray[$newPageNumber])) {
                 $item = $linksAsArray[$newPageNumber];
+                if (! $item->exists()) {
+                    $item = $this->AddAnotherOfThisClass($item->ClassName);
+                }
             } else {
                 //run again to show error
                 user_error('Page set is not valid: '.$newRecordBeingEditedOrRelativePageNumber);
@@ -369,9 +372,9 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      *
      * @return FrontEndEditable|null
      */
-    protected function CanAddAnotherOfThisClass($className) : bool
+    protected function CanAddAnotherOfThisClass($className, $currentRecordIsNew = false) : bool
     {
-        return $this->runOnSequencer('CanAddAnotherOfThisClass', false, $className);
+        return $this->runOnSequencer('CanAddAnotherOfThisClass', false, $className, $currentRecordIsNew);
     }
 
 
@@ -435,15 +438,33 @@ class FrontEndEditorPreviousAndNextProvider extends Object
         $html .= '<h1>There is an active sequence</h1>';
         $html .= '<hr />';
         $html .= '<pre>';
+        $html .= '<hr /><h3>Has Next Page</h3>';
+        $html .= '<hr />';
+        $html .= print_r($this->HasNextPage() ? 'TRUE' : 'FALSE', 1);
+        $html .= '<hr /><h3>Next Object</h3>';
+        $html .= '<hr />';
+        $html .= print_r($this->NextPageObject() ? $this->NextPageObject()->FrontEndUID() : 'N/A', 1);
+
+        $html .= '<hr /><h3>Has Previous Page</h3>';
+        $html .= '<hr />';
+        $html .= print_r($this->HasPreviousPage() ? 'TRUE' : 'FALSE', 1);
+
+        $html .= '<hr /><h3>Total Number of Pages</h3>';
+        $html .= '<hr />';
+        $html .= print_r($this->TotalNumberOfPages(), 1);
+
         $html .= '<hr /><h3>Previous And Next Provider</h3>';
         $html .= '<hr />';
         $html .= print_r($this, 1);
+
         $html .= '<hr /><h3>Current Sequence</h3>';
         $html .= '<hr />';
         $html .= print_r($this->getSequencer(), 1);
+
         $html .= '<hr /><h3>All Pages</h3>';
         $html .= '<hr />';
         $html .= print_r($this->AllPages(), 1);
+
         $html .= '<hr /><h3>List of Sequences</h3>';
         $html .= '<hr />';
         $html .= print_r($this->ListOfSequences(), 1);
