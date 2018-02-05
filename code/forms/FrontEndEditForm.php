@@ -7,20 +7,24 @@ class FrontEndEditForm extends Form
         "createnew",
         "save",
         "saveandgoback",
+        "saveandgonext",
+        "saveandaddanother",
         "deleterecord"
     );
 
     protected $recordBeingEdited = null;
 
-    protected $relationsBeingSaved = array();
+    protected $relationsBeingSaved = [];
 
     protected $isGoBack = false;
+
+    protected $isGoNext = false;
 
     protected $isAddAnother = false;
 
     public function __construct($controller, $name, $recordBeingEdited)
     {
-
+        $this->controller = $controller;
         //get the right record
         $this->recordBeingEdited = $recordBeingEdited;
         $this->addExtraClass($recordBeingEdited);
@@ -117,21 +121,47 @@ class FrontEndEditForm extends Form
             }
         }
 
-        //right title
-        $rightTitles = Config::inst()->get($this->recordBeingEdited->ClassName, "field_labels_right");
-        if (!is_array($rightTitles)) {
-            $rightTitles = array();
+        //record description
+        $recordDescription = FrontEndEditorClassExplanation::add_or_find_item(
+            $this->recordBeingEdited->ClassName
+        );
+        if ($recordDescription->HasDescription()) {
+            $fields->unshift(
+            LiteralField::create(
+                'Introduction',
+                '<div class="form-intro">'.$recordDescription->BestDescription().'</div>'
+                )
+            );
         }
-        $rightTitles = array_merge($rightTitles, FrontEndEditorRightTitle::get_entered_ones($this->recordBeingEdited->ClassName));
+
+        //right titles ...
+        $rightTitles = Config::inst()->get($this->recordBeingEdited->ClassName, "field_labels_right");
+        if (! is_array($rightTitles)) {
+            $rightTitles = [];
+        }
         $rightTitles = array_merge($rightTitles, $this->recordBeingEdited->RightTitlesForFrontEnd());
-        foreach ($rightTitles as $fieldName => $rightTitle) {
-            $field = $fields->fieldByName($fieldName);
-            if ($field) {
-                $obj = FrontEndEditorRightTitle::add_or_find_item(
+
+        //add defaults for right titles
+        foreach ($fields as $field) {
+            if ($field->hasData()) {
+                $fieldName = $field->ID();
+                $obj = FrontEndEditorRightTitle::add_or_find_field(
                     $this->recordBeingEdited->ClassName,
                     $fieldName,
-                    $rightTitle
+                    isset($rightTitles[$fieldName]) ? $rightTitles[$fieldName] : ''
                 );
+            }
+        }
+
+        //add data back in ...
+        $rightTitles = array_merge($rightTitles, FrontEndEditorRightTitle::get_entered_ones($this->recordBeingEdited->ClassName));
+        foreach ($rightTitles as $fieldName => $rightTitle) {
+            $obj = FrontEndEditorRightTitle::add_or_find_field(
+                $this->recordBeingEdited->ClassName,
+                $fieldName
+            );
+            $field = $fields->fieldByName($fieldName);
+            if ($field) {
                 if ($field instanceof CheckboxField ||$field instanceof GridField) {
                     $field->setDescription($obj->BestDescription());
                 } else {
@@ -140,6 +170,7 @@ class FrontEndEditForm extends Form
             }
         }
 
+        //place holders
         $placeHolders = $this->recordBeingEdited->PlaceHoldersForFrontEnd();
         foreach ($placeHolders as $fieldName => $placeHolder) {
             $field = $fields->fieldByName($fieldName);
@@ -222,7 +253,7 @@ class FrontEndEditForm extends Form
 
 
         //headers
-        $headerArray = array();
+        $headerArray = [];
         $currentlyAddingTo = "";
         foreach ($fields as $field) {
             $fieldName = $field->ID();
@@ -235,7 +266,7 @@ class FrontEndEditForm extends Form
             if ($headerStartsHere && $headerIsStandard) {
                 //save last one ...
                 if (!isset($headerArray[$fieldName])) {
-                    $headerArray[$fieldName] = array();
+                    $headerArray[$fieldName] = [];
                     $currentlyAddingTo = $fieldName;
                 }
             }
@@ -257,29 +288,6 @@ class FrontEndEditForm extends Form
             $fields->insertBefore($formField, $insertBefore);
         }
 
-        //actions
-        if ($this->recordBeingEdited->exists()) {
-            $actions = new FieldList(
-                FormAction::create('save', _t("FrontEndEditForm.SAVE", "save"))
-                //to be completed ...
-                //FormAction::create('saveandaddanother', "save and add another")
-            );
-        } else {
-            $actions = new FieldList(
-                FormAction::create('createnew', _t("FrontEndEditForm.CREATE", "create"))
-            );
-        }
-        if ($this->recordBeingEdited->canDelete()) {
-            $actions->push(FormAction::create("deleterecord", "delete")->addExtraClass('delete-button'));
-        }
-
-
-        //broken
-        if ($this->previousObject()) {
-            $actions->push(
-                new FormAction('saveandgoback', "save and go back")
-            );
-        }
 
         //required fields
         $validator = $this->recordBeingEdited->getFrontEndValidator();
@@ -288,7 +296,7 @@ class FrontEndEditForm extends Form
             if ($requiredFields && is_array($requiredFields)) {
                 $validator = RequiredFields::create($requiredFields);
             } else {
-                $validator = array();
+                $validator = [];
             }
         }
         //set colour to forms border ...
@@ -298,6 +306,7 @@ class FrontEndEditForm extends Form
             'border-color: '.$colour.';'
         );
         //build!
+        $actions = $this->selectActions();
         parent::__construct($controller, $name, $fields, $actions, $validator);
         Requirements::javascript(THIRDPARTY_DIR."/jquery-form/jquery.form.js");
         Requirements::javascript("frontendeditor/javascript/FrontEndEditForm.js");
@@ -317,6 +326,54 @@ class FrontEndEditForm extends Form
         }
     }
 
+    protected function selectActions()
+    {
+
+        //actions
+        $actions = FieldList::create();
+
+        if ($this->recordBeingEdited->exists()) {
+            $actions->push(
+                FormAction::create('save', _t("FrontEndEditForm.SAVE", "save"))
+                    ->addExtraClass('save-button')
+            );
+        } else {
+            $actions->push(
+                FormAction::create('createnew', _t("FrontEndEditForm.CREATE", "create"))
+                    ->addExtraClass('create-button add-button')
+            );
+        }
+
+        if ($this->recordBeingEdited->canDelete()) {
+            $actions->push(
+                FormAction::create("deleterecord", _t("FrontEndEditForm.DELETE", "delete"))
+                    ->addExtraClass('delete-button')
+            );
+        }
+
+        //broken
+        if ($this->HasPreviousPage()) {
+            $actions->push(
+                FormAction::create('saveandgoback', _t("FrontEndEditForm.SAVE_AND_GO_BACK", "save and go back"))
+                    ->addExtraClass('save-and-go-prev-button prev-and-next')
+            );
+        }
+        if ($this->HasNextPage()) {
+            $actions->push(
+                FormAction::create('saveandgonext', _t("FrontEndEditForm.SAVE_AND_NEXT", "save and go next"))
+                    ->addExtraClass('save-and-go-next-button prev-and-next')
+            );
+        }
+        if ($this->CanAddAnotherOfThisClass()) {
+            $actions->push(
+                FormAction::create('saveandaddanother', _t("FrontEndEditForm.SAVE_AND_NEXT", "save and add another"))
+                    ->addExtraClass('save-and-add-another-button add-button')
+            );
+        }
+
+        return $actions;
+    }
+
     public function createnew($data, $form)
     {
         return $this->save($data, $form);
@@ -324,6 +381,7 @@ class FrontEndEditForm extends Form
 
     public function save($data, $form)
     {
+        $controller = $this->controller;
         $this->retrieveRecordBeingEdited($data);
         if ($this->recordBeingEdited && $this->recordBeingEdited->canEdit()) {
 
@@ -360,10 +418,10 @@ class FrontEndEditForm extends Form
             $validationResult = $this->recordBeingEdited->doValidate();
             if ($validationResult && !$validationResult->valid()) {
                 $form->sessionMessage("ERROR - Could not save data: ".$validationResult->message(), "bad");
-                if (!$this->recordBeingEdited->ID) {
-                    return $this->controller->redirect($this->controller->Link()."?reusedata=1");
+                if (! $this->recordBeingEdited->ID) {
+                    return $controller->redirect($controller->Link()."?reusedata=1");
                 } else {
-                    return $this->controller->redirectBack();
+                    return $controller->redirectBack();
                 }
             }
 
@@ -377,7 +435,6 @@ class FrontEndEditForm extends Form
             //we can only add here, not remove...
             $manyMany = $this->recordBeingEdited->manyMany();
             foreach ($this->relationsBeingSaved as $relationName) {
-                print_r($this->recordBeingEdited->many_many);
                 if ($relationName) {
                     if (isset($data[$relationName])) {
                         if (isset($data[$relationName]["GridState"])) {
@@ -399,27 +456,47 @@ class FrontEndEditForm extends Form
                 $this->recordBeingEdited->write();
             }
             $form->sessionMessage(_t("FrontEndEditor.SAVED", "Details have been saved."), "good");
-            if ($this->isGoBack) {
-                if ($previousObject = $this->previousObject()) {
-                    $this->clearPreviousObject();
-                    return $this->controller->redirect($previousObject->FrontEndEditLink());
-                }
-            }
-            if ($this->isAddAnother) {
-                return $this->controller->redirect(DataObject::get_one('FrontEndEditorPage')->Link());
-            }
+
+
             $ajaxGetVariable = "";
             if (Director::is_ajax()) {
                 $ajaxGetVariable = "?ajax=".rand(0, 9999999999999999999);
             }
+
+            if ($this->isGoBack) {
+                if ($controller->HasSequence()) {
+                    return $controller->redirect($controller->PreviousSequenceLink().$ajaxGetVariable);
+                } else {
+                    if ($previousObject = $this->previousObject()) {
+                        $this->clearPreviousObject();
+                        return $controller->redirect($previousObject->FrontEndEditLink().$ajaxGetVariable);
+                    }
+                }
+            }
+
+            if ($this->isGoNext) {
+                if ($controller->HasSequence()) {
+                    return $controller->redirect($controller->NextSequenceLink().$ajaxGetVariable);
+                } else {
+                    if ($nextObject = $this->nextObject()) {
+                        return $controller->redirect($nextObject->FrontEndEditLink().$ajaxGetVariable);
+                    }
+                }
+            } elseif ($this->isAddAnother) {
+                $obj = $controller->addAnother();
+                if ($obj) {
+                    return $controller->redirect($obj->FrontEndEditLink().$ajaxGetVariable);
+                }
+            }
+
             if ($this->recordBeingEdited->hasMethod('FrontEndEditLink')) {
-                $this->controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
+                $controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
             } else {
-                $this->controller->redirectBack();
+                $controller->redirectBack();
             }
         } else {
             $form->sessionMessage("Sorry, you do not have enough permissions to edit this record.", "good");
-            $this->controller->redirectBack();
+            $controller->redirectBack();
         }
     }
 
@@ -458,13 +535,62 @@ class FrontEndEditForm extends Form
         return $this->save($data, $form);
     }
 
+    public function saveandgonext($data, $form)
+    {
+        $this->isGoNext = true;
+        return $this->save($data, $form);
+    }
+
+
+    /**
+     * is there another page to work through?
+     *
+     * @param  string|null $classNMame
+     * @return bool
+     */
+    public function HasNextPage($className = null) : bool
+    {
+        if ($this->controller->HasSequence()) {
+            return $this
+                ->PreviousAndNextSequencer()
+                ->HasNextPage($className);
+        } else {
+            return false;
+            // return FrontEndEditorSessionManager::previous_object_based_on_browsing($this->recordBeingEdited);
+        }
+    }
+
+    /**
+     * is there a previous page to work through?
+     *
+     * @param  string|null $classNMame
+     * @return bool
+     */
+    public function HasPreviousPage($className = null) : bool
+    {
+        if ($this->controller->HasSequence()) {
+            return $this
+                ->PreviousAndNextSequencer()
+                ->HasPreviousPage($className);
+        } else {
+            return FrontEndEditorSessionManager::previous_object_based_on_browsing($this->recordBeingEdited) ? true : false;
+        }
+    }
+
     /**
      *
-     * @return null | DataObject
+     * @return bool
      */
-    public function previousObject()
+    public function CanAddAnotherOfThisClass()
     {
-        return FrontEndEditorSessionManager::previous_object($this->recordBeingEdited);
+        if ($this->controller->HasSequence()) {
+            $currentRecordIsNew = $this->recordBeingEdited->exists() ? false : true;
+            return $this
+                ->PreviousAndNextSequencer()
+                ->CanAddAnotherOfThisClass($this->recordBeingEdited->ClassName, $currentRecordIsNew);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -472,7 +598,46 @@ class FrontEndEditForm extends Form
      */
     public function clearPreviousObject()
     {
-        FrontEndEditorSessionManager::clear_previous_object();
+        FrontEndEditorSessionManager::clear_previous_object_based_on_browsing();
+    }
+
+
+    // /**
+    //  *
+    //  * @return bool
+    //  */
+    // public function MustAddAnotherOfThisClass()
+    // {
+    //     if($this->controller->HasSequence()) {
+    //         return $this
+    //             ->controller
+    //             ->PreviousAndNextSequencer()
+    //             ->runOnSequencer(
+    //                 'MustAddAnotherOfThisClass',
+    //                 false,
+    //                 $this->recordBeingEdited->ClassName
+    //             );
+    //     }
+    // }
+
+
+    /**
+     * @return FrontEndEditorPreviousAndNextProvider|null
+     */
+    public function PreviousAndNextProvider()
+    {
+        return $this->controller->PreviousAndNextProvider();
+    }
+
+    /**
+     * @return FrontEndEditorPreviousAndNextSequencer|null
+     */
+    public function PreviousAndNextSequencer()
+    {
+        $provider = $this->controller->PreviousAndNextProvider();
+        if ($provider) {
+            return $provider->getSequencer();
+        }
     }
 
     /**

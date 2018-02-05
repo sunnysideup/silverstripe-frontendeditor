@@ -20,7 +20,7 @@ class FrontEndEditHasOne extends FormField
         return parent::__construct($fieldName, $title);
     }
 
-    public function Field($properties = array())
+    public function Field($properties = [])
     {
         $Link = "";
         $title = "";

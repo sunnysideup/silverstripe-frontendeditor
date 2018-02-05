@@ -64,7 +64,7 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     protected function hasEmptyStringForSelection()
     {
@@ -72,7 +72,7 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
     }
 
 
-    public function FieldHolder($properties = array())
+    public function FieldHolder($properties = [])
     {
         if (!$this->fieldHolderIsDone) {
             $this->fieldHolderIsDone = true;
@@ -137,6 +137,6 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
                 }
             }
         }
-        return parent::FieldHolder($properties = array());
+        return parent::FieldHolder($properties = []);
     }
 }

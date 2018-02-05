@@ -2,8 +2,9 @@
 
 
 
-interface FrontEndEditable
+class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEditable
 {
+
     /**
      *
      * @param  FrontEndEditable            $parentObject DataObject
@@ -11,26 +12,48 @@ interface FrontEndEditable
      * @param  array                      $allParams    [description]
      * @return FrontEndEditable               [description]
      */
-    public static function add_child_to_parent($parentObject, $className, $allParams);
+    public static function add_child_to_parent($parentObject, $className, $allParams) {
+        return null;
+    }
+
+
+    public function getFrontEndFields()
+    {
+        $fields = FieldList::create();
+        $fields->push(
+            LiteralField::create(
+                'Intro',
+            )
+        );
+    }
 
     /**
      * required fields for front end...
      * @return null | RequiredFields
      */
-    public function getFrontEndValidator();
+    public function getFrontEndValidator()
+    {
+        return null
+    }
 
     /**
      * the short title for the object
      * @return string
      */
-    public function FrontEndShortTitle();
+    public function FrontEndShortTitle()
+    {
+        return 'Sequence Editor';
+    }
 
     /**
      * more detailed title to explain the specific record you are dealing with
      * make it return an empty string if no extended title is required...
      * @return string
      */
-    public function FrontEndExtendedTitle();
+    public function FrontEndExtendedTitle()
+    {
+        return 'Please review details below';
+    }
 
 
     /**
@@ -40,7 +63,10 @@ interface FrontEndEditable
      *
      * @return array
      */
-    public function FrontEndHeaders();
+    public function FrontEndHeaders()
+    {
+        return [];
+    }
 
     /**
      * format:
@@ -48,13 +74,19 @@ interface FrontEndEditable
      *
      * @return array
      */
-    public function ExtraClassesForFrontEnd();
+    public function ExtraClassesForFrontEnd()
+    {
+        return [];
+    }
 
     /**
      *
      * @return string
      */
-    public function ExtraClassesForFrontEndForm();
+    public function ExtraClassesForFrontEndForm()
+    {
+        return [];
+    }
 
     /**
      * format:
@@ -62,7 +94,10 @@ interface FrontEndEditable
      *
      * @return array
      */
-    public function RightTitlesForFrontEnd();
+    public function RightTitlesForFrontEnd()
+    {
+        return [];
+    }
 
     /**
      * format:
@@ -70,7 +105,10 @@ interface FrontEndEditable
      *
      * @return array
      */
-    public function PlaceHoldersForFrontEnd();
+    public function PlaceHoldersForFrontEnd()
+    {
+        return [];
+    }
 
 
     /**
@@ -80,7 +118,10 @@ interface FrontEndEditable
      *
      * @return array
      */
-    public function FieldsToRemoveFromFrontEnd();
+    public function FieldsToRemoveFromFrontEnd()
+    {
+        return [];
+    }
 
 
     /**
@@ -88,7 +129,10 @@ interface FrontEndEditable
      * should not be created automatically...
      * @return array
      */
-    public function FrontEndCustomRelationFields();
+    public function FrontEndCustomRelationFields()
+    {
+        return [];
+    }
 
     /**
      * list of options for each relation that can be selected instead of adding a new one ...
@@ -111,14 +155,20 @@ interface FrontEndEditable
      *
      * @return array
      */
-    public function FrontEndCustomRelationsOptionProvider();
+    public function FrontEndCustomRelationsOptionProvider()
+    {
+        return [];
+    }
 
     /**
      * list of fields that should be made read-only ...
      * e.g. the preset Title
      * @return array
      */
-    public function FrontEndMakeReadOnlyFields();
+    public function FrontEndMakeReadOnlyFields()
+    {
+        return [];
+    }
 
 
     /**
@@ -147,7 +197,10 @@ interface FrontEndEditable
      *
      * @return array
      */
-    public function FrontEndDeleteAlternatives();
+    public function FrontEndDeleteAlternatives()
+    {
+        return [];
+    }
 
     /**
      * returns the parent dataobject
@@ -155,23 +208,31 @@ interface FrontEndEditable
      *
      * @return null | DataObject
      */
-    public function FrontEndParentObject();
+    public function FrontEndParentObject()
+    {
+        return null;
+    }
 
     /**
      * returns the parent dataobject
      * for the formation of breadcrumbs in the front-end editor
      * the most common usage is like this:
+     * <code>
      * ```php
      * 			public function FrontEndSiblings($rootParent = null, $includeMe = true) {
      * 				return $this->FrontEndDefaultSiblings($rootParent, $includeMe);
      * 			}
      * ```
+     * </code>
      * @param null | DataObject $rootParent
      * @param null | boolean $includeMe
      *
      * @return null | DataList
      */
-    public function FrontEndSiblings($rootParent = null, $includeMe = true);
+    public function FrontEndSiblings($rootParent = null, $includeMe = true)
+    {
+        return null;
+    }
 
     /**
      * fields that can be edited right across siblings.
@@ -181,9 +242,12 @@ interface FrontEndEditable
      * e.g.
      * - MyField1
      * - MyField2
-     * @array
+     * @return array
      */
-    public function FrontEndNoSiblingEdits();
+    public function FrontEndNoSiblingEdits()
+    {
+        return [];
+    }
 
     /**
      * Additional Views can be added here.  Some are added by default, but you can add
@@ -202,7 +266,10 @@ interface FrontEndEditable
      *
      * @return array
      */
-    public function FrontEndAlternativeViewLinks($array);
+    public function FrontEndAlternativeViewLinks($array)
+    {
+        return [];
+    }
 
     /**
      * @param Form
@@ -215,7 +282,10 @@ interface FrontEndEditable
      *
      * @return string (html)
      */
-    public function FrontEndEditIconCode();
+    public function FrontEndEditIconCode()
+    {
+        return '';
+    }
 
     /**
      * return an HTML colour
@@ -223,5 +293,8 @@ interface FrontEndEditable
      *
      * @return string
      */
-    public function FrontEndEditColour();
+    public function FrontEndEditColour()
+    {
+        return '';
+    }
 }
