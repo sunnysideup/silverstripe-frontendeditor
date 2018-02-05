@@ -39,7 +39,8 @@ class FrontEndEditorPage extends Page
      */
     public function FrontEndAddRelationLink($recordBeingEdited, $relationName)
     {
-        return $this->Link("frontendaddrelation/".
+        return $this->Link(
+            "frontendaddrelation/".
             $recordBeingEdited->ClassName."/".
             $recordBeingEdited->ID."/".
             "?goingto=".$relationName
@@ -134,7 +135,6 @@ class FrontEndEditorPage_Controller extends Page_Controller
             }
         }
         Requirements::javascript("mysite/javascript/RecentlyEdited.js");
-
     }
 
     public function ViewLink()
@@ -154,8 +154,8 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function Form()
     {
         $form = FrontEndEditForm::create($this, "Form", $this->recordBeingEdited);
-        if($this->recordBeingEdited){
-            if($this->recordBeingEdited->hasMethod("ExtraClassesForFrontEndForm")) {
+        if ($this->recordBeingEdited) {
+            if ($this->recordBeingEdited->hasMethod("ExtraClassesForFrontEndForm")) {
                 $form->addExtraClass($this->recordBeingEdited->ExtraClassesForFrontEndForm());
             }
         }
@@ -168,16 +168,16 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function AlternativeViewLinks()
     {
         $record = $this->RecordBeingEdited();
-        if($record) {
+        if ($record) {
             $array = array();
-            if($this->ViewLink()) {
+            if ($this->ViewLink()) {
                 $array['VIEW'] = array(
                     'Title' => 'View',
                     'Description' => 'Read-only',
                     'Link' => $this->ViewLink()
                 );
             }
-            if($record->hasMethod('CMSEditLink')) {
+            if ($record->hasMethod('CMSEditLink')) {
                 $array['EDIT'] = array(
                     'Title' => 'CMS',
                     'Description' => 'Edit this record in the CMS (back-end)',
@@ -185,8 +185,8 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 );
             }
             $rootParentObject = $record->FrontEndRootParentObject();
-            if($rootParentObject && $rootParentObject->exists()) {
-                if($record->hasMethod('CMSEditLink')) {
+            if ($rootParentObject && $rootParentObject->exists()) {
+                if ($record->hasMethod('CMSEditLink')) {
                     $array['ROOT'] = array(
                         'Title' => $rootParentObject->getTitle(),
                         'Description' => 'The root parent of this object',
@@ -195,9 +195,9 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 }
             }
             $array = $record->FrontEndAlternativeViewLinks($array);
-            if(count($array)) {
+            if (count($array)) {
                 $al = ArrayList::create();
-                foreach($array as $item) {
+                foreach ($array as $item) {
                     $al->push(ArrayData::create($item));
                 }
                 return $al;
@@ -277,7 +277,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 }
                 $foreignObject->write();
             }
-        //the else is important so that
+            //the else is important so that
         } else {
             switch ($type) {
                 case "belongs_to":
@@ -297,7 +297,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 $foreignObject->delete();
             }
         }
-        if(Director::is_ajax()) {
+        if (Director::is_ajax()) {
             return 'success';
         } else {
             return $this->redirectBack();

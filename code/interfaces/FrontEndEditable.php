@@ -216,5 +216,4 @@ interface FrontEndEditable
      * @return string
      */
     public function FrontEndEditColour();
-
 }

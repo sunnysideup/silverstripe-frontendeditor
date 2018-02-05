@@ -93,7 +93,7 @@ class FrontEndExtendedHasOneField extends FrontEndExtendedHasOneOrManyField
                         //note the difference between NULL and FALSE
                         $deleteAlternative = isset($deleteAlternatives[$hasOneField]) ? $deleteAlternatives[$hasOneField] : null;
                         //if object exists:
-                        if($deleteAlternative !== false) {
+                        if ($deleteAlternative !== false) {
                             if ($hasOneObject->canDelete()) {
                                 $deleteLink = "<a class=\"frontEndRemoveLink\" href=\"".$this->recordBeingEdited->FrontEndRemoveRelationLink($hasOneField, $hasOneObject->ID)."\">✗</a>";
                             }

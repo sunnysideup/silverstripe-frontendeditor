@@ -58,7 +58,7 @@ class FrontEndEditForm extends Form
                 $hasOneFieldWithID = $hasOneField."ID";
                 $myExistingSelectors = null;
                 $addExistingCustomKey = $hasOneFieldWithID.'_CAN_BE_ADDED';
-                if(isset($existingSelectors[$addExistingCustomKey])) {
+                if (isset($existingSelectors[$addExistingCustomKey])) {
                     $myExistingSelectors = $existingSelectors[$addExistingCustomKey];
                 }
                 if (!in_array($hasOneField, $customRelationFields)) {
@@ -67,7 +67,6 @@ class FrontEndEditForm extends Form
                 if (in_array($hasOneField, $customRelationFields)  || in_array($hasOneField, $removeFields)) {
                     //do nothing
                 } else {
-
                     $hasOneFieldObject = FrontEndExtendedHasOneField::create($hasOneField, $fieldLabels[$hasOneField]);
                     $hasOneFieldObject->setHasOneClassName($hasOneClassName);
                     $hasOneFieldObject->setRecordBeingEdited($this->recordBeingEdited);
@@ -84,7 +83,7 @@ class FrontEndEditForm extends Form
             foreach ($otherRelations as $hasManyField => $hasManyClassName) {
                 $myExistingSelectors = null;
                 $addExistingCustomKey = $hasManyField.'_CAN_BE_ADDED';
-                if(isset($existingSelectors[$addExistingCustomKey])) {
+                if (isset($existingSelectors[$addExistingCustomKey])) {
                     $myExistingSelectors = $existingSelectors[$addExistingCustomKey];
                 }
                 if (in_array($hasManyField, $customRelationFields) || in_array($hasManyField, $removeFields)) {
@@ -313,7 +312,7 @@ class FrontEndEditForm extends Form
                 $this->loadDataFrom($oldData);
             }
         }
-        if($recordBeingEdited && $recordBeingEdited->hasMethod('FinalUpdateFrontEndForm')) {
+        if ($recordBeingEdited && $recordBeingEdited->hasMethod('FinalUpdateFrontEndForm')) {
             $recordBeingEdited->FinalUpdateFrontEndForm($this);
         }
     }
@@ -336,8 +335,7 @@ class FrontEndEditForm extends Form
                     } else {
                         $this->recordBeingEdited->$name = true;
                     }
-                }
-                elseif ($type === 'Date') {
+                } elseif ($type === 'Date') {
                     $value = DateField::create('MyDate')->setValue($data[$name])->dataValue();
                     $this->recordBeingEdited->$name = $value;
                 } elseif (isset($data[$name])) {
@@ -385,7 +383,7 @@ class FrontEndEditForm extends Form
                         if (isset($data[$relationName]["GridState"])) {
                             //do nothing ..
                         } else {
-                            if(isset($manyMany[$relationName])) {
+                            if (isset($manyMany[$relationName])) {
                                 $this->recordBeingEdited->$relationName()->removeAll();
                             }
                             $this->recordBeingEdited->$relationName()->addMany($data[$relationName]);
@@ -414,7 +412,7 @@ class FrontEndEditForm extends Form
             if (Director::is_ajax()) {
                 $ajaxGetVariable = "?ajax=".rand(0, 9999999999999999999);
             }
-            if($this->recordBeingEdited->hasMethod('FrontEndEditLink')) {
+            if ($this->recordBeingEdited->hasMethod('FrontEndEditLink')) {
                 $this->controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
             } else {
                 $this->controller->redirectBack();
