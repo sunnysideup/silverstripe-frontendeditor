@@ -12,12 +12,13 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
      * @param  array                      $allParams    [description]
      * @return FrontEndEditable               [description]
      */
-    public static function add_child_to_parent($parentObject, $className, $allParams) {
+    public static function add_child_to_parent($parentObject, $className, $allParams)
+    {
         return null;
     }
 
 
-    public function getFrontEndFields($params = NULL)
+    public function getFrontEndFields($params = null)
     {
         $fields = FieldList::create();
         $fields->push(

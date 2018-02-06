@@ -317,7 +317,7 @@ class FrontEndDataExtension extends DataExtension
      */
     public function FrontEndAddRootParentObject($rootObject, $write = false)
     {
-        $this->owner->FrontEndRootCanEditObject = FrontEndEditorSessionManager::object_to_string($rootObject->ClassName);
+        $this->owner->FrontEndRootCanEditObject = FrontEndEditorSessionManager::object_to_string($rootObject);
         if ($write) {
             if ($this->owner instanceof SiteTree) {
                 $this->owner->writeToStage('Stage');
