@@ -107,7 +107,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
     }
 
     /**
-     * @param boolean $withID
+     * @param bool $withID
      * @return string
      */
     protected function getCalculatedFieldName($withID = false)
@@ -116,7 +116,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     protected function hasEmptyStringForSelection()
     {
@@ -124,7 +124,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
     }
 
 
-    public function FieldHolder($properties = array())
+    public function FieldHolder($properties = [])
     {
         $children = $this->getChildren();
         if ($children->count()) {
@@ -133,7 +133,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
             }
             $this->insertBefore($this->getHeadingField(), $children->First()->id());
 
-            return parent::FieldHolder($properties = array());
+            return parent::FieldHolder($properties = []);
         }
         return HiddenField::create("no field for ".$this->getCalculatedFieldName());
     }
@@ -153,7 +153,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
             $foreignSingleton = $this->getForeignSingleton();
             if ($foreignSingleton->hasExtension('FrontEndDataExtension')) {
                 $source = $foreignSingleton->FrontEndSiblings($this->recordBeingEdited->FrontEndRootParentObject(), true);
-                $newSource = array();
+                $newSource = [];
                 foreach ($source as $obj) {
                     $newSource[$obj->ID] = $obj->FrontEndShortTitle();
                 }
@@ -166,7 +166,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
             $dropdownSource = null;
             if ($source && $source instanceof FormField) {
                 $existingSelectorField = $source;
-                //do nothing
+            //do nothing
             } elseif ($source && $source instanceof SS_Map) {
                 if ($source->count()) {
                     $dropdownSource = $source->toArray();
@@ -175,7 +175,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
                 if ($source->count()) {
                     if ($source->first() instanceof FrontEndEditable) {
                         $dropdownSource = $source->map('ID', 'FrontEndShortTitle');
-                        if($dropdownSource instanceof SS_Map) {
+                        if ($dropdownSource instanceof SS_Map) {
                             $dropdownSource = $dropdownSource->toArray();
                         }
                     }
@@ -184,8 +184,8 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
                 $dropdownSource = $source;
             }
             if ($dropdownSource && count($dropdownSource)) {
-                foreach($dropdownSource as $id => $sourceItem) {
-                    if($id && ! $sourceItem) {
+                foreach ($dropdownSource as $id => $sourceItem) {
+                    if ($id && ! $sourceItem) {
                         $dropdownSource[$id] = "# ".$id;
                     }
                 }

@@ -39,7 +39,8 @@ class FrontEndEditorPage extends Page
      */
     public function FrontEndAddRelationLink($recordBeingEdited, $relationName)
     {
-        return $this->Link("frontendaddrelation/".
+        return $this->Link(
+            "frontendaddrelation/".
             $recordBeingEdited->ClassName."/".
             $recordBeingEdited->ID."/".
             "?goingto=".$relationName
@@ -109,7 +110,12 @@ class FrontEndEditorPage_Controller extends Page_Controller
         "Form" => "->canEditCurrentRecord",
         "edit" => "->canEditCurrentRecord",
         "frontendaddrelation" => "->canEditCurrentRecord",
-        "frontendremoverelation" => "->canEditCurrentRecord"
+        "frontendremoverelation" => "->canEditCurrentRecord",
+        "startsequence" => true,
+        "stopsequence" => true,
+        "gotopreviouspageinsequence" => true,
+        "gotonextpageinsequence" => true,
+        "debugsequencer" => 'ADMIN'
     );
 
     public function init()
@@ -124,7 +130,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         if (!$model) {
             $model = $this->Config()->get("default_model");
         }
-        if ($model && class_exists($model)) {
+        if ($model && is_subclass_of($model, 'DataObject', true)) {
             $id = $this->request->param("OtherID");
             if ($id) {
                 $this->recordBeingEdited = $model::get()->byID($id);
@@ -134,7 +140,11 @@ class FrontEndEditorPage_Controller extends Page_Controller
             }
         }
         Requirements::javascript("mysite/javascript/RecentlyEdited.js");
+    }
 
+    public function index()
+    {
+        return [];
     }
 
     public function ViewLink()
@@ -154,8 +164,8 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function Form()
     {
         $form = FrontEndEditForm::create($this, "Form", $this->recordBeingEdited);
-        if($this->recordBeingEdited){
-            if($this->recordBeingEdited->hasMethod("ExtraClassesForFrontEndForm")) {
+        if ($this->recordBeingEdited) {
+            if ($this->recordBeingEdited->hasMethod("ExtraClassesForFrontEndForm")) {
                 $form->addExtraClass($this->recordBeingEdited->ExtraClassesForFrontEndForm());
             }
         }
@@ -168,16 +178,16 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function AlternativeViewLinks()
     {
         $record = $this->RecordBeingEdited();
-        if($record) {
-            $array = array();
-            if($this->ViewLink()) {
+        if ($record) {
+            $array = [];
+            if ($this->ViewLink()) {
                 $array['VIEW'] = array(
-                    'Title' => 'View',
-                    'Description' => 'Read-only',
+                    'Title' => 'Read Only',
+                    'Description' => 'Non Editable version of the data you are entering',
                     'Link' => $this->ViewLink()
                 );
             }
-            if($record->hasMethod('CMSEditLink')) {
+            if ($record->hasMethod('CMSEditLink')) {
                 $array['EDIT'] = array(
                     'Title' => 'CMS',
                     'Description' => 'Edit this record in the CMS (back-end)',
@@ -185,19 +195,22 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 );
             }
             $rootParentObject = $record->FrontEndRootParentObject();
-            if($rootParentObject && $rootParentObject->exists()) {
-                if($record->hasMethod('CMSEditLink')) {
-                    $array['ROOT'] = array(
-                        'Title' => $rootParentObject->getTitle(),
-                        'Description' => 'The root parent of this object',
-                        'Link' => $rootParentObject->FrontEndEditLink()
-                    );
-                }
+            if (
+                $rootParentObject &&
+                $rootParentObject->exists() &&
+                ! $record->FrontEndIsRoot() &&
+                $rootParentObject->hasMethod('FrontEndEditLink')
+            ) {
+                $array['ROOT'] = array(
+                    'Title' => $rootParentObject->getTitle(),
+                    'Description' => 'The root parent of this object',
+                    'Link' => $rootParentObject->FrontEndEditLink()
+                );
             }
             $array = $record->FrontEndAlternativeViewLinks($array);
-            if(count($array)) {
+            if (count($array)) {
                 $al = ArrayList::create();
-                foreach($array as $item) {
+                foreach ($array as $item) {
                     $al->push(ArrayData::create($item));
                 }
                 return $al;
@@ -228,7 +241,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         }
         $this->Title = $title;
 
-        return array();
+        return [];
     }
 
 
@@ -277,7 +290,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 }
                 $foreignObject->write();
             }
-        //the else is important so that
+            //the else is important so that
         } else {
             switch ($type) {
                 case "belongs_to":
@@ -297,7 +310,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
                 $foreignObject->delete();
             }
         }
-        if(Director::is_ajax()) {
+        if (Director::is_ajax()) {
             return 'success';
         } else {
             return $this->redirectBack();
@@ -436,7 +449,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
      *
      * @var array
      */
-    private static $_front_end_determine_relation_type = array();
+    private static $_front_end_determine_relation_type = [];
 
     /**
      * Works out the type of relations for the record being edited.
@@ -475,7 +488,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
      *
      * @var array
      */
-    private static $_front_end_determine_relation_classname = array();
+    private static $_front_end_determine_relation_classname = [];
 
     /**
      * Works out class name of the relation
@@ -508,5 +521,133 @@ class FrontEndEditorPage_Controller extends Page_Controller
             }
         }
         return self::$_front_end_determine_relation_classname;
+    }
+
+
+    #####################################
+    # SEQUENCES
+    #####################################
+
+
+    public function stopsequence($request)
+    {
+        FrontEndEditorSessionManager::clear_sequencer();
+        FrontEndEditorSessionManager::clear_record_being_edited();
+        return [];
+    }
+
+    public function startsequence($request) : SS_HTTPResponse
+    {
+        $className = $this->request->param('ID');
+        $startLink = $this->PreviousAndNextProvider($className)
+            ->StartSequence()
+            ->getPageLink();
+        FrontEndEditorSessionManager::set_note_current_record(true);
+        if ($startLink) {
+            return $this->redirect($startLink);
+        } else {
+            return $this->redirect('can-not-find-sequence');
+        }
+    }
+    public function gotopreviouspageinsequence($request) : SS_HTTPResponse
+    {
+        FrontEndEditorSessionManager::set_note_current_record(true);
+        $link = $this->PreviousAndNextProvider()->goPreviousPage();
+
+        return $this->redirect($link);
+    }
+
+    public function gotonextpageinsequence($request) : SS_HTTPResponse
+    {
+        FrontEndEditorSessionManager::set_note_current_record(true);
+        $link = $this->PreviousAndNextProvider()->goNextPage();
+
+        return $this->redirect($link);
+    }
+
+    public function debugsequencer()
+    {
+        $html = '';
+        if ($this->HasSequence()) {
+            $html .= $this->PreviousAndNextProvider()->debug();
+        } else {
+            $html .= '<h1>There is no active sequence</h1>';
+        }
+        $this->Content = $html;
+        $this->Form = $html;
+        return [];
+    }
+
+
+    /**
+     * provides the FrontEndEditorPreviousAndNextProvider class
+     * that helps going back and forth between items
+     *
+     * @param string|null $sequencerClassName
+     *
+     * @return FrontEndEditorPreviousAndNextProvider
+     */
+    public function PreviousAndNextProvider($sequencerClassName = null) : FrontEndEditorPreviousAndNextProvider
+    {
+        return FrontEndEditorPreviousAndNextProvider::inst($sequencerClassName, $this->recordBeingEdited);
+    }
+
+
+    /**
+     * provides the actual sequence of pages.
+     *
+     * @return FrontEndEditorPreviousAndNextSequencer|null
+     */
+    public function CurrentSequence()
+    {
+        if ($this->HasSequence()) {
+            return $this->PreviousAndNextProvider()->getSequencer();
+        }
+    }
+
+    public function HasSequence(): bool
+    {
+        if (FrontEndEditorSessionManager::get_sequencer()) {
+            return $this->PreviousAndNextProvider()->HasSequencer();
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function StopSequenceLink() : string
+    {
+        return $this->link('stopsequence');
+    }
+
+    /**
+     * you must use this link to go to PREV / NEXT
+     * @return string
+     */
+    public function NextSequenceLink() : string
+    {
+        return $this->Link('gotonextpageinsequence');
+    }
+
+    /**
+     * You muse use this link to go to PREV / NEXT PAGE
+     * @return string
+     */
+    public function PreviousSequenceLink() : string
+    {
+        return $this->Link('gotopreviouspageinsequence');
+    }
+
+    public function ListOfSequences()
+    {
+        return $this->PreviousAndNextProvider()->ListOfSequences();
+    }
+
+    public function AllPages()
+    {
+        return $this->PreviousAndNextProvider()->AllPages();
     }
 }
