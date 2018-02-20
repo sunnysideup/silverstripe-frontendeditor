@@ -210,8 +210,12 @@ class FrontEndDataExtension extends DataExtension
         if ($this->owner->hasMethod("FrontEndParentObject")) {
             $parent = $this->owner->FrontEndParentObject();
             while ($parent && $parent->exists()) {
-                $array[$parent->ClassName."-".$parent->ID] = $parent;
-                $parent = $parent->FrontEndParentObject();
+                if(! isset($array[$parent->ClassName."-".$parent->ID])) {
+                    $array[$parent->ClassName."-".$parent->ID] = $parent;
+                    $parent = $parent->FrontEndParentObject();
+                } else {
+                    $parent = null;
+                }
             }
         }
         $array = array_reverse($array);
