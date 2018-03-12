@@ -14,6 +14,20 @@
 abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
 {
 
+
+
+    /**
+     * e.g. Enter Rates
+     * @return string
+     */
+    abstract public function Title() : string;
+
+    private static $singular_name = 'Please override';
+    abstract public function i18n_singular_name();
+
+    private static $plural_name = 'Please override';
+    abstract public function i18n_plural_name();
+
     /**
      * <code>
      * This is the key method you need to extend ...
@@ -40,21 +54,20 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     abstract public function ArrayOfClassesToSequence($className = null) : array;
 
     /**
-     * This method myst set the first record being edited...
+     * This method must set the first record being edited...
      */
     abstract public function StartSequence();
 
     /**
-     * e.g. Enter Rates
-     * @return string
+     * This method myst set the first record being edited...
      */
-    abstract public function Title() : string;
+    public function PrepareForNextPage()
+    {
+        $nextObject = $this->NextPageObject();
+        if(! $nextObject->exists()) {
 
-    private static $singular_name = 'Please override';
-    abstract public function i18n_singular_name();
-
-    private static $plural_name = 'Please override';
-    abstract public function i18n_plural_name();
+        }
+    }
 
     /**
      * It is very like you will need to extend this method!
@@ -134,26 +147,36 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         if ($this->_allPages === null) {
             $currentObject = $this->getCurrentRecordBeingEdited();
             if ($currentObject) {
-                $parent = $this->FrontEndParentObject();
-                if ($parent) {
+                $rootParent = $this->FrontEndRootParentObject();
+                if ($rootParent) {
                     $this->_allPages = ArrayList::create();
                     $array = $this->ArrayOfClassesToSequence();
                     foreach ($array as $myClassName => $configs) {
                         if ($className === null || $className === $myClassName) {
+                            $linkingMode = 'link';
                             $items =  $this->FrontEndFindChildObjects($myClassName)->sort(['ID' => 'ASC'])->limit(50);
                             $count = $items->count();
                             if ($count === 0) {
+                                if($currentObject->ClassName === $myClassName) {
+                                    $linkingMode = 'current';
+                                }
                                 $obj = Injector::inst()->get($myClassName);
-                                $obj->Title = $this->createStatement($obj, $configs);
-                                if ($obj->Title) {
-                                    $this->_allPages->push(
-                                        $obj
-                                    );
+                                $obj->SequenceTitle = $this->createStatement($obj, $configs);
+                                if ($obj->SequenceTitle) {
+                                    $obj->SequenceLinkingMode = $linkingMode;
+                                    $this->_allPages->push($obj);
                                 }
                                 // $this->_allPages->push($className::create());
                             } else {
-                                foreach ($items as $count => $item) {
-                                    $this->_allPages->push($item);
+                                foreach ($items as $count => $obj) {
+                                    if($currentObject->ClassName == $obj->ClassName && $currentObject->ID == $obj->ID) {
+                                        $linkingMode = 'current';
+                                    } elseif($currentObject->ClassName === $obj->ClassName) {
+                                        $linkingMode = 'section';
+                                    }
+                                    $obj->SequenceTitle = $this->editStatement($obj, $configs);
+                                    $obj->SequenceLinkingMode = $linkingMode;
+                                    $this->_allPages->push($obj);
                                 }
                             }
                         }
@@ -162,6 +185,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
             }
         }
         if (! $this->_allPages) {
+            $this->_allPages = false;
             return ArrayList::create();
         }
 
@@ -184,10 +208,10 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     public function CurrentRecordPositionInSequence($className = null) : int
     {
         $position = 0;
-        $currentRcurrentRecordBeingEdited = $this->getCurrentRecordBeingEdited();
+        $currentRecordBeingEdited = $this->getCurrentRecordBeingEdited();
         $allPages = $this->AllPages($className);
         foreach ($allPages as $count => $page) {
-            if ($page->FrontEndUID() === $currentRcurrentRecordBeingEdited->FrontEndUID()) {
+            if ($page->FrontEndUID() === $currentRecordBeingEdited->FrontEndUID()) {
                 $position = $count;
                 break;
             }
@@ -243,32 +267,40 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     {
         if ($currentRecordBeingEdited && $currentRecordBeingEdited->exists()) {
             $this->currentRecordBeingEdited = $currentRecordBeingEdited;
-            FrontEndEditorSessionManager::set_record_being_edited($currentRecordBeingEdited);
+            FrontEndEditorSessionManager::set_record_being_edited_in_sequence($currentRecordBeingEdited);
         }
 
         return $this;
     }
 
-    private static $_count = 0;
+    private static $_count_get_current_record = 0;
     /**
      *
      * @return FrontEndEditable|null
      */
     public function getCurrentRecordBeingEdited()
     {
-        self::$_count++;
-        if (self::$_count > 100) {
+        self::$_count_get_current_record++;
+        if (self::$_count_get_current_record > 100) {
             user_error("STOP");
         }
         if ($this->currentRecordBeingEdited && $this->currentRecordBeingEdited->exists()) {
             //do nothing
         } else {
-            $this->currentRecordBeingEdited = FrontEndEditorSessionManager::get_record_being_edited();
+            $this->currentRecordBeingEdited = FrontEndEditorSessionManager::get_record_being_edited_in_sequence();
+
+            if(! $this->currentRecordBeingEdited) {
+                $this->currentRecordBeingEdited = FrontEndEditorSessionManager::get_can_edit_object();
+            }
         }
 
         return $this->currentRecordBeingEdited;
     }
 
+    /**
+     *
+     * @return int
+     */
     public function TotalNumberOfPages() : int
     {
         return $this->AllPages()->count();
@@ -283,7 +315,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function MustAddAnotherOfThisClass($className) : bool
     {
-        $existingChildren = $this->FrontEndFindChildObjects();
+        $existingChildren = $this->FrontEndFindChildObjects($className);
         $config = $this->ArrayOfClassesToSequence($className);
         $count = $existingChildren->count();
 
@@ -309,6 +341,8 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         return $count < $config['Max'];
     }
 
+    private static $_child_object_cache = [];
+
     /**
      * returns a datalist of objects of a particular class
      * (e.g. Page will include HomePage)
@@ -317,37 +351,42 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      *
      * @return ArrayList
      */
-    public function FrontEndFindChildObjects($className) : ArrayList
+    public function FrontEndFindChildObjects($className) : SS_List
     {
-        $parent = $this->FrontEndParentObject();
-        if ($parent && $parent->exists()) {
-            if ($parent->ClassName === $className) {
-                $al = ArrayList::create();
-                $al->push($parent);
+        if(! isset(self::$_child_object_cache[$className])) {
+            self::$_child_object_cache[$className] = ArrayList::create();
+            $rootParent = $this->FrontEndRootParentObject();
+            if ($rootParent && $rootParent->exists()) {
 
-                return $al;
-            }
-            $list = $parent->FrontEndFindChildObjects($className);
-            if ($list instanceof ArrayList) {
-                return $list;
+                //exception for the root parent itself ...
+                if ($rootParent->ClassName === $className) {
+                    $al = ArrayList::create();
+                    $al->push($rootParent);
+                    self::$_child_object_cache[$className] = $al;
+                } else {
+                    $list = $rootParent->FrontEndFindChildObjects($className);
+                    if ($list instanceof SS_List) {
+                        self::$_child_object_cache[$className] = $list;
+                    }
+                }
             }
         }
 
-        return ArrayList::create();
+        return self::$_child_object_cache[$className];
     }
 
     protected static $_root_parent_cache = null;
 
     /**
-     * @return FrontEndEditable
+     * @return FrontEndEditable|false
      */
-    protected function FrontEndParentObject()
+    protected function FrontEndRootParentObject()
     {
         if (self::$_root_parent_cache === null) {
             self::$_root_parent_cache = false;
             $currentObject = $this->getCurrentRecordBeingEdited();
             if ($currentObject) {
-                self::$_root_parent_cache = $currentObject->FrontEndParentObject();
+                self::$_root_parent_cache = $currentObject->FrontEndRootParentObject();
             }
         }
 
@@ -357,21 +396,27 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
 
 
     /**
-     * @param int|string|null
+     * @param int|string|null     $pageNumberOrFrontEndUID
+     * @param bool                $returnPageNumber
      *
-     * @return FrontEndEditable
+     * @return FrontEndEditable|int
      */
-    public function getPageItem($pageNumberOrFrontEndUID) : FrontEndEditable
+    public function getPageItem($pageNumberOrFrontEndUID, $returnPageNumber = false) : FrontEndEditable
     {
         if ($pageNumberOrFrontEndUID === null) {
             $pageNumberOrFrontEndUID = $this->FrontEndUID();
         }
         foreach ($this->AllPages() as $count => $item) {
             if (
-                (int) $count === (int) $pageNumberOrFrontEndUID ||
-                (string) $item->FrontEndUID() === (string) $pageNumberOrFrontEndUID
+                ((int) $count === (int) $pageNumberOrFrontEndUID)
+                ||
+                ((string) $item->FrontEndUID() === (string) $pageNumberOrFrontEndUID)
             ) {
-                return $item;
+                if($returnPageNumber) {
+                    return $count;
+                } else {
+                    return $item;
+                }
             }
         }
 
@@ -402,6 +447,12 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         return FrontEndEditorSessionManager::object_to_string($obj);
     }
 
+    /**
+     *
+     * @param  DataObject $obj
+     * @param  array $configs
+     * @return string
+     */
     protected function createStatement($obj, $configs)
     {
         if (! isset($configs['Min'])) {
@@ -429,4 +480,10 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
             return 'create between '.$configs['Min'] .' - '.$configs['Max'] .' new '.$name;
         }
     }
+
+    protected function editStatement($obj, $configs)
+    {
+        return $obj->i18n_singular_name().': '.$obj->Title;
+    }
+
 }

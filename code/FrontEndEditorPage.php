@@ -54,10 +54,12 @@ class FrontEndEditorPage extends Page
      */
     public function FrontEndEditLink($recordBeingEdited)
     {
-        return $this->FrontEndEditLinkFast(
-            $recordBeingEdited->ClassName,
-            $recordBeingEdited->ID
-        );
+        if($recordBeingEdited->ID) {
+            return $this->FrontEndEditLinkFast(
+                $recordBeingEdited->ClassName,
+                $recordBeingEdited->ID
+            );
+        }
     }
 
     /**
@@ -88,8 +90,17 @@ class FrontEndEditorPage_Controller extends Page_Controller
      */
     private static $default_model = "Provider";
 
+    /**
+     *
+     * @var FrontEndEditable|null
+     */
     protected $recordBeingEdited = null;
 
+    /**
+     *
+     * @var FrontEndEditable|null
+     */
+    protected $rootParentObject = null;
 
     /**
      * An array of actions that can be accessed via a request. Each array element should be an action name, and the
@@ -134,6 +145,10 @@ class FrontEndEditorPage_Controller extends Page_Controller
             $id = $this->request->param("OtherID");
             if ($id) {
                 $this->recordBeingEdited = $model::get()->byID($id);
+                if($this->recordBeingEdited) {
+                    $this->rootParentObject = $this->recordBeingEdited->FrontEndRootParentObject();
+                    FrontEndEditorSessionManager::set_can_edit_object($this->rootParentObject);
+                }
             }
             if (! $this->recordBeingEdited) {
                 $this->recordBeingEdited = $model::create();
@@ -194,17 +209,16 @@ class FrontEndEditorPage_Controller extends Page_Controller
                     'Link' => $record->CMSEditLink()
                 );
             }
-            $rootParentObject = $record->FrontEndRootParentObject();
             if (
-                $rootParentObject &&
-                $rootParentObject->exists() &&
+                $this->rootParentObject &&
+                $this->rootParentObject->exists() &&
                 ! $record->FrontEndIsRoot() &&
-                $rootParentObject->hasMethod('FrontEndEditLink')
+                $this->rootParentObject->hasMethod('FrontEndEditLink')
             ) {
                 $array['ROOT'] = array(
-                    'Title' => $rootParentObject->getTitle(),
+                    'Title' => $this->rootParentObject->getTitle(),
                     'Description' => 'The root parent of this object',
-                    'Link' => $rootParentObject->FrontEndEditLink()
+                    'Link' => $this->rootParentObject->FrontEndEditLink()
                 );
             }
             $array = $record->FrontEndAlternativeViewLinks($array);
@@ -226,9 +240,6 @@ class FrontEndEditorPage_Controller extends Page_Controller
         }
         if (! $this->recordBeingEdited) {
             return $this->httpError(404);
-        }
-        if ($this->recordBeingEdited->ClassName == $this->Config()->get("default_model")) {
-            FrontEndEditorSessionManager::set_can_edit_object($this->recordBeingEdited);
         }
         $this->addGoBackLink();
         if ($this->recordBeingEdited instanceof FrontEndEditable) {
@@ -397,21 +408,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
 
     protected function addGoBackLink()
     {
-        $backObjectClassName = "";
-        $sequenceNumber = Session::get("FrontEndGoBackSequenceNumber");
-        if (!$sequenceNumber) {
-            $sequenceNumber = 1;
-        }
-        if (count(Session::get("FrontEndGoBackSequenceNumber"))) {
-            $data = explode(",", Session::get("FrontEndGoBackObjectDetails".$sequenceNumber));
-            list($backObjectClassName, $backObjectID) = $data;
-        }
-        if ($backObjectClassName != $this->recordBeingEdited->ClassName) {
-            $sequenceNumber++;
-            Session::set("FrontEndGoBackSequenceNumber", $sequenceNumber);
-            Session::set("FrontEndGoBackObjectDetails".$sequenceNumber, $this->recordBeingEdited->ClassName.",".$this->recordBeingEdited->ID);
-            Session::save();
-        }
+        return FrontEndEditorSessionManager::add_go_back_link($this->recordBeingEdited);
     }
 
     /**
@@ -422,10 +419,10 @@ class FrontEndEditorPage_Controller extends Page_Controller
     {
         $al = null;
         $alDone = array($this->recordBeingEdited->ClassName.",".$this->recordBeingEdited->ID => true);
-        $sequenceNumber = Session::get("FrontEndGoBackSequenceNumber");
+        $sequenceNumber = FrontEndEditorSessionManager::get_sequence_number();
         if ($sequenceNumber) {
             for ($i = $sequenceNumber; $i >=0; $i--) {
-                $value = Session::get("FrontEndGoBackObjectDetails".$i);
+                $value = FrontEndEditorSessionManager::get_sequence_number_details($i);
                 if (!isset($alDone[$value])) {
                     $array = explode(",", $value);
                     if (count($array) == 2) {
@@ -568,8 +565,13 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function debugsequencer()
     {
         $html = '';
+        if($this->recordBeingEdited && $this->recordBeingEdited->exists()) {
+            //do nothing
+        } else {
+            $this->recordBeingEdited = FrontEndEditorSessionManager::get_record_being_edited_in_sequence();
+        }
         if ($this->HasSequence()) {
-            $html .= $this->PreviousAndNextProvider()->debug();
+            $html .= $this->PreviousAndNextProvider()->debug($this->recordBeingEdited);
         } else {
             $html .= '<h1>There is no active sequence</h1>';
         }
@@ -603,6 +605,23 @@ class FrontEndEditorPage_Controller extends Page_Controller
         if ($this->HasSequence()) {
             return $this->PreviousAndNextProvider()->getSequencer();
         }
+    }
+
+    /**
+     * @alias
+     * @return bool
+     */
+    public function InSequence()
+    {
+        return $this->HasSequence();
+    }
+
+    /**
+     * @return bool
+     */
+    public function NotInSequence()
+    {
+        return ! $this->HasSequence();
     }
 
     public function HasSequence(): bool
@@ -641,11 +660,18 @@ class FrontEndEditorPage_Controller extends Page_Controller
         return $this->Link('gotopreviouspageinsequence');
     }
 
+
+    /**
+     * @return ArrayList
+     */
     public function ListOfSequences()
     {
         return $this->PreviousAndNextProvider()->ListOfSequences();
     }
 
+    /**
+     * @return ArrayList
+     */
     public function AllPages()
     {
         return $this->PreviousAndNextProvider()->AllPages();

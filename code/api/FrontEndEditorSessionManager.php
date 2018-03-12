@@ -14,6 +14,35 @@ class FrontEndEditorSessionManager extends Object
      */
     private static $_can_edit_object = null;
 
+    public static function add_go_back_link($object)
+    {
+        $backObjectClassName = "";
+        $sequenceNumber = Session::get("FrontEndGoBackSequenceNumber");
+        if (!$sequenceNumber) {
+            $sequenceNumber = 1;
+        }
+        if (count(Session::get("FrontEndGoBackSequenceNumber"))) {
+            $data = explode(",", Session::get("FrontEndGoBackObjectDetails".$sequenceNumber));
+            list($backObjectClassName, $backObjectID) = $data;
+        }
+        if ($backObjectClassName != $object->ClassName) {
+            $sequenceNumber++;
+            Session::set("FrontEndGoBackSequenceNumber", $sequenceNumber);
+            Session::set("FrontEndGoBackObjectDetails".$sequenceNumber, $object->ClassName.",".$object->ID);
+            Session::save();
+        }
+    }
+
+    public static function get_sequence_number()
+    {
+        return Session::get("FrontEndGoBackSequenceNumber");
+    }
+
+    public static function get_sequence_number_details($number)
+    {
+        return Session::get("FrontEndGoBackObjectDetails".$number);
+    }
+
     /**
      * returns ClassName,ID
      * e.g. Page,123 or MySpeciaPage,222
@@ -130,6 +159,12 @@ class FrontEndEditorSessionManager extends Object
         );
     }
 
+
+    /**
+     * returns the sequencer that has been set
+     *
+     * @return string
+     */
     public static function get_sequencer()
     {
         return Session::get(
@@ -152,7 +187,7 @@ class FrontEndEditorSessionManager extends Object
 
 
     /**
-     * get if the should the current record be recorded YES or NO?
+     * Should the current record be recorded YES or NO??????
      * @return bool [description]
      */
     public static function get_note_current_record() : bool
@@ -175,7 +210,7 @@ class FrontEndEditorSessionManager extends Object
         Session::save();
     }
 
-    public static function set_record_being_edited($object)
+    public static function set_record_being_edited_in_sequence($object)
     {
         if (self::get_note_current_record() && $object) {
             Session::set(
@@ -187,7 +222,7 @@ class FrontEndEditorSessionManager extends Object
         }
     }
 
-    public static function get_record_being_edited($asString = false)
+    public static function get_record_being_edited_in_sequence($asString = false)
     {
         $string = Session::get(
             'FrontEndEditorPreviousAndNextSequencerCurrentRecordBeingEdited'

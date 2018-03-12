@@ -4,7 +4,7 @@
  *
  * this class manages the previous and next step
  * it provides functions that are independent from the
- * sequencer being used ....
+ * sequencer being used so that it can run any type of sequence.
  */
 
 class FrontEndEditorPreviousAndNextProvider extends Object
@@ -112,7 +112,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function setCurrentRecordBeingEdited($currentRecordBeingEdited) : FrontEndEditorPreviousAndNextProvider
     {
-        $this->runOnSequencer('setCurrentRecordBeingEdited', null, $currentRecordBeingEdited);
+        $this->runOnSequencer('setCurrentRecordBeingEdited', null, $params = [$currentRecordBeingEdited]);
 
         return $this;
     }
@@ -124,6 +124,23 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     public function getCurrentRecordBeingEdited()
     {
         return $this->runOnSequencer('getCurrentRecordBeingEdited', null);
+    }
+
+    /**
+     * @alias
+     * @return bool
+     */
+    public function InSequence()
+    {
+        return $this->HasSequencer();
+    }
+
+    /**
+     * @return bool
+     */
+    public function NotInSequence()
+    {
+        return ! $this->HasSequencer();
     }
 
     /**
@@ -255,7 +272,16 @@ class FrontEndEditorPreviousAndNextProvider extends Object
         if ($offSetFromCurrent !== 0) {
             $item = $this->getPageItem($offSetFromCurrent);
         }
-        return $this->runOnSequencer('getPageLink', '404-page-not-found-for-sequencer', $item);
+        return $this->runOnSequencer('getPageLink', '404-page-not-found-for-sequencer', $params = [$item]);
+    }
+
+    /**
+     * returns 1 - [ number of pages in sequence]
+     * @return int
+     */
+    public function CurrentRecordPositionInSequence()
+    {
+        return $this->runOnSequencer('CurrentRecordPositionInSequence', 1);
     }
 
     /**
@@ -273,7 +299,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function AllPages($className = null) : ArrayList
     {
-        return $this->runOnSequencer('AllPages', ArrayList::create(), $className);
+        return $this->runOnSequencer('AllPages', ArrayList::create(), $params = [$className]);
     }
 
     /**
@@ -284,7 +310,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function AddAnotherOfThisClass($className = null)
     {
-        return $this->runOnSequencer('AddAnotherOfThisClass', null, $className);
+        return $this->runOnSequencer('AddAnotherOfThisClass', null, $params = [$className]);
     }
 
     /**
@@ -295,7 +321,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function HasNextPage($className = null) : bool
     {
-        return $this->runOnSequencer('HasNextPage', false, $className);
+        return $this->runOnSequencer('HasNextPage', false, $params = [$className]);
     }
 
     /**
@@ -321,7 +347,12 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function goNextPage() : string
     {
-        $this->setPage(1);
+
+        if($link = $this->runOnSequencer('PrepareForNextPage', false)) {
+            $this->setPage(1);
+
+            return $link;
+        }
 
         return $this->getPageLink(0);
     }
@@ -334,7 +365,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function HasPreviousPage($className = null) : bool
     {
-        return $this->runOnSequencer('HasPreviousPage', false, $className);
+        return $this->runOnSequencer('HasPreviousPage', false, $params = [$className]);
     }
 
     /**
@@ -352,6 +383,50 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     public function PreviousPageObject()
     {
         return $this->runOnSequencer('PreviousPageObject', null);
+    }
+
+
+
+    /**
+     *
+     * @return bool
+     */
+    public function canGoPreviousOrNextPage() : bool
+    {
+        return $this->canGoPreviousPage() || $this->canGoNextPage();
+    }
+
+
+    /**
+     *
+     * @return bool
+     */
+    public function canGoPreviousPage() : bool
+    {
+        $currentPageNumber = $this->getPageNumber();
+
+        if ($currentPageNumber === 1) {
+            return false;
+        }
+        $object = $this->PreviousPageObject();
+
+        return $object && $object->exists() ? true : false;
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function canGoNextPage() : bool
+    {
+        $currentPageNumber = $this->getPageNumber();
+
+        if ($currentPageNumber === $this->TotalNumberOfPages()) {
+            return false;
+        }
+        $object = $this->NextPageObject();
+
+        return $object && $object->exists() ? true : false;
     }
 
     /**
@@ -374,7 +449,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     protected function CanAddAnotherOfThisClass($className, $currentRecordIsNew = false) : bool
     {
-        return $this->runOnSequencer('CanAddAnotherOfThisClass', false, $className, $currentRecordIsNew);
+        return $this->runOnSequencer('CanAddAnotherOfThisClass', false, $className, $params = [$currentRecordIsNew]);
     }
 
 
@@ -385,7 +460,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     protected function getPageItem($pageNumberOrFrontEndUID) : FrontEndEditable
     {
-        return $this->runOnSequencer('getPageItem', null, $pageNumberOrFrontEndUID);
+        return $this->runOnSequencer('getPageItem', null, $params = [$pageNumberOrFrontEndUID]);
     }
 
     /**
@@ -413,41 +488,46 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      *
      * @return mixed
      */
-    public function runOnSequencer($method, $backupValue, $param1 = null, $param2 = null, $param3 = null)
+    public function runOnSequencer($method, $backupValue, $params = [])
     {
         $sequencer = $this->getSequencer();
         if ($sequencer) {
-            if ($param1 !== null) {
-                if ($param2 !== null) {
-                    if ($param3 !== null) {
-                        return $sequencer->$method($param1, $param2, $param3);
-                    }
-                    return $sequencer->$method($param1, $param2);
-                }
-                return $sequencer->$method($param1);
-            }
-            return $sequencer->$method();
+            return call_user_func_array([$sequencer, $method], $params);
         }
 
         return $backupValue;
     }
 
-    public function debug()
+    public function debug($currentRecordBeingEdited = null)
     {
+        if($currentRecordBeingEdited !== null) {
+            $this->setCurrentRecordBeingEdited($currentRecordBeingEdited);
+        }
         $html = '';
         $html .= '<h1>There is an active sequence</h1>';
         $html .= '<hr />';
         $html .= '<pre>';
+        $html .= '<hr /><h3>Owner</h3>';
+        $html .= '<hr />';
+        $html .= print_r($this->getCurrentRecordBeingEdited()->Title, 1);
         $html .= '<hr /><h3>Has Next Page</h3>';
         $html .= '<hr />';
         $html .= print_r($this->HasNextPage() ? 'TRUE' : 'FALSE', 1);
         $html .= '<hr /><h3>Next Object</h3>';
         $html .= '<hr />';
         $html .= print_r($this->NextPageObject() ? $this->NextPageObject()->FrontEndUID() : 'N/A', 1);
+        $html .= print_r(', ', 1);
+        $html .= print_r($this->canGoNextPage() ? 'Accessible': 'Not Accessible', 1);
 
         $html .= '<hr /><h3>Has Previous Page</h3>';
         $html .= '<hr />';
         $html .= print_r($this->HasPreviousPage() ? 'TRUE' : 'FALSE', 1);
+
+        $html .= '<hr /><h3>Previous Object</h3>';
+        $html .= '<hr />';
+        $html .= print_r($this->PreviousPageObject() ? $this->PreviousPageObject()->FrontEndUID() : 'N/A', 1);
+        $html .= print_r(', ', 1);
+        $html .= print_r($this->canGoPreviousPage() ? 'Accessible': 'Not Accessible', 1);
 
         $html .= '<hr /><h3>Total Number of Pages</h3>';
         $html .= '<hr />';
@@ -459,11 +539,14 @@ class FrontEndEditorPreviousAndNextProvider extends Object
 
         $html .= '<hr /><h3>Current Sequence</h3>';
         $html .= '<hr />';
-        $html .= print_r($this->getSequencer(), 1);
+        $html .= print_r($this->getSequencer()->class, 1);
 
         $html .= '<hr /><h3>All Pages</h3>';
         $html .= '<hr />';
-        $html .= print_r($this->AllPages(), 1);
+        foreach($this->AllPages() as $page){
+            $html .= print_r($page->FrontEndUID(), 1);
+            $html .= '<br />';
+        }
 
         $html .= '<hr /><h3>List of Sequences</h3>';
         $html .= '<hr />';

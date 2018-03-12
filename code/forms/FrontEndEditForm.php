@@ -615,7 +615,7 @@ class FrontEndEditForm extends Form
     //             ->runOnSequencer(
     //                 'MustAddAnotherOfThisClass',
     //                 false,
-    //                 $this->recordBeingEdited->ClassName
+    //                 $params = [$this->recordBeingEdited->ClassName]
     //             );
     //     }
     // }
