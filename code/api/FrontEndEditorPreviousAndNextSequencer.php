@@ -59,7 +59,8 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     abstract public function StartSequence();
 
     /**
-     * This method myst set the first record being edited...
+     * Get ready to edit the next one
+     * Returns true if it is all go.
      * @return bool
      */
     public function PrepareForNextPage() : bool
@@ -70,6 +71,22 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         }
 
         return true;
+    }
+
+    /**
+     *
+     * Returns true if it is all go.
+     * @return bool
+     */
+    public function prepareAddAnother() : bool
+    {
+        $currentRecord = $this->getCurrentRecordBeingEdited();
+        if($currentRecord && $currentRecord->exists()) {
+            $this->AddAnotherOfThisClass($currentRecord);
+            return true;
+        }
+
+        return false;
     }
 
     /**

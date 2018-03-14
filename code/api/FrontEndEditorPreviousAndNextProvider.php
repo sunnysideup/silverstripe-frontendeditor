@@ -358,6 +358,22 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     }
 
     /**
+     *
+     * @return string
+     */
+    public function goAddAnother() : string
+    {
+
+        if($canGo = $this->runOnSequencer('PrepareAddAnother', false)) {
+            $this->setPage(1);
+            $link = $this->getPageLink(0);
+            return $link;
+        }
+
+        return $this->getPageLink(0);
+    }
+
+    /**
      * is there a previous page to work through?
      *
      * @param  string|null $classNMame

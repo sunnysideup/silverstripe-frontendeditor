@@ -1,12 +1,16 @@
 <div class="sequence-navigator">
 <% if $HasSequence %>
-        <h3>current data-entry wizard</h3>
+
     <% with $CurrentSequence %>
         <p class="intro-sequence">
-            <a title="$Description.ATT">$Title</a>
-            <% if $TotalNumberOfPages %><span class="steps-in-sequence">Step $CurrentRecordPositionInSequence / $TotalNumberOfPages.</span><% end_if %>
+            <h3><a title="$Description.ATT">$Title Wizard</a>
+                <a href="$Top.StopSequenceLink" class="quit-sequence special-action">✖</a>
+            </h3>
+            <% if $TotalNumberOfPages %><span class="steps-in-sequence">Step $CurrentRecordPositionInSequence / $TotalNumberOfPages</span><% end_if %>
         </p>
+        <hr/>
     <% end_with %>
+
     <% if canGoPreviousOrNextPage %>
         <p class="prev-next-for-sequence">
             <% if canGoPreviousPage %><a href="$PreviousSequenceLink" class="previous special-action">$PreviousPageObject.Title</a><% end_if %>
@@ -15,12 +19,9 @@
     <% end_if %>
     <% if $AllPages %>
         <ul>
-        <% loop $AllPages %><li class="$SequenceLinkingMode"><% if $exists %>&laquo; <a href="$FrontEndEditLink">$SequenceTitle</a><% else %>&raquo; $SequenceTitle</li><% end_if %><% end_loop %>
+        <% loop $AllPages %><% if $exists %><li class="$SequenceLinkingMode doable"><a href="$FrontEndEditLink">$SequenceTitle</a><% else %><li class="$SequenceLinkingMode">$SequenceTitle<% end_if %></li><% end_loop %>
         </ul>
     <% end_if %>
-    <p class="quit-sequence">
-        <a href="$StopSequenceLink" class="special-action">Quit Sequence Editing</a>
-    </p>
 <% else %>
     <% if $ListOfSequences %>
     <div class="list-of-sequences">
