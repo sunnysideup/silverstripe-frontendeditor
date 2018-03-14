@@ -60,13 +60,16 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
 
     /**
      * This method myst set the first record being edited...
+     * @return bool
      */
-    public function PrepareForNextPage()
+    public function PrepareForNextPage() : bool
     {
         $nextObject = $this->NextPageObject();
         if(! $nextObject->exists()) {
-
+            //create one
         }
+
+        return true;
     }
 
     /**
