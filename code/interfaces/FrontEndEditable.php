@@ -8,8 +8,8 @@ interface FrontEndEditable
      *
      * @param  FrontEndEditable            $parentObject DataObject
      * @param  string                      $className    ClassName to create
-     * @param  array                      $allParams    [description]
-     * @return FrontEndEditable               [description]
+     * @param  array                       $allParams    [description]
+     * @return FrontEndEditable            [description]
      */
     public static function add_another($rootParentObject, $className, $sibling = null, $params);
 

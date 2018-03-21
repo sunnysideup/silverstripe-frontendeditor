@@ -9,8 +9,8 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
      *
      * @param  FrontEndEditable            $parentObject DataObject
      * @param  string                      $className    ClassName to create
-     * @param  array                      $allParams    [description]
-     * @return FrontEndEditable               [description]
+     * @param  array                       $allParams
+     * @return FrontEndEditable
      */
     public static function add_another($rootParentObject, $className, $sibling = null, $params)
     {
