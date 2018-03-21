@@ -348,9 +348,25 @@ class FrontEndEditorPreviousAndNextProvider extends Object
     public function goNextPage() : string
     {
 
-        if($link = $this->runOnSequencer('PrepareForNextPage', false)) {
+        if($canGo = $this->runOnSequencer('PrepareForNextPage', false)) {
             $this->setPage(1);
+            $link = $this->getPageLink(0);
+            return $link;
+        }
 
+        return $this->getPageLink(0);
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function goAddAnother() : string
+    {
+
+        if($canGo = $this->runOnSequencer('PrepareAddAnother', false)) {
+            $this->setPage(1);
+            $link = $this->getPageLink(0);
             return $link;
         }
 
