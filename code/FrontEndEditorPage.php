@@ -126,6 +126,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         "stopsequence" => true,
         "gotopreviouspageinsequence" => true,
         "gotonextpageinsequence" => true,
+        "gotoaddanother" => true,
         "debugsequencer" => 'ADMIN'
     );
 
@@ -529,8 +530,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function stopsequence($request)
     {
         FrontEndEditorSessionManager::clear_sequencer();
-        FrontEndEditorSessionManager::clear_record_being_edited();
-        return [];
+        return $this->redirect('/');
     }
 
     public function startsequence($request) : SS_HTTPResponse
@@ -558,6 +558,14 @@ class FrontEndEditorPage_Controller extends Page_Controller
     {
         FrontEndEditorSessionManager::set_note_current_record(true);
         $link = $this->PreviousAndNextProvider()->goNextPage();
+
+        return $this->redirect($link);
+    }
+
+    public function gotoaddanother($request) : SS_HTTPResponse
+    {
+        FrontEndEditorSessionManager::set_note_current_record(true);
+        $link = $this->PreviousAndNextProvider()->goAddAnother();
 
         return $this->redirect($link);
     }
@@ -649,6 +657,15 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function NextSequenceLink() : string
     {
         return $this->Link('gotonextpageinsequence');
+    }
+
+    /**
+     * you must use this link to go to PREV / NEXT
+     * @return string
+     */
+    public function AddAnotherSequenceLink() : string
+    {
+        return $this->Link('gotoaddanother');
     }
 
     /**

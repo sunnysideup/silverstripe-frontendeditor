@@ -29,12 +29,9 @@ class FrontEndEditForm extends Form
         $this->recordBeingEdited = $recordBeingEdited;
         $this->addExtraClass($recordBeingEdited);
         if (!$this->recordBeingEdited) {
-            $className = Session::get("FrontEndClassName");
-            $id = Session::get("FrontEndID");
-            $this->recordBeingEdited = $className::get()->byID($id);
+            $this->recordBeingEdited = FrontEndEditorSessionManager::get_current_record_being_edited();
         } elseif ($this->recordBeingEdited->getTitle()) {
-            Session::set("FrontEndClassName", $this->recordBeingEdited->ClassName);
-            Session::set("FrontEndID", $this->recordBeingEdited->ID);
+            FrontEndEditorSessionManager::set_current_record_being_edited($this->recordBeingEdited);
         }
 
         $fieldLabels = $this->recordBeingEdited->fieldLabels(true);
@@ -316,7 +313,7 @@ class FrontEndEditForm extends Form
         );
         if (($this->recordBeingEdited && $this->recordBeingEdited->ID) || (isset($_GET["reusedata"]) && $_GET["reusedata"])) {
             $this->loadDataFrom($this->recordBeingEdited);
-            $oldData = Session::get("FormInfo.FrontEndEditForm.data");
+            $oldData = FrontEndEditorSessionManager::get_form_data();
             if ($oldData && (is_array($oldData) || is_object($oldData))) {
                 $this->loadDataFrom($oldData);
             }
@@ -411,7 +408,7 @@ class FrontEndEditForm extends Form
             }
 
             //save old data for future use
-            Session::set("FormInfo.FrontEndEditForm.data", $data);
+            FrontEndEditorSessionManager::set_form_data($data);
 
             // validate now ...
             // has to be doValidate
@@ -425,11 +422,7 @@ class FrontEndEditForm extends Form
                 }
             }
 
-            Session::clear("FormInfo.FrontEndEditForm.data");
-            Session::set("FormInfo.FrontEndEditForm.data", null);
-            Session::clear("FormInfo.FrontEndEditForm.data");
-            Session::set("FormInfo.FrontEndEditForm.data", null);
-            Session::set("FormInfo.FrontEndEditForm.UseData", 0);
+            FrontEndEditorSessionManager::clear_form_data();
 
             //more hack!
             //we can only add here, not remove...
@@ -483,9 +476,11 @@ class FrontEndEditForm extends Form
                     }
                 }
             } elseif ($this->isAddAnother) {
-                $obj = $controller->addAnother();
-                if ($obj) {
-                    return $controller->redirect($obj->FrontEndEditLink().$ajaxGetVariable);
+                if ($controller->HasSequence()) {
+                    return $controller->redirect($controller->AddAnotherSequenceLink().$ajaxGetVariable);
+                    if ($obj) {
+                        return $controller->redirect($obj->FrontEndEditLink().$ajaxGetVariable);
+                    }
                 }
             }
 
