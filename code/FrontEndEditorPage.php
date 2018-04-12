@@ -122,6 +122,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
         "edit" => "->canEditCurrentRecord",
         "frontendaddrelation" => "->canEditCurrentRecord",
         "frontendremoverelation" => "->canEditCurrentRecord",
+        "showsequences" => true,
         "startsequence" => true,
         "stopsequence" => true,
         "gotopreviouspageinsequence" => true,
@@ -531,6 +532,11 @@ class FrontEndEditorPage_Controller extends Page_Controller
     {
         FrontEndEditorSessionManager::clear_sequencer();
         return $this->redirect('/');
+    }
+
+    public function showsequences($request)
+    {
+        return $this->renderWith('FrontEndEditorPageStartSequence', 'Page');
     }
 
     public function startsequence($request) : SS_HTTPResponse

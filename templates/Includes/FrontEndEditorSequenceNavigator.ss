@@ -24,7 +24,7 @@
     <% end_if %>
     <% if $AllPages %>
         <ul>
-        <% loop $AllPages %><% if $exists %><li class="$SequenceLinkingMode doable"><a href="$FrontEndEditLink">$SequenceTitle</a><% else %><li class="$SequenceLinkingMode">$Title None is here<% end_if %></li><% end_loop %>
+        <% loop $AllPages %><% if $exists %><li class="$SequenceLinkingMode doable"><a href="$FrontEndEditLink">$SequenceTitle</a><% else %><li class="$SequenceLinkingMode">$SequenceTitle<% end_if %></li><% end_loop %>
         </ul>
     <% end_if %>
     <%-- <hr/>
