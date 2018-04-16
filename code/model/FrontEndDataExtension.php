@@ -219,7 +219,7 @@ class FrontEndDataExtension extends DataExtension
     {
         $array = [];
         $al = ArrayList::create();
-        $array[] = $this->owner;
+        $array[$this->owner->ClassName."-".$this->owner->ID] = $this->owner;
         if ($this->owner->hasMethod("FrontEndParentObject")) {
             $parent = $this->owner->FrontEndParentObject();
             while ($parent && $parent->exists()) {
