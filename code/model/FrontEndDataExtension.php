@@ -133,7 +133,7 @@ class FrontEndDataExtension extends DataExtension
         } elseif ($this->owner->hasMethod('FrontEndEditIconCode')) {
             $code = '✎'.$this->owner->FrontEndEditIconCode();
         }
-        $html = '<span class="frontend-edit-icon" style="color: '.$this->owner->FrontEndEditColour().'; border-color: '.$this->owner->FrontEndEditColour().'">'.$code.'</span>';
+        $html = '<span class="frontend-edit-icon" style="background-color: '.$this->owner->FrontEndEditColour().'">'.$code.'</span>';
         if ($textOnly) {
             return strip_tags($html);
         } else {
