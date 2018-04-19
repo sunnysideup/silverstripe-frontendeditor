@@ -15,9 +15,22 @@ interface FrontEndEditable
 
     /**
      * required fields for front end...
-     * @return null | RequiredFields
+     * @return null|RequiredFields
      */
     public function getFrontEndValidator();
+
+    /**
+     * adds the "ajax-validation" css class to the field in the form.
+     *
+     * JS then sends it to the server as follows:
+     * ClassName, ID, Field, NewValue
+     *
+     * the server will return back 'OK' or a message
+     * (e.g. a foo with this bar already exists)
+     * 
+     * @return array
+     */
+    public function FrontEndFieldsWithAjaxValidation();
 
     /**
      * the short title for the object
@@ -153,7 +166,7 @@ interface FrontEndEditable
      * returns the parent dataobject
      * for the formation of breadcrumbs in the front-end editor
      *
-     * @return null | DataObject
+     * @return null|DataObject
      */
     public function FrontEndParentObject();
 
@@ -166,10 +179,10 @@ interface FrontEndEditable
      * 				return $this->FrontEndDefaultSiblings($rootParent, $includeMe);
      * 			}
      * ```
-     * @param null | DataObject $rootParent
-     * @param null | boolean $includeMe
+     * @param null|DataObject $rootParent
+     * @param null|boolean $includeMe
      *
-     * @return null | DataList
+     * @return null|DataList
      */
     public function FrontEndSiblings($rootParent = null, $includeMe = true);
 
