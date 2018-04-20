@@ -39,6 +39,14 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function FrontEndFieldsWithAjaxValidation()
+    {
+        return [];
+    }
+
+    /**
      * the short title for the object
      * @return string
      */
@@ -163,6 +171,15 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
     /**
+    /**
+     * required fields for front end...
+     * @return null | RequiredFields
+     */
+    public function getFrontEndValidator()
+    {
+        return null;
+    }
+
      * list of fields that should be made read-only ...
      * e.g. the preset Title
      * @return array
@@ -174,6 +191,15 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
 
 
     /**
+    /**
+     * required fields for front end...
+     * @return null | RequiredFields
+     */
+    public function getFrontEndValidator()
+    {
+        return null;
+    }
+
      * list of fields foreign relations that are not deleted
      * but where a field is set to false or something similar
      * @return array

@@ -27,7 +27,21 @@ interface FrontEndEditable
      *
      * the server will return back 'OK' or a message
      * (e.g. a foo with this bar already exists)
-     * 
+     *
+     * Example Entries
+     *     [
+     *         'Title' => true,
+     *         'Foo' => 'mycustomfunction'
+     *     ]
+     *
+     * if no custom function is provided then we run a basic duplicats method.
+     *
+     * mycustomfunction needs to be added to the object we are validating on...
+     *
+     * it is passed the following details:
+     * $className, $ID, $field, $value
+     *
+     *
      * @return array
      */
     public function FrontEndFieldsWithAjaxValidation();

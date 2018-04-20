@@ -217,7 +217,7 @@ class FrontEndEditForm extends Form
         //extra classes
         $ajaxClasses = $this->recordBeingEdited->FrontEndFieldsWithAjaxValidation();
         $extraClass = 'ajax-validation';
-        foreach ($extraClasses as $fieldName) {
+        foreach ($ajaxClasses as $fieldName) {
             $field = $fields->dataFieldByName($fieldName);
             if ($field) {
                 $field->addExtraClass($extraClass);

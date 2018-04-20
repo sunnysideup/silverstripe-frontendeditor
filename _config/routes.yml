@@ -1,0 +1,3 @@
+Director:
+  rules:
+    'frontendfieldswithajaxvalidation//$Action/$ID/$ClassName/$FieldName/': 'LocationTemplateRadiusMaker'
