@@ -9,9 +9,9 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
      * Defines methods that can be called directly
      * @var array
      */
-    private static $allowed_actions = array(
+    private static $allowed_actions = [
         'check' => true
-    );
+    ];
 
     /**
      * returns true on OK - false on error ...
@@ -32,7 +32,7 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
             if($obj->canEdit()) {
                 $validation = $obj->Frontxxx();
                 $method = $validation[$field];
-                if($method === true) }{
+                if($method === true) {
                     $obj = $this;
                     $method = 'checkForDuplicates';
                 }
