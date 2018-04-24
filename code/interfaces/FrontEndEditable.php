@@ -30,7 +30,7 @@ interface FrontEndEditable
      *
      * Example Entries
      *     [
-     *         'Title' => true,
+     *         'Title' => 'checkForDuplicates',
      *         'Foo' => 'mycustomfunction'
      *     ]
      *

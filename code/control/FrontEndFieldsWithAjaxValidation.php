@@ -14,14 +14,14 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
     );
 
     /**
-     * returns true on OK - false on error ...
+     * returns false on OK - or a message on error
      * @return bool
      */
-    public function check() : bool
+    public function check($request) : bool
     {
         $className = Convert::raw2sql($this->request->param('ClassName'));
         $id = intval($this->request->param('ID'));
-        $field = intval($this->request->param('ID'));
+        $field = Convert::raw2sql($this->request->param('FieldName'));
         $value = Convert::raw2sql($this->request->getVar('val'));
         if($this->classAndFieldExist($className, $field)) {
             if($id) {
@@ -30,28 +30,38 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
                 $obj = DataObject::get_one($className);
             }
             if($obj->canEdit()) {
-                $validation = $obj->Frontxxx();
+                $validation = $obj->FrontEndFieldsWithAjaxValidation();
                 $method = $validation[$field];
-                if($method === true) }{
-                    $obj = $this;
-                    $method = 'checkForDuplicates';
+                $classAndMethod = explode('.', $method);
+                if(count($classAndMethod) === 2) {
+                    $method = $classAndMethod[1];
+                    $objectForMethod = $obj;
+                } else {
+                    $method = $classAndMethod[0];
+                    $objectForMethod = $this;
                 }
+
+                return $obj->$method();
             }
+        } else {
+            die('you can not access this page.');
         }
 
-        return true;
+        return false;
     }
 
     protected function checkForDuplicates($className, $ID, $field, $value)
     {
-        $others = $className::get()->filter([$field => $value])
+        $others = $className::get()->filter([$field => $value]);
         if($id) {
             $others->exclude(['ID' => $id]);
         }
-        if($others->count()) {
+        if($others->count() > 0) {
 
-            return false;
+            return 'There is another entry with the same value. Please enter a unique value';
         }
+
+        return 'false';
     }
 
 

@@ -68,6 +68,7 @@ var FrontEndEditForm = {
         FrontEndEditForm.checkHowCompleteFormIs();
         FrontEndEditForm.progressBarListeners();
         FrontEndEditForm.deleteConfirmation();
+        FrontEndEditForm.ajaxifyFields();
     },
 
     coreInits: function(){
@@ -366,7 +367,36 @@ var FrontEndEditForm = {
     },
 
     isNewRecord: function(){
-        return this.IDforRecord() == 0 ? true : false;
+        return parseInt(this.IDforRecord()) === 0 ? true : false;
+    },
+
+    ajaxifyFields: function()
+    {
+        jQuery('div.field.ajax-validation').on(
+            'change blur',
+            'input, select',
+            function(e) {
+                var el = jQuery(this);
+                var newValue = el.val();
+                var fieldName = el.attr('name');
+                var url = '/frontendfieldswithajaxvalidation/check/';
+                url += FrontEndEditForm.classNameForRecord()+'/'+FrontEndEditForm.IDforRecord()+'/'+fieldName+'/';
+                jQuery.get(
+                    url,
+                    {val: newValue},
+                    function(data, status, xhr){
+                        if(status !== 'success') {
+                            alert('There was an error.');
+                        } else {
+                            if(data === false) {
+                                el.focus();
+                                el.css('border', '1px solid red');
+                            }
+                        }
+                    }
+                );
+            }
+        )
     }
 
 }
