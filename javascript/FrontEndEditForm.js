@@ -78,7 +78,7 @@ var FrontEndEditForm = {
         //mark data as changed after an update.
         FrontEndEditForm.formObject.on(
             "change",
-            "input,  select, textarea",
+            "input, select, textarea",
             function(){
                 if(FrontEndEditForm.debug) {console.debug("data has changed");}
                 FrontEndEditForm.changedData = true;
@@ -140,7 +140,10 @@ var FrontEndEditForm = {
                                 .nextUntil( "h3, .CompositeField" )
                                 .removeClass("closedField")
                                 .addClass("openedField");
-                                document.cookie = "current_section_heading_" + FrontEndEditForm.uniquePageID() + "=" + jQuery(this).attr('id');
+                                FrontEndEditForm.setCookie(
+                                    "current_section_heading_" + FrontEndEditForm.uniquePageID(),
+                                    jQuery(this).attr('id')
+                                );
                             jQuery('h3.opened').not(this).click();
                         }
                     }
@@ -196,19 +199,12 @@ var FrontEndEditForm = {
         jQuery(".modalPopUp").attr("tabIndex", -1);
     },
 
+    setCookie: function(cname, value) {
+        localStorage.setItem(cname, value)
+    },
+
     getCookie: function(cname) {
-        var name = cname + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length,c.length);
-            }
-        }
-        return "";
+        return localStorage.getItem(cname);
     },
 
     openMySection: function(){
@@ -355,24 +351,34 @@ var FrontEndEditForm = {
             'div.field.ajax-validation input, div.field.ajax-validation select, div.field.ajax-validation textarea',
             function() {
                 var el = jQuery(this);
-                var newValue = el.val();
-                var fieldName = el.attr('name');
-                var url = '/frontendfieldswithajaxvalidation/check/';
-                url += FrontEndEditForm.classNameForRecord()+'/'+FrontEndEditForm.IDforRecord()+'/'+fieldName+'/';
-                jQuery.get(
-                    url,
-                    {val: newValue},
-                    function(data, status, xhr){
-                        if(status !== 'success') {
-                            alert('There was an error.');
-                        } else {
-                            if(data === false) {
-                                el.focus();
-                                el.css('border', '1px solid red');
+                var parentEl = el.closest('div.field.ajax-validation');
+                if(parentEl.hasClass('under-investigation') === false) {
+                    parentEl.addClass('under-investigation');
+                    var newValue = el.val();
+                    var fieldName = el.attr('name');
+                    var url = '/frontendfieldswithajaxvalidation/check/';
+                    url += FrontEndEditForm.classNameForRecord()+'/'+FrontEndEditForm.IDforRecord()+'/'+fieldName+'/';
+                    if(newValue.length > 2) {
+                        jQuery.get(
+                            url,
+                            {val: newValue},
+                            function(data, status, xhr){
+                                parentEl.find('label.error-message').remove();
+                                parentEl.removeClass('ajax-validation-error');
+                                parentEl.removeClass('under-investigation');
+                                if(status !== 'success') {
+                                    alert('There was an error.');
+                                } else {
+                                    if(data !== 'ok') {
+                                        el.focus();
+                                        parentEl.addClass('ajax-validation-error');
+                                        parentEl.append('<label class="right error-message">' + data + '</label>');
+                                    }
+                                }
                             }
-                        }
+                        );
                     }
-                );
+                }
             }
         )
     },

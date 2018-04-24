@@ -17,12 +17,14 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
      * returns false on OK - or a message on error
      * @return bool
      */
-    public function check($request) : bool
+    public function check($request)
     {
         $className = Convert::raw2sql($this->request->param('ClassName'));
-        $id = intval($this->request->param('ID'));
+        //this is a bit of a hack...
+        $id = intval($this->request->param('OtherID'));
         $field = Convert::raw2sql($this->request->param('FieldName'));
         $value = Convert::raw2sql($this->request->getVar('val'));
+        $returnValue = 'ok';
         if($this->classAndFieldExist($className, $field)) {
             if($id) {
                 $obj = $className::get()->byID($id);
@@ -40,17 +42,24 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
                     $method = $classAndMethod[0];
                     $objectForMethod = $this;
                 }
-
-                return $obj->$method();
+                $returnValue = $objectForMethod->$method($className, $id, $field, $value);
+            } else {
+                return Security::permissionFailure(
+                    $this,
+                    'You do not have privilege to edit this record.'
+                );
             }
         } else {
-            die('you can not access this page.');
+            return Security::permissionFailure(
+                $this,
+                'Bad data'
+            );
         }
 
-        return false;
+        die($returnValue);
     }
 
-    protected function checkForDuplicates($className, $ID, $field, $value)
+    protected function checkForDuplicates($className, $id, $field, $value)
     {
         $others = $className::get()->filter([$field => $value]);
         if($id) {
@@ -58,10 +67,10 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
         }
         if($others->count() > 0) {
 
-            return 'There is another entry with the same value. Please enter a unique value';
+            return 'There is another entry with the same value. <a href="">Please enter a unique value</a>';
         }
 
-        return 'false';
+        return 'ok';
     }
 
 
