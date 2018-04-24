@@ -9,9 +9,9 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
      * Defines methods that can be called directly
      * @var array
      */
-    private static $allowed_actions = array(
+    private static $allowed_actions = [
         'check' => true
-    );
+    ];
 
     /**
      * returns false on OK - or a message on error

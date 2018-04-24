@@ -12,6 +12,8 @@ var FrontEndEditForm = {
 
     formSelector: "#FrontEndEditForm_Form",
 
+    form: null,
+
     timer: null,
 
     itsAclick: false,
@@ -59,7 +61,7 @@ var FrontEndEditForm = {
     init: function(){
         //other stuff
         if(typeof FrontEndEditFormFormSelector !== 'undefined') {
-            this.formSelector = FrontEndEditFormFormSelector;
+            FrontEndEditForm.formSelector = FrontEndEditFormFormSelector;
         }
         FrontEndEditForm.coreInits();
         FrontEndEditForm.checkCookies();
@@ -68,12 +70,13 @@ var FrontEndEditForm = {
         FrontEndEditForm.checkHowCompleteFormIs();
         FrontEndEditForm.progressBarListeners();
         FrontEndEditForm.deleteConfirmation();
-        FrontEndEditForm.ajaxifyFields();
+        FrontEndEditForm.ajaxValidation();
     },
 
     coreInits: function(){
+        FrontEndEditForm.formObject = jQuery(FrontEndEditForm.formSelector);
         //mark data as changed after an update.
-        jQuery(FrontEndEditForm.formSelector).on(
+        FrontEndEditForm.formObject.on(
             "change",
             "input,  select, textarea",
             function(){
@@ -84,7 +87,7 @@ var FrontEndEditForm = {
         )
 
         //save when clicking on a link or an h3
-        jQuery(this.formSelector).on(
+        FrontEndEditForm.formObject.on(
             "click",
             "h3, a",
             function(){
@@ -98,24 +101,26 @@ var FrontEndEditForm = {
                     }
                     else {
                         if(FrontEndEditForm.debug) {console.debug("saving data now");}
-                        jQuery(FrontEndEditForm.formSelector).ajaxSubmit(FrontEndEditForm.ajaxForOptionsExistingRecord);
+                        FrontEndEditForm.formObject.ajaxSubmit(FrontEndEditForm.ajaxForOptionsExistingRecord);
                     }
                 }
             }
         );
 
         //add click functionality on H3...
-        jQuery("h3")
+        FrontEndEditForm.formObject.find("h3")
             .not("doNotSlide")
             .attr("tabIndex", 0)
-            .focus(function(event){
+            .focus(
+                function(event){
                 if(FrontEndEditForm.itsAclick) {
                     //do nothing because the click will do the work ...
                 }
                 else {
                     jQuery(this).click();
                 }
-            })
+                }
+            )
             .on(
                 'click',
                 function() {
@@ -149,7 +154,7 @@ var FrontEndEditForm = {
             );
 
         //set default open / close...
-        jQuery(FrontEndEditForm.formSelector+' h3').each(
+        FrontEndEditForm.formObject.find('h3').each(
             function(i, el){
                 if(i == 0) {
                     jQuery(el).addClass("opened");
@@ -161,22 +166,26 @@ var FrontEndEditForm = {
         );
 
         //on submit, always show the first one as this may have the required fields in it...
-        jQuery(FrontEndEditForm.formSelector + " input[type='submit']").click(
+        FrontEndEditForm.formObject.on(
+            'click',
+            " input[type='submit']",
             function(){
-                var item = jQuery(FrontEndEditForm.formSelector+' h3').first();
+                var item = FrontEndEditForm.formObject.find('h3').first();
                 if(jQuery(item).hasClass("closed")) {
                     jQuery(item).click();
                 }
             }
         );
-        if(FrontEndEditForm.debug) {console.debug("=========== form ready to go with ID:"+this.IDforRecord()+" and classname: "+this.classNameForRecord());}
+        if(FrontEndEditForm.debug) {
+            console.log("=========== form ready to go with ID:"+this.IDforRecord()+" and classname: "+this.classNameForRecord());
+        }
     },
 
     checkCookies: function(){
         var cookie = "current_section_heading_" + this.uniquePageID();
         var id = FrontEndEditForm.getCookie(cookie);
         if(id) {
-            jQuery(FrontEndEditForm.formSelector+' h3.opened').click();
+            FrontEndEditForm.formObject.find('h3.opened').click();
             if(jQuery("h3#" + id).length > 0) {
                 jQuery("h3#" + id).click();
             }
@@ -247,7 +256,7 @@ var FrontEndEditForm = {
         var fieldCount = 0;
         var fieldsCompleted = 0;
         var needsCompletion = false;
-        jQuery(FrontEndEditForm.formSelector+ " div.field").each(
+        FrontEndEditForm.formObject.find("div.field").each(
             function(i, el) {
                 if(!jQuery(this).hasClass("readonly")){
                     var element = jQuery(el);
@@ -339,6 +348,36 @@ var FrontEndEditForm = {
         );
     },
 
+    ajaxValidation: function()
+    {
+        FrontEndEditForm.formObject.on(
+            'change blur',
+            'div.field.ajax-validation input, div.field.ajax-validation select, div.field.ajax-validation textarea',
+            function() {
+                var el = jQuery(this);
+                var newValue = el.val();
+                var fieldName = el.attr('name');
+                var url = '/frontendfieldswithajaxvalidation/check/';
+                url += FrontEndEditForm.classNameForRecord()+'/'+FrontEndEditForm.IDforRecord()+'/'+fieldName+'/';
+                jQuery.get(
+                    url,
+                    {val: newValue},
+                    function(data, status, xhr){
+                        if(status !== 'success') {
+                            alert('There was an error.');
+                        } else {
+                            if(data === false) {
+                                el.focus();
+                                el.css('border', '1px solid red');
+                            }
+                        }
+                    }
+                );
+            }
+        )
+    },
+
+
     _uniquePageID: "",
 
     uniquePageID: function(){
@@ -368,35 +407,7 @@ var FrontEndEditForm = {
 
     isNewRecord: function(){
         return parseInt(this.IDforRecord()) === 0 ? true : false;
-    },
-
-    ajaxifyFields: function()
-    {
-        jQuery('div.field.ajax-validation').on(
-            'change blur',
-            'input, select',
-            function(e) {
-                var el = jQuery(this);
-                var newValue = el.val();
-                var fieldName = el.attr('name');
-                var url = '/frontendfieldswithajaxvalidation/check/';
-                url += FrontEndEditForm.classNameForRecord()+'/'+FrontEndEditForm.IDforRecord()+'/'+fieldName+'/';
-                jQuery.get(
-                    url,
-                    {val: newValue},
-                    function(data, status, xhr){
-                        if(status !== 'success') {
-                            alert('There was an error.');
-                        } else {
-                            if(data === false) {
-                                el.focus();
-                                el.css('border', '1px solid red');
-                            }
-                        }
-                    }
-                );
-            }
-        )
     }
+
 
 }

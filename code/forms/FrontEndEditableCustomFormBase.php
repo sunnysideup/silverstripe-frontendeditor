@@ -30,8 +30,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
     /**
-     * required fields for front end...
-     * @return null | RequiredFields
+     * {@inheritDoc}
      */
     public function getFrontEndValidator()
     {
@@ -47,8 +46,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
     /**
-     * the short title for the object
-     * @return string
+     * {@inheritDoc}
      */
     public function FrontEndShortTitle()
     {
@@ -56,9 +54,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
     /**
-     * more detailed title to explain the specific record you are dealing with
-     * make it return an empty string if no extended title is required...
-     * @return string
+     * {@inheritDoc}
      */
     public function FrontEndExtendedTitle()
     {
@@ -67,11 +63,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
 
 
     /**
-     * inserts Fields before FieldName
-     * so that you can create headers
-     * FieldName => Field
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function FrontEndHeaders()
     {
@@ -79,10 +71,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
     /**
-     * format:
-     * FieldName => class
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function ExtraClassesForFrontEnd()
     {
@@ -90,8 +79,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
     /**
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function ExtraClassesForFrontEndForm()
     {
@@ -99,10 +87,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
     /**
-     * format:
-     * FieldName => HTML Help Message
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function RightTitlesForFrontEnd()
     {
@@ -110,10 +95,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
     /**
-     * format:
-     * FieldName => placeholder value
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function PlaceHoldersForFrontEnd()
     {
@@ -122,11 +104,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
 
 
     /**
-     * format:
-     *  - FieldNameA,
-     *  - FieldNameB, etc..
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function FieldsToRemoveFromFrontEnd()
     {
@@ -135,9 +113,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
 
 
     /**
-     * list of relations that
-     * should not be created automatically...
-     * @return array
+     * {@inheritDoc}
      */
     public function FrontEndCustomRelationFields()
     {
@@ -145,25 +121,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
     /**
-     * list of options for each relation that can be selected instead of adding a new one ...
-     *
-     * e.g.
-     * MyHasOneRelation1ID => True ... uses FrontEndEditorSessionManager::editable_lists_based_on_can_edit
-     * MyHasOneRelation1ID => DataList
-     * MyHasOneRelation2ID => new DropdownField(.....)
-     * MyHasManyRelation => new CheckboxSetField(...)
-     * MyManyManyRelation => new DropdownField(.....)
-     * MyBelongsManyManyRelation1 => SS_Map
-     * MyBelongsManyManyRelation2 => SS_List
-     *
-     * add _CAN_BE_ADDED to the end of the relationship field name
-     * to separately define the ones that can be added ...
-     * e.g.
-     *    MyHasOneRelation1ID_CAN_BE_ADDED
-     *    MyHasManyRelation_CAN_BE_ADDED
-     *
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function FrontEndCustomRelationsOptionProvider()
     {
@@ -171,15 +129,6 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
     }
 
     /**
-    /**
-     * required fields for front end...
-     * @return null | RequiredFields
-     */
-    public function getFrontEndValidator()
-    {
-        return null;
-    }
-
      * list of fields that should be made read-only ...
      * e.g. the preset Title
      * @return array
@@ -191,15 +140,6 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
 
 
     /**
-    /**
-     * required fields for front end...
-     * @return null | RequiredFields
-     */
-    public function getFrontEndValidator()
-    {
-        return null;
-    }
-
      * list of fields foreign relations that are not deleted
      * but where a field is set to false or something similar
      * @return array
