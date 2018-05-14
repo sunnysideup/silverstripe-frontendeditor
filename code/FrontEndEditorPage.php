@@ -54,7 +54,7 @@ class FrontEndEditorPage extends Page
      */
     public function FrontEndEditLink($recordBeingEdited)
     {
-        if($recordBeingEdited->ID) {
+        if ($recordBeingEdited->ID) {
             return $this->FrontEndEditLinkFast(
                 $recordBeingEdited->ClassName,
                 $recordBeingEdited->ID
@@ -147,7 +147,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
             $id = $this->request->param("OtherID");
             if ($id) {
                 $this->recordBeingEdited = $model::get()->byID($id);
-                if($this->recordBeingEdited) {
+                if ($this->recordBeingEdited) {
                     $this->rootParentObject = $this->recordBeingEdited->FrontEndRootParentObject();
                     FrontEndEditorSessionManager::set_can_edit_object($this->rootParentObject);
                 }
@@ -579,7 +579,7 @@ class FrontEndEditorPage_Controller extends Page_Controller
     public function debugsequencer()
     {
         $html = '';
-        if($this->recordBeingEdited && $this->recordBeingEdited->exists()) {
+        if ($this->recordBeingEdited && $this->recordBeingEdited->exists()) {
             //do nothing
         } else {
             $this->recordBeingEdited = FrontEndEditorSessionManager::get_record_being_edited_in_sequence();
