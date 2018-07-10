@@ -66,7 +66,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     public function PrepareForNextPage() : bool
     {
         $nextObject = $this->NextPageObject();
-        if(! $nextObject->exists()) {
+        if (! $nextObject->exists()) {
             //create one
         }
 
@@ -81,7 +81,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     public function prepareAddAnother() : bool
     {
         $currentRecord = $this->getCurrentRecordBeingEdited();
-        if($currentRecord && $currentRecord->exists()) {
+        if ($currentRecord && $currentRecord->exists()) {
             $this->AddAnotherOfThisClass($currentRecord);
             return true;
         }
@@ -177,7 +177,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
                             $items =  $this->FrontEndFindChildObjects($myClassName)->sort(['ID' => 'ASC'])->limit(50);
                             $count = $items->count();
                             if ($count === 0) {
-                                if($currentObject->ClassName === $myClassName) {
+                                if ($currentObject->ClassName === $myClassName) {
                                     $linkingMode = 'current';
                                 }
                                 $obj = Injector::inst()->get($myClassName);
@@ -189,9 +189,9 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
                                 // $this->_allPages->push($className::create());
                             } else {
                                 foreach ($items as $count => $obj) {
-                                    if($currentObject->ClassName == $obj->ClassName && $currentObject->ID == $obj->ID) {
+                                    if ($currentObject->ClassName == $obj->ClassName && $currentObject->ID == $obj->ID) {
                                         $linkingMode = 'current';
-                                    } elseif($currentObject->ClassName === $obj->ClassName) {
+                                    } elseif ($currentObject->ClassName === $obj->ClassName) {
                                         $linkingMode = 'section';
                                     }
                                     $obj->SequenceTitle = $this->editStatement($obj, $configs);
@@ -309,7 +309,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         } else {
             $this->currentRecordBeingEdited = FrontEndEditorSessionManager::get_record_being_edited_in_sequence();
 
-            if(! $this->currentRecordBeingEdited) {
+            if (! $this->currentRecordBeingEdited) {
                 $this->currentRecordBeingEdited = FrontEndEditorSessionManager::get_can_edit_object();
             }
         }
@@ -373,7 +373,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function FrontEndFindChildObjects($className) : SS_List
     {
-        if(! isset(self::$_child_object_cache[$className])) {
+        if (! isset(self::$_child_object_cache[$className])) {
             self::$_child_object_cache[$className] = ArrayList::create();
             $rootParent = $this->FrontEndRootParentObject();
             if ($rootParent && $rootParent->exists()) {
@@ -432,7 +432,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
                 ||
                 ((string) $item->FrontEndUID() === (string) $pageNumberOrFrontEndUID)
             ) {
-                if($returnPageNumber) {
+                if ($returnPageNumber) {
                     return $count;
                 } else {
                     return $item;
@@ -505,5 +505,4 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     {
         return $obj->i18n_singular_name().': '.$obj->Title;
     }
-
 }

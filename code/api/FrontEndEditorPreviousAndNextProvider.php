@@ -347,8 +347,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function goNextPage() : string
     {
-
-        if($canGo = $this->runOnSequencer('PrepareForNextPage', false)) {
+        if ($canGo = $this->runOnSequencer('PrepareForNextPage', false)) {
             $this->setPage(1);
             $link = $this->getPageLink(0);
             return $link;
@@ -363,8 +362,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
      */
     public function goAddAnother() : string
     {
-
-        if($canGo = $this->runOnSequencer('PrepareAddAnother', false)) {
+        if ($canGo = $this->runOnSequencer('PrepareAddAnother', false)) {
             $this->setPage(1);
             $link = $this->getPageLink(0);
             return $link;
@@ -516,7 +514,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
 
     public function debug($currentRecordBeingEdited = null)
     {
-        if($currentRecordBeingEdited !== null) {
+        if ($currentRecordBeingEdited !== null) {
             $this->setCurrentRecordBeingEdited($currentRecordBeingEdited);
         }
         $html = '';
@@ -559,7 +557,7 @@ class FrontEndEditorPreviousAndNextProvider extends Object
 
         $html .= '<hr /><h3>All Pages</h3>';
         $html .= '<hr />';
-        foreach($this->AllPages() as $page){
+        foreach ($this->AllPages() as $page) {
             $html .= print_r($page->FrontEndUID(), 1);
             $html .= '<br />';
         }

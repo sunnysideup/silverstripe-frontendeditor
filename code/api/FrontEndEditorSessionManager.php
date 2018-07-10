@@ -143,7 +143,7 @@ class FrontEndEditorSessionManager extends Object
     public static function clear_all_previous_objects()
     {
         self::clear_variable('FEE_GoBackInBrowserSteps');
-        for($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             self::clear_variable('FEE_GoBackInBrowserStepsDetails'.$i);
         }
     }
@@ -242,7 +242,7 @@ class FrontEndEditorSessionManager extends Object
 
     public static function set_sequencer($className)
     {
-        Session::set('FEE_SequencerClassName',$className);
+        Session::set('FEE_SequencerClassName', $className);
     }
 
     /**
@@ -342,7 +342,7 @@ class FrontEndEditorSessionManager extends Object
 
     protected static function clear_variable($variable)
     {
-        for($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             Session::set($variable, '');
             Session::set($variable, null);
             Session::clear($variable);
