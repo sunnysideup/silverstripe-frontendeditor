@@ -166,7 +166,6 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
             $dropdownSource = null;
             if ($source && $source instanceof FormField) {
                 $existingSelectorField = $source;
-                // do nothing
             } elseif ($source && $source instanceof SS_Map) {
                 if ($source->count()) {
                     $dropdownSource = $source->toArray();
