@@ -63,10 +63,15 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
     {
         $others = $className::get()->filter([$field => $value]);
         if ($id) {
-            $others->exclude(['ID' => $id]);
+            $others = $others->exclude(['ID' => $id]);
         }
         if ($others->count() > 0) {
-            return 'There is another entry with the same value. <a href="">Please enter a unique value</a>';
+            $list = [];
+            foreach ($others as $other) {
+                $list[] = '<a href="'.$other->FrontEndEditLink().'">'.$other->FrontEndShortTitle().'</a>';
+            }
+            return '
+                There is another entry with the same value. '.implode(', ', $list);
         }
 
         return 'ok';
