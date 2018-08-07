@@ -449,10 +449,6 @@ class FrontEndEditForm extends Form
                             }
                             $this->recordBeingEdited->$relationName()->addMany($data[$relationName]);
                         }
-                    } else {
-                        if (isset($manyMany[$relationName])) {
-                            $this->recordBeingEdited->$relationName()->removeAll();
-                        }
                     }
                 }
             }

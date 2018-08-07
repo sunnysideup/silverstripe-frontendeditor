@@ -77,6 +77,13 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
         return 'ok';
     }
 
+    protected function checkForDuplicatesAsNumbers($className, $id, $field, $value)
+    {
+        $value = intval(preg_replace("/[^0-9]/", "", $value));
+
+        return $this->checkForDuplicates($className, $id, $field, $value);
+    }
+
 
     protected function classAndFieldExist($className, $field) : bool
     {
