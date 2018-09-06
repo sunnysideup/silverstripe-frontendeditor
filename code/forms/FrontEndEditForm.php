@@ -259,7 +259,7 @@ class FrontEndEditForm extends Form
         }
 
 
-        //headers
+        //headers and special cases...
         $headerArray = [];
         $currentlyAddingTo = "";
         foreach ($fields as $field) {
@@ -279,6 +279,17 @@ class FrontEndEditForm extends Form
             }
             if ($currentlyAddingTo) {
                 $headerArray[$currentlyAddingTo][$fieldName] = $field;
+            }
+
+            if ($field instanceof CheckboxSetField) {
+                //'adds ability to select none in checkboxsetfield'
+                $fields->push(
+                    HiddenField::create(
+                        $field->getName().'[0]',
+                        0,
+                        0
+                    )
+                );
             }
         }
         foreach ($headerArray as $fieldName => $fieldArray) {
@@ -436,10 +447,11 @@ class FrontEndEditForm extends Form
 
             //more hack!
             //we can only add here, not remove...
-            $manyMany = $this->recordBeingEdited->manyMany();
+            $manyMany = $this->recordBeingEdited->manyMany() + $this->recordBeingEdited->hasMany();
             foreach ($this->relationsBeingSaved as $relationName) {
                 if ($relationName) {
                     if (isset($data[$relationName])) {
+                        //special case ???
                         if (isset($data[$relationName]["GridState"])) {
                             //do nothing ..
                         } else {
@@ -447,6 +459,8 @@ class FrontEndEditForm extends Form
                                 $this->recordBeingEdited->$relationName()->removeAll();
                                 // debug::log(print_r($data[$relationName], 1));
                             }
+                            //remove any useless ones ...
+                            unset($data[$relationName][0]);
                             $this->recordBeingEdited->$relationName()->addMany($data[$relationName]);
                         }
                     }
