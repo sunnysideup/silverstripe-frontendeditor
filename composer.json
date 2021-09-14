@@ -20,10 +20,11 @@
         }
     ],
     "require": {
-        "silverstripe/framework": "~3.6",
-        "sunnysideup/dataobjectsorter": "*",
+        "silverstripe/framework": "4.8.0",
+        "sunnysideup/dataobjectsorter": "^5.0",
         "i-lateral/silverstripe-trumbowyg-htmleditor": "*",
-        "silverstripe/cms": "~3.6"
+        "silverstripe/recipe-cms": "^4.7",
+        
     },
     "extra": {
         "installer-name": "frontendeditor"
