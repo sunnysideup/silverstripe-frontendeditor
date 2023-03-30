@@ -1,5 +1,11 @@
 <?php
 
+namespace SunnySideUp\FrontendEditor\Api;
+
+use ViewableData;
+use Controller;
+
+
 /**
  * holds info about the current edit session
  *

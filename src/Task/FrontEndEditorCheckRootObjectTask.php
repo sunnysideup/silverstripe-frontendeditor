@@ -1,5 +1,15 @@
 <?php
 
+namespace SunnySideUp\FrontendEditor\Task;
+
+use BuildTask;
+use ClassInfo;
+use SiteTree;
+use Versioned;
+use DataObject;
+use DB;
+
+
 
 class FrontEndEditorCheckRootObjectTask extends BuildTask
 {

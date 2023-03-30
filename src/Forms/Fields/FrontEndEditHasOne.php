@@ -1,5 +1,12 @@
 <?php
 
+namespace SunnySideUp\FrontendEditor\Forms\Fields;
+
+use FormField;
+use FrontEndEditable;
+use Injector;
+
+
 /**
  * creates an edit or add
  * field for an has one relation.

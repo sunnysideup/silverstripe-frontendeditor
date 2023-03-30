@@ -1,5 +1,10 @@
 <?php
 
+namespace SunnySideUp\FrontendEditor;
+
+use Page;
+
+
 
 class FrontEndEditorPage extends Page
 {

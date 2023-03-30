@@ -1,5 +1,10 @@
 <?php
 
+namespace SunnySideUp\FrontendEditor\Model\Explanations;
+
+use FrontEndEditorExplanationsBaseClass;
+
+
 class FrontEndEditorSequencerExplanation extends FrontEndEditorExplanationsBaseClass
 {
     private static $field_labels = array(

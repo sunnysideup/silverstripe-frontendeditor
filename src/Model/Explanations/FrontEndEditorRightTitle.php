@@ -1,5 +1,14 @@
 <?php
 
+namespace SunnySideUp\FrontendEditor\Model\Explanations;
+
+use FrontEndEditorExplanationsBaseClass;
+use DataObject;
+use DB;
+use DropdownField;
+use ReadonlyField;
+
+
 class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
 {
     private static $field_labels = array(

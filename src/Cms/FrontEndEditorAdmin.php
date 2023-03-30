@@ -1,5 +1,10 @@
 <?php
 
+namespace SunnySideUp\FrontendEditor\Cms;
+
+use ModelAdmin;
+
+
 /**
  * This is the modeladmin for the providers
  * and the services.

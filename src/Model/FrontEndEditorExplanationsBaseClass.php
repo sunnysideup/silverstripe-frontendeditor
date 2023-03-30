@@ -1,5 +1,14 @@
 <?php
 
+namespace SunnySideUp\FrontendEditor\Model;
+
+use DataObject;
+use DropdownField;
+use TextField;
+use ReadonlyField;
+use Injector;
+
+
 class FrontEndEditorExplanationsBaseClass extends DataObject
 {
 
