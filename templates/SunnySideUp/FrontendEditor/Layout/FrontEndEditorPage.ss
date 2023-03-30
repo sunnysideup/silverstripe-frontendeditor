@@ -1,4 +1,4 @@
-<% include SideBar %>
+<% include SunnySideUp\FrontendEditor\IncludesSideBar %>
 <div class="content-container unit size3of4 lastUnit">
     <article>
         <h1>$Title</h1>
@@ -35,6 +35,6 @@
         </div>
     </aside>
 
-    <div id="FontEndEditorFormOuter"><% include FrontEndEditorPageAjaxVersion %></div>
+    <div id="FontEndEditorFormOuter"><% include SunnySideUp\FrontendEditor\IncludesFrontEndEditorPageAjaxVersion %></div>
 
 </div>
