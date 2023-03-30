@@ -25,10 +25,10 @@ class FrontEndEditorExplanationsBaseClass extends DataObject
     private static $indexes = array(
         "ObjectClassName" => true,
         "ObjectFieldName" => true,
-        "Unique" => array(
+        "Unique" => [
             "type" => "unique",
-            "value" => "\"ObjectClassName\", \"ObjectFieldName\"",
-        )
+            "columns" => ['ObjectClassName', 'ObjectFieldName'],
+        ]
     );
 
     private static $casting = array(

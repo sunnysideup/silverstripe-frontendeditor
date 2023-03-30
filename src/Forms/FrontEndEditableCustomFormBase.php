@@ -18,6 +18,8 @@ use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
 class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEditable
 {
 
+    private static $table_name = 'FrontEndEditableCustomFormBase';
+
     /**
      *
      * @param  FrontEndEditable            $parentObject DataObject
