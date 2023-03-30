@@ -2,8 +2,11 @@
 
 namespace SunnySideUp\FrontendEditor\Api;
 
-use ViewableData;
-use Controller;
+
+
+use SilverStripe\Control\Controller;
+use SilverStripe\View\ViewableData;
+
 
 
 /**

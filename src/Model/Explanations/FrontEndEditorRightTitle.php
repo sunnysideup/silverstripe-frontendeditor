@@ -2,11 +2,18 @@
 
 namespace SunnySideUp\FrontendEditor\Model\Explanations;
 
-use FrontEndEditorExplanationsBaseClass;
-use DataObject;
-use DB;
-use DropdownField;
-use ReadonlyField;
+
+
+
+
+
+use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorRightTitle;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DB;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\ReadonlyField;
+use SunnySideUp\FrontendEditor\Model\FrontEndEditorExplanationsBaseClass;
+
 
 
 class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
@@ -108,7 +115,7 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
             "ObjectFieldName" => $fieldName
         );
         $obj = DataObject::get_one(
-            'FrontEndEditorRightTitle',
+            FrontEndEditorRightTitle::class,
             $filter,
             $cacheDataObjectGetOne = false
         );

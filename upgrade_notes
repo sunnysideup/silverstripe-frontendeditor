@@ -1,0 +1,1061 @@
+2023-03-30 10:48
+
+# running php upgrade upgrade see: https://github.com/silverstripe/silverstripe-upgrader
+cd /var/www/upgrades/upgradeto4
+php /var/www/ss4/upgrader/vendor/silverstripe/upgrader/bin/upgrade-code upgrade /var/www/upgrades/upgradeto4/frontendeditor  --root-dir=/var/www/upgrades/upgradeto4 --write -vvv
+Writing changes for 20 files
+Running upgrades on "/var/www/upgrades/upgradeto4/frontendeditor"
+[2023-03-30 22:48:50] Applying RenameClasses to FrontendeditorTest.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontendeditorTest.php...
+[2023-03-30 22:48:50] Applying UpdateConfigClasses to routes.yml...
+[2023-03-30 22:48:50] Applying RenameClasses to config.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to config.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndFieldsWithAjaxValidation.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndFieldsWithAjaxValidation.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditorExplanationsBaseClass.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditorExplanationsBaseClass.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndDataExtension.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndDataExtension.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditorSequencerExplanation.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditorSequencerExplanation.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditorRightTitle.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditorRightTitle.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditorClassExplanation.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditorClassExplanation.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditorPage.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditorPage.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditorPageController.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditorPageController.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditorPreviousAndNextProvider.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditorPreviousAndNextProvider.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditorSessionManager.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditorSessionManager.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditorPreviousAndNextSequencer.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditorPreviousAndNextSequencer.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndExtendedHasOneOrManyField.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndExtendedHasOneOrManyField.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditHasOne.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditHasOne.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndExtendedHasManyField.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndExtendedHasManyField.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndExtendedHasOneField.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndExtendedHasOneField.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditableCustomFormBase.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditableCustomFormBase.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditForm.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditForm.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditorCheckRootObjectTask.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditorCheckRootObjectTask.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditable.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditable.php...
+[2023-03-30 22:48:50] Applying RenameClasses to FrontEndEditorAdmin.php...
+[2023-03-30 22:48:50] Applying ClassToTraitRule to FrontEndEditorAdmin.php...
+modified:	tests/FrontendeditorTest.php
+@@ -1,4 +1,6 @@
+ <?php
++
++use SilverStripe\Dev\SapphireTest;
+
+ class FrontendeditorTest extends SapphireTest
+ {
+
+modified:	_config/routes.yml
+@@ -1,4 +1,4 @@
+ SilverStripe\Control\Director:
+   rules:
+-    'frontendfieldswithajaxvalidation//$Action/$ClassName/$OtherID/$FieldName/': 'FrontEndFieldsWithAjaxValidation'
++    frontendfieldswithajaxvalidation//$Action/$ClassName/$OtherID/$FieldName/: SunnySideUp\FrontendEditor\Control\FrontEndFieldsWithAjaxValidation
+
+
+modified:	src/Control/FrontEndFieldsWithAjaxValidation.php
+@@ -2,11 +2,17 @@
+
+ namespace SunnySideUp\FrontendEditor\Control;
+
+-use ContentController;
+-use Convert;
+-use DataObject;
+-use Security;
+-use Injector;
++
++
++
++
++
++use SilverStripe\Core\Convert;
++use SilverStripe\ORM\DataObject;
++use SilverStripe\Security\Security;
++use SilverStripe\Core\Injector\Injector;
++use SilverStripe\CMS\Controllers\ContentController;
++
+
+
+
+
+Warnings for src/Control/FrontEndFieldsWithAjaxValidation.php:
+ - src/Control/FrontEndFieldsWithAjaxValidation.php:75 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 75
+
+ - src/Control/FrontEndFieldsWithAjaxValidation.php:145 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 145
+
+modified:	src/Model/FrontEndEditorExplanationsBaseClass.php
+@@ -2,11 +2,18 @@
+
+ namespace SunnySideUp\FrontendEditor\Model;
+
+-use DataObject;
+-use DropdownField;
+-use TextField;
+-use ReadonlyField;
+-use Injector;
++
++
++
++
++
++use SunnySideUp\FrontendEditor\Model\FrontEndEditorExplanationsBaseClass;
++use SilverStripe\ORM\DataObject;
++use SilverStripe\Forms\DropdownField;
++use SilverStripe\Forms\TextField;
++use SilverStripe\Forms\ReadonlyField;
++use SilverStripe\Core\Injector\Injector;
++
+
+
+ class FrontEndEditorExplanationsBaseClass extends DataObject
+@@ -79,7 +86,7 @@
+   */
+     public static function add_or_find_item($className, $type = '') : FrontEndEditorExplanationsBaseClass
+     {
+-        if (! $type || $type === 'FrontEndEditorExplanationsBaseClass') {
++        if (! $type || $type === FrontEndEditorExplanationsBaseClass::class) {
+             user_error('A type must be provided!');
+         }
+
+@@ -268,8 +275,8 @@
+   * EXP: Check if the class name can still be used as such
+   * ### @@@@ STOP REPLACEMENT @@@@ ###
+   */
+-                $className = 'DataObject';
+-                $this->ObjectClassName = "DataObject";
++                $className = DataObject::class;
++                $this->ObjectClassName = DataObject::class;
+             }
+
+ /**
+
+Warnings for src/Model/FrontEndEditorExplanationsBaseClass.php:
+ - src/Model/FrontEndEditorExplanationsBaseClass.php:116 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 116
+
+modified:	src/Model/FrontEndDataExtension.php
+@@ -2,21 +2,39 @@
+
+ namespace SunnySideUp\FrontendEditor\Model;
+
+-use DataExtension;
+-use FieldList;
+-use ReadonlyField;
+-use GridField;
+-use ArrayList;
+-use GridFieldConfig_RecordEditor;
+-use LiteralField;
+-use FrontEndEditorClassExplanation;
+-use DataObject;
+-use FrontEndEditorRightTitle;
+-use Config;
+-use FrontEndEditorSessionManager;
+-use ValidationResult;
+-use SiteTree;
+-use DB;
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++use SilverStripe\Security\Member;
++use SilverStripe\Forms\FieldList;
++use SilverStripe\Forms\ReadonlyField;
++use SilverStripe\ORM\ArrayList;
++use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
++use SilverStripe\Forms\GridField\GridField;
++use SilverStripe\Forms\LiteralField;
++use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorClassExplanation;
++use SunnySideUp\FrontendEditor\FrontEndEditorPage;
++use SilverStripe\ORM\DataObject;
++use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorRightTitle;
++use SilverStripe\Core\Config\Config;
++use SunnySideUp\FrontendEditor\Api\FrontEndEditorSessionManager;
++use SilverStripe\ORM\ValidationResult;
++use SilverStripe\CMS\Model\SiteTree;
++use SilverStripe\ORM\DB;
++use SilverStripe\ORM\DataExtension;
++
+
+
+
+@@ -36,7 +54,7 @@
+     );
+
+     public static $has_one = array(
+-        "FrontEndEditor" => "Member"
++        "FrontEndEditor" => Member::class
+     );
+
+     public static $indexes = array(
+@@ -169,7 +187,7 @@
+      */
+     public function FrontEndEditLink()
+     {
+-        $page = DataObject::get_one('FrontEndEditorPage');
++        $page = DataObject::get_one(FrontEndEditorPage::class);
+         if ($page) {
+             return $page->Link("edit/".$this->owner->ClassName."/".$this->owner->ID."/");
+         } elseif ($this->owner->hasMethod("CMSEditLink")) {
+@@ -316,12 +334,12 @@
+
+     public function FrontEndRemoveRelationLink($relationField, $foreignID)
+     {
+-        return DataObject::get_one('FrontEndEditorPage')->FrontEndRemoveRelationLink($this->owner, $relationField, $foreignID);
++        return DataObject::get_one(FrontEndEditorPage::class)->FrontEndRemoveRelationLink($this->owner, $relationField, $foreignID);
+     }
+
+     public function FrontEndAddRelationLink($relationField)
+     {
+-        return DataObject::get_one('FrontEndEditorPage')->FrontEndAddRelationLink($this->owner, $relationField);
++        return DataObject::get_one(FrontEndEditorPage::class)->FrontEndAddRelationLink($this->owner, $relationField);
+     }
+
+     private static $_front_end_root_parent_object = [];
+
+Warnings for src/Model/FrontEndDataExtension.php:
+ - src/Model/FrontEndDataExtension.php:447 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 447
+
+ - src/Model/FrontEndDataExtension.php:485 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 485
+
+modified:	src/Model/Explanations/FrontEndEditorSequencerExplanation.php
+@@ -2,7 +2,10 @@
+
+ namespace SunnySideUp\FrontendEditor\Model\Explanations;
+
+-use FrontEndEditorExplanationsBaseClass;
++
++use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorSequencerExplanation;
++use SunnySideUp\FrontendEditor\Model\FrontEndEditorExplanationsBaseClass;
++
+
+
+ class FrontEndEditorSequencerExplanation extends FrontEndEditorExplanationsBaseClass
+@@ -39,7 +42,7 @@
+   * EXP: Check if the class name can still be used as such
+   * ### @@@@ STOP REPLACEMENT @@@@ ###
+   */
+-    public static function add_or_find_item($className, $type = 'FrontEndEditorSequencerExplanation'): FrontEndEditorExplanationsBaseClass
++    public static function add_or_find_item($className, $type = FrontEndEditorSequencerExplanation::class): FrontEndEditorExplanationsBaseClass
+     {
+
+ /**
+
+modified:	src/Model/Explanations/FrontEndEditorRightTitle.php
+@@ -2,11 +2,18 @@
+
+ namespace SunnySideUp\FrontendEditor\Model\Explanations;
+
+-use FrontEndEditorExplanationsBaseClass;
+-use DataObject;
+-use DB;
+-use DropdownField;
+-use ReadonlyField;
++
++
++
++
++
++use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorRightTitle;
++use SilverStripe\ORM\DataObject;
++use SilverStripe\ORM\DB;
++use SilverStripe\Forms\DropdownField;
++use SilverStripe\Forms\ReadonlyField;
++use SunnySideUp\FrontendEditor\Model\FrontEndEditorExplanationsBaseClass;
++
+
+
+ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
+@@ -108,7 +115,7 @@
+             "ObjectFieldName" => $fieldName
+         );
+         $obj = DataObject::get_one(
+-            'FrontEndEditorRightTitle',
++            FrontEndEditorRightTitle::class,
+             $filter,
+             $cacheDataObjectGetOne = false
+         );
+
+modified:	src/Model/Explanations/FrontEndEditorClassExplanation.php
+@@ -2,14 +2,18 @@
+
+ namespace SunnySideUp\FrontendEditor\Model\Explanations;
+
+-use FrontEndEditorExplanationsBaseClass;
++
++use SilverStripe\ORM\DataObject;
++use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorClassExplanation;
++use SunnySideUp\FrontendEditor\Model\FrontEndEditorExplanationsBaseClass;
++
+
+
+ class FrontEndEditorClassExplanation extends FrontEndEditorExplanationsBaseClass
+ {
+     private static $field_labels = array(
+         "ObjectClassName" => "DataObject Code",
+-        "ClassNameNice" => "DataObject",
++        "ClassNameNice" => DataObject::class,
+         "LongDescription" => "Details of DataObject"
+     );
+
+@@ -39,7 +43,7 @@
+   * EXP: Check if the class name can still be used as such
+   * ### @@@@ STOP REPLACEMENT @@@@ ###
+   */
+-    public static function add_or_find_item($className, $type = 'FrontEndEditorClassExplanation'): FrontEndEditorExplanationsBaseClass
++    public static function add_or_find_item($className, $type = FrontEndEditorClassExplanation::class): FrontEndEditorExplanationsBaseClass
+     {
+
+ /**
+
+modified:	src/FrontEndEditorPageController.php
+@@ -3,19 +3,35 @@
+ namespace SunnySideUp\FrontendEditor;
+
+ use PageController;
+-use Requirements;
+-use FrontEndEditorSessionManager;
+-use FrontEndEditForm;
+-use ArrayList;
+-use ArrayData;
+-use FrontEndEditable;
+-use Permission;
+-use Director;
+-use Config;
+-use SiteTree;
+-use Controller;
+-use SS_HTTPResponse;
+-use FrontEndEditorPreviousAndNextProvider;
++
++
++
++
++
++
++
++
++
++
++
++
++
++use SilverStripe\View\Requirements;
++use SilverStripe\ORM\DataObject;
++use SunnySideUp\FrontendEditor\Api\FrontEndEditorSessionManager;
++use SilverStripe\Forms\Form;
++use SunnySideUp\FrontendEditor\Forms\FrontEndEditForm;
++use SilverStripe\ORM\ArrayList;
++use SilverStripe\View\ArrayData;
++use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
++use SilverStripe\Security\Permission;
++use SilverStripe\Control\Director;
++use SilverStripe\Core\Config\Config;
++use SilverStripe\CMS\Model\SiteTree;
++use SilverStripe\Control\Controller;
++use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
++use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextProvider;
++
+
+
+ class FrontEndEditorPageController extends PageController
+@@ -90,7 +106,7 @@
+         if (!$model) {
+             $model = $this->Config()->get("default_model");
+         }
+-        if ($model && is_subclass_of($model, 'DataObject', true)) {
++        if ($model && is_subclass_of($model, DataObject::class, true)) {
+             $id = $this->request->param("OtherID");
+             if ($id) {
+                 $this->recordBeingEdited = $model::get()->byID($id);
+@@ -127,7 +143,7 @@
+
+     public function Form()
+     {
+-        $form = FrontEndEditForm::create($this, "Form", $this->recordBeingEdited);
++        $form = FrontEndEditForm::create($this, Form::class, $this->recordBeingEdited);
+         if ($this->recordBeingEdited) {
+             if ($this->recordBeingEdited->hasMethod("ExtraClassesForFrontEndForm")) {
+                 $form->addExtraClass($this->recordBeingEdited->ExtraClassesForFrontEndForm());
+@@ -292,7 +308,7 @@
+      */
+     public function frontendaddrelation()
+     {
+-        Config::modify()->update('DataObject', 'validation_enabled', false);
++        Config::modify()->update(DataObject::class, 'validation_enabled', false);
+         $foreignObject = explode(",", $this->request->getVar("goingto"));
+         $relationName = $foreignObject[0];
+         $type = $this->frontEndDetermineRelationType($relationName);
+@@ -413,7 +429,7 @@
+   * ### @@@@ STOP REPLACEMENT @@@@ ###
+   */
+                         $obj = $className::get()->byID($id);
+-                        if ($obj && $obj->hasExtension('FrontEndDataExtension')) {
++                        if ($obj && $obj->hasExtension(FrontEndDataExtension::class)) {
+                             if (!$al) {
+                                 $al = ArrayList::create();
+                             }
+
+Warnings for src/FrontEndEditorPageController.php:
+ - src/FrontEndEditorPageController.php:96 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 96
+
+ - src/FrontEndEditorPageController.php:103 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 103
+
+ - src/FrontEndEditorPageController.php:130 Renaming ambiguous string Form to SilverStripe\Forms\Form
+
+ - src/FrontEndEditorPageController.php:244 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 244
+
+ - src/FrontEndEditorPageController.php:300 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 300
+
+ - src/FrontEndEditorPageController.php:415 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 415
+
+modified:	src/Api/FrontEndEditorPreviousAndNextProvider.php
+@@ -2,14 +2,24 @@
+
+ namespace SunnySideUp\FrontendEditor\Api;
+
+-use ViewableData;
+-use Injector;
+-use ArrayList;
+-use ClassInfo;
+-use FrontEndEditorSequencerExplanation;
+-use ArrayData;
+-use FrontEndEditable;
++
++
++
++
++
++
++
+ use int;
++use SilverStripe\Core\Injector\Injector;
++use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextProvider;
++use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextSequencer;
++use SilverStripe\Core\ClassInfo;
++use SilverStripe\ORM\ArrayList;
++use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorSequencerExplanation;
++use SilverStripe\View\ArrayData;
++use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
++use SilverStripe\View\ViewableData;
++
+
+
+ /**
+@@ -47,7 +57,7 @@
+     public static function inst($sequencerClassName = null, $currentRecordBeingEdited = null) : FrontEndEditorPreviousAndNextProvider
+     {
+         if (self::$_me_cached === null) {
+-            self::$_me_cached = Injector::inst()->get('FrontEndEditorPreviousAndNextProvider');
++            self::$_me_cached = Injector::inst()->get(FrontEndEditorPreviousAndNextProvider::class);
+         }
+         if ($sequencerClassName) {
+             self::$_me_cached->setSequenceProvider($sequencerClassName);
+@@ -69,8 +79,8 @@
+     public function ListOfSequences($member = null) : ArrayList
+     {
+         $array = [];
+-        $list = ClassInfo::subclassesFor('FrontEndEditorPreviousAndNextSequencer');
+-        unset($list['FrontEndEditorPreviousAndNextSequencer']);
++        $list = ClassInfo::subclassesFor(FrontEndEditorPreviousAndNextSequencer::class);
++        unset($list[FrontEndEditorPreviousAndNextSequencer::class]);
+         $currentSequencerClassName = $this->getClassName();
+         $al = ArrayList::create();
+
+@@ -148,7 +158,7 @@
+   */
+     public function setSequenceProvider($className) : FrontEndEditorPreviousAndNextProvider
+     {
+-        $list = ClassInfo::subclassesFor('FrontEndEditorPreviousAndNextSequencer');
++        $list = ClassInfo::subclassesFor(FrontEndEditorPreviousAndNextSequencer::class);
+         $list = array_change_key_case($list);
+
+ /**
+@@ -159,7 +169,7 @@
+   * EXP: Check if the class name can still be used as such
+   * ### @@@@ STOP REPLACEMENT @@@@ ###
+   */
+-        if (isset($list[$className]) && $className !== 'FrontEndEditorPreviousAndNextSequencer') {
++        if (isset($list[$className]) && $className !== FrontEndEditorPreviousAndNextSequencer::class) {
+
+ /**
+   * ### @@@@ START REPLACEMENT @@@@ ###
+
+modified:	src/Api/FrontEndEditorSessionManager.php
+@@ -2,8 +2,11 @@
+
+ namespace SunnySideUp\FrontendEditor\Api;
+
+-use ViewableData;
+-use Controller;
++
++
++use SilverStripe\Control\Controller;
++use SilverStripe\View\ViewableData;
++
+
+
+ /**
+
+Warnings for src/Api/FrontEndEditorSessionManager.php:
+ - src/Api/FrontEndEditorSessionManager.php:103 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 103
+
+ - src/Api/FrontEndEditorSessionManager.php:302 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 302
+
+ - src/Api/FrontEndEditorSessionManager.php:460 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 460
+
+ - src/Api/FrontEndEditorSessionManager.php:678 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 678
+
+modified:	src/Api/FrontEndEditorPreviousAndNextSequencer.php
+@@ -2,14 +2,23 @@
+
+ namespace SunnySideUp\FrontendEditor\Api;
+
+-use ViewableData;
+-use DataObject;
+-use FrontEndEditable;
+-use Permission;
+-use ArrayList;
+-use Injector;
++
++
++
++
++
++
+ use int;
+-use SS_List;
++
++use SunnySideUp\FrontendEditor\FrontEndEditorPage;
++use SilverStripe\ORM\DataObject;
++use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
++use SilverStripe\Security\Permission;
++use SilverStripe\ORM\ArrayList;
++use SilverStripe\Core\Injector\Injector;
++use SilverStripe\ORM\SS_List;
++use SilverStripe\View\ViewableData;
++
+
+
+ /**
+@@ -132,7 +141,7 @@
+      */
+     public function Link(): string
+     {
+-        $page = DataObject::get_one('FrontEndEditorPage');
++        $page = DataObject::get_one(FrontEndEditorPage::class);
+         if ($page) {
+             return $page->Link('startsequence/'.strtolower(get_class($this)).'/');
+         }
+@@ -169,7 +178,7 @@
+         if ($item) {
+             return $item->FrontEndEditLink();
+         } else {
+-            $page = DataObject::get_one('FrontEndEditorPage');
++            $page = DataObject::get_one(FrontEndEditorPage::class);
+             if ($page) {
+                 return $page->Link();
+             }
+
+modified:	src/Forms/Fields/FrontEndExtendedHasOneOrManyField.php
+@@ -3,15 +3,27 @@
+ namespace SunnySideUp\FrontendEditor\Forms\Fields;
+
+ use DBCompositeField;
+-use LiteralField;
+-use Injector;
+-use HiddenField;
+-use FormField;
+-use SS_Map;
+-use SS_List;
+-use FrontEndEditable;
+-use DataObject;
+-use DBField;
++
++
++
++
++
++
++
++
++
++use SilverStripe\Forms\FormField;
++use SilverStripe\Forms\LiteralField;
++use SilverStripe\Core\Injector\Injector;
++use SilverStripe\Forms\HiddenField;
++use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
++use SilverStripe\ORM\Map;
++use SilverStripe\ORM\SS_List;
++use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
++use SilverStripe\ORM\DataObject;
++use SilverStripe\Forms\DropdownField;
++use SilverStripe\ORM\FieldType\DBField;
++
+
+
+ abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
+@@ -31,7 +43,7 @@
+     /**
+      * @var string
+      */
+-    protected $selectExistingFieldClassName = "FormField";
++    protected $selectExistingFieldClassName = FormField::class;
+
+     /**
+      * @var boolean
+@@ -165,7 +177,7 @@
+             $source = $this->existingSelectors;
+         } else {
+             $foreignSingleton = $this->getForeignSingleton();
+-            if ($foreignSingleton->hasExtension('FrontEndDataExtension')) {
++            if ($foreignSingleton->hasExtension(FrontEndDataExtension::class)) {
+                 $source = $foreignSingleton->FrontEndSiblings($this->recordBeingEdited->FrontEndRootParentObject(), true);
+                 $newSource = [];
+                 foreach ($source as $obj) {
+@@ -180,7 +192,7 @@
+             $dropdownSource = null;
+             if ($source && $source instanceof FormField) {
+                 $existingSelectorField = $source;
+-            } elseif ($source && $source instanceof SS_Map) {
++            } elseif ($source && $source instanceof Map) {
+                 if ($source->count()) {
+                     $dropdownSource = $source->toArray();
+                 }
+@@ -188,7 +200,7 @@
+                 if ($source->count()) {
+                     if ($source->first() instanceof FrontEndEditable) {
+                         $dropdownSource = $source->map('ID', 'FrontEndShortTitle');
+-                        if ($dropdownSource instanceof SS_Map) {
++                        if ($dropdownSource instanceof Map) {
+                             $dropdownSource = $dropdownSource->toArray();
+                         }
+                     }
+@@ -211,7 +223,7 @@
+                 } else {
+                     if ($currentValues instanceof SS_List) {
+                         $defaultValue = $currentValues->map("ID", "ID")->toArray();
+-                    } elseif ($currentValues instanceof SS_Map) {
++                    } elseif ($currentValues instanceof Map) {
+                         $defaultValue = $currentValues->map("ID", "ID")->toArray();
+                     }
+                     if (is_array($dropdownSource) && is_array($defaultValue)) {
+@@ -231,7 +243,7 @@
+   * ### @@@@ STOP REPLACEMENT @@@@ ###
+   */
+                         $className = $this->getForeignClassName();
+-                        if ($fieldTypeClassName != "DropdownField") {
++                        if ($fieldTypeClassName != DropdownField::class) {
+                             foreach ($dropdownSource as $id => $value) {
+
+ /**
+
+Warnings for src/Forms/Fields/FrontEndExtendedHasOneOrManyField.php:
+ - src/Forms/Fields/FrontEndExtendedHasOneOrManyField.php:245 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 245
+
+ - src/Forms/Fields/FrontEndExtendedHasOneOrManyField.php:252 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 252
+
+modified:	src/Forms/Fields/FrontEndEditHasOne.php
+@@ -2,9 +2,13 @@
+
+ namespace SunnySideUp\FrontendEditor\Forms\Fields;
+
+-use FormField;
+-use FrontEndEditable;
+-use Injector;
++
++
++
++use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
++use SilverStripe\Core\Injector\Injector;
++use SilverStripe\Forms\FormField;
++
+
+
+ /**
+
+modified:	src/Forms/Fields/FrontEndExtendedHasManyField.php
+@@ -2,8 +2,13 @@
+
+ namespace SunnySideUp\FrontendEditor\Forms\Fields;
+
+-use SS_List;
+-use LiteralField;
++
++
++use SilverStripe\Forms\CheckboxSetField;
++use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
++use SilverStripe\ORM\SS_List;
++use SilverStripe\Forms\LiteralField;
++
+
+
+ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
+@@ -30,7 +35,7 @@
+     /**
+      * @var string
+      */
+-    protected $selectExistingFieldClassName = "CheckboxSetField";
++    protected $selectExistingFieldClassName = CheckboxSetField::class;
+
+
+     public function __construct($name, $title)
+@@ -88,7 +93,7 @@
+             //if object exists:
+             if ($this->recordBeingEdited) {
+                 $hasManyObjectSingleton = $this->getForeignSingleton();
+-                if ($hasManyObjectSingleton->hasExtension('FrontEndDataExtension')) {
++                if ($hasManyObjectSingleton->hasExtension(FrontEndDataExtension::class)) {
+                     $customRelationFields = $this->recordBeingEdited->FrontEndCustomRelationsOptionProvider();
+                     if (
+                         isset($customRelationFields[$hasManyField]) &&
+
+modified:	src/Forms/Fields/FrontEndExtendedHasOneField.php
+@@ -2,8 +2,13 @@
+
+ namespace SunnySideUp\FrontendEditor\Forms\Fields;
+
+-use CompositeField;
+-use LiteralField;
++
++
++use SilverStripe\Forms\DropdownField;
++use SilverStripe\Forms\CompositeField;
++use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
++use SilverStripe\Forms\LiteralField;
++
+
+
+ class FrontEndExtendedHasOneField extends FrontEndExtendedHasOneOrManyField
+@@ -30,7 +35,7 @@
+     /**
+      * @var string
+      */
+-    protected $selectExistingFieldClassName = "DropdownField";
++    protected $selectExistingFieldClassName = DropdownField::class;
+
+
+
+@@ -92,7 +97,7 @@
+                 $this->push($existingSelectorField);
+             }
+             if ($hasOneObject && $hasOneObject->exists()) {
+-                if ($hasOneObject->hasExtension('FrontEndDataExtension')) {
++                if ($hasOneObject->hasExtension(FrontEndDataExtension::class)) {
+                     if ($hasOneObject->canEdit()) {
+                         $deleteLink = "";
+                         $deleteAlternatives = $this->recordBeingEdited->FrontEndDeleteAlternatives();
+@@ -119,7 +124,7 @@
+             } else {
+                 $hasOneObject = $this->getForeignSingleton();
+                 if ($hasOneObject->canCreate()) {
+-                    if ($hasOneObject->hasExtension('FrontEndDataExtension')) {
++                    if ($hasOneObject->hasExtension(FrontEndDataExtension::class)) {
+                         $this->push(
+                             LiteralField::create(
+                                 $hasOneFieldWithID."_ADD",
+
+modified:	src/Forms/FrontEndEditableCustomFormBase.php
+@@ -2,10 +2,15 @@
+
+ namespace SunnySideUp\FrontendEditor\Forms;
+
+-use DataObject;
+-use FrontEndEditable;
+-use FieldList;
+-use LiteralField;
++
++
++
++
++use SilverStripe\Forms\FieldList;
++use SilverStripe\Forms\LiteralField;
++use SilverStripe\ORM\DataObject;
++use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
++
+
+
+
+
+modified:	src/Forms/FrontEndEditForm.php
+@@ -2,28 +2,54 @@
+
+ namespace SunnySideUp\FrontendEditor\Forms;
+
+-use Form;
+-use FrontEndEditorSessionManager;
+-use LiteralField;
+-use FrontEndExtendedHasOneField;
+-use Config;
+-use FrontEndExtendedHasManyField;
+-use FrontEndEditorClassExplanation;
+-use FrontEndEditorRightTitle;
+-use CheckboxField;
+-use GridField;
+-use DataObjectOneFieldUpdateController;
+-use HiddenField;
+-use CheckboxSetField;
+-use RequiredFields;
+-use Requirements;
+-use FieldList;
+-use FormAction;
+-use DateField;
+-use SiteTree;
+-use Director;
+-use FrontEndEditable;
+-use Injector;
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++use SunnySideUp\FrontendEditor\Api\FrontEndEditorSessionManager;
++use SilverStripe\Forms\LiteralField;
++use SunnySideUp\FrontendEditor\Forms\Fields\FrontEndExtendedHasOneField;
++use SilverStripe\Core\Config\Config;
++use SunnySideUp\FrontendEditor\Forms\Fields\FrontEndExtendedHasManyField;
++use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorClassExplanation;
++use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorRightTitle;
++use SilverStripe\Forms\CheckboxField;
++use SilverStripe\Forms\GridField\GridField;
++use Sunnysideup\DataObjectSorter\DataObjectOneFieldUpdateController;
++use SilverStripe\Forms\HiddenField;
++use SilverStripe\Forms\CheckboxSetField;
++use SilverStripe\Forms\RequiredFields;
++use SilverStripe\View\Requirements;
++use SilverStripe\Forms\FieldList;
++use SilverStripe\Forms\FormAction;
++use SilverStripe\ORM\FieldType\DBDate;
++use SilverStripe\Forms\DateField;
++use SilverStripe\Forms\GridField\GridState;
++use SilverStripe\CMS\Model\SiteTree;
++use SilverStripe\Control\Director;
++use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
++use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
++use SilverStripe\Core\Injector\Injector;
++use SilverStripe\Forms\Form;
++
+
+
+
+@@ -203,7 +229,7 @@
+         }
+
+         //sibling edits
+-        if (class_exists("DataObjectOneFieldUpdateController")) {
++        if (class_exists(DataObjectOneFieldUpdateController::class)) {
+             $noSiblingEdits = $this->recordBeingEdited->FrontEndNoSiblingEdits();
+             $readOnlyFields = $this->recordBeingEdited->FrontEndMakeReadonlyFields();
+             $siblingWhere = $this->recordBeingEdited->FrontEndSiblings(null, false);
+@@ -464,7 +490,7 @@
+                     } else {
+                         $this->recordBeingEdited->$name = true;
+                     }
+-                } elseif ($type === 'Date') {
++                } elseif ($type === DBDate::class) {
+                     $value = DateField::create('MyDate')->setValue($data[$name])->dataValue();
+                     $this->recordBeingEdited->$name = $value;
+                 } elseif (isset($data[$name])) {
+@@ -505,7 +531,7 @@
+                 if ($relationName) {
+                     if (isset($data[$relationName])) {
+                         //special case ???
+-                        if (isset($data[$relationName]["GridState"])) {
++                        if (isset($data[$relationName][GridState::class])) {
+                             //do nothing ..
+                         } else {
+                             if (isset($manyMany[$relationName])) {
+@@ -825,7 +851,7 @@
+   * ### @@@@ STOP REPLACEMENT @@@@ ###
+   */
+                     $this->recordBeingEdited = $className::get()->byID($id);
+-                    if ($this->recordBeingEdited->hasExtension('FrontEndDataExtension')) {
++                    if ($this->recordBeingEdited->hasExtension(FrontEndDataExtension::class)) {
+                         return $this->recordBeingEdited;
+                     }
+                 }
+@@ -852,7 +878,7 @@
+   */
+                     if ($className && class_exists($className)) {
+                         $obj = Injector::inst()->get("Provider");
+-                        if ($obj->hasExtension('FrontEndDataExtension')) {
++                        if ($obj->hasExtension(FrontEndDataExtension::class)) {
+                             if ($obj->canCreate()) {
+
+ /**
+
+Warnings for src/Forms/FrontEndEditForm.php:
+ - src/Forms/FrontEndEditForm.php:827 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 827
+
+ - src/Forms/FrontEndEditForm.php:866 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 866
+
+modified:	src/Task/FrontEndEditorCheckRootObjectTask.php
+@@ -2,18 +2,26 @@
+
+ namespace SunnySideUp\FrontendEditor\Task;
+
+-use BuildTask;
+-use ClassInfo;
+-use SiteTree;
+-use Versioned;
+-use DataObject;
+-use DB;
++
++
++
++
++
++
++use SilverStripe\CMS\Model\SiteTree;
++use SilverStripe\ORM\DataObject;
++use SilverStripe\Core\ClassInfo;
++use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
++use SilverStripe\Versioned\Versioned;
++use SilverStripe\ORM\DB;
++use SilverStripe\Dev\BuildTask;
++
+
+
+
+ class FrontEndEditorCheckRootObjectTask extends BuildTask
+ {
+-    private static $root_object_class_name = "SiteTree";
++    private static $root_object_class_name = SiteTree::class;
+
+     private static $delete_unlinked_object = false;
+
+@@ -28,7 +36,7 @@
+         $delete = $this->Config()->get("delete_unlinked_object");
+         Silverstripe\Core\Environment::increaseTimeLimitTo(3600);
+         Silverstripe\Core\Environment::increaseMemoryLimitTo('512M');
+-        $array = ClassInfo::subclassesFor("DataObject");
++        $array = ClassInfo::subclassesFor(DataObject::class);
+
+ /**
+   * ### @@@@ START REPLACEMENT @@@@ ###
+@@ -48,7 +56,7 @@
+   * EXP: Check if the class name can still be used as such
+   * ### @@@@ STOP REPLACEMENT @@@@ ###
+   */
+-            if (is_subclass_of($className, "FrontEndEditable")) {
++            if (is_subclass_of($className, FrontEndEditable::class)) {
+
+ /**
+   * ### @@@@ START REPLACEMENT @@@@ ###
+@@ -131,7 +139,7 @@
+                             if ($delete) {
+                                 foreach (array("Live", "Stage") as $stage) {
+                                     Versioned::reading_stage($stage);
+-                                    $record = DataObject::get_by_id("SiteTree", $obj->ID);
++                                    $record = DataObject::get_by_id(SiteTree::class, $obj->ID);
+
+                                     $descRemoved = '';
+                                     $descendantsRemoved = 0;
+@@ -144,7 +152,7 @@
+                                         // then delete them from the live site too
+                                         $descendantsRemoved = 0;
+                                         foreach ($descendantIDs as $descID) {
+-                                            if ($descendant = DataObject::get_by_id('SiteTree', $descID)) {
++                                            if ($descendant = DataObject::get_by_id(SiteTree::class, $descID)) {
+                                                 $descendant->doDeleteFromLive();
+                                                 $descendantsRemoved++;
+                                             }
+
+Warnings for src/Task/FrontEndEditorCheckRootObjectTask.php:
+ - src/Task/FrontEndEditorCheckRootObjectTask.php:61 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 61
+
+ - src/Task/FrontEndEditorCheckRootObjectTask.php:117 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 117
+
+ - src/Task/FrontEndEditorCheckRootObjectTask.php:121 PhpParser\Node\Expr\Variable
+ - WARNING: New class instantiated by a dynamic value on line 121
+
+modified:	src/Cms/FrontEndEditorAdmin.php
+@@ -2,7 +2,12 @@
+
+ namespace SunnySideUp\FrontendEditor\Cms;
+
+-use ModelAdmin;
++
++use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorSequencerExplanation;
++use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorClassExplanation;
++use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorRightTitle;
++use SilverStripe\Admin\ModelAdmin;
++
+
+
+ /**
+@@ -20,9 +25,9 @@
+     private static $menu_title = 'Front End Editor';
+
+     private static $managed_models = array(
+-        'FrontEndEditorSequencerExplanation',
+-        'FrontEndEditorClassExplanation',
+-        'FrontEndEditorRightTitle'
++        FrontEndEditorSequencerExplanation::class,
++        FrontEndEditorClassExplanation::class,
++        FrontEndEditorRightTitle::class
+     );
+
+     private static $menu_icon = 'frontendeditor/images/treeicons/FrontEndEditorAdmin.png';
+
+Writing changes for 20 files
+✔✔✔

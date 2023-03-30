@@ -3,15 +3,27 @@
 namespace SunnySideUp\FrontendEditor\Forms\Fields;
 
 use DBCompositeField;
-use LiteralField;
-use Injector;
-use HiddenField;
-use FormField;
-use SS_Map;
-use SS_List;
-use FrontEndEditable;
-use DataObject;
-use DBField;
+
+
+
+
+
+
+
+
+
+use SilverStripe\Forms\FormField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Forms\HiddenField;
+use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
+use SilverStripe\ORM\Map;
+use SilverStripe\ORM\SS_List;
+use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\ORM\FieldType\DBField;
+
 
 
 abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
@@ -31,7 +43,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
     /**
      * @var string
      */
-    protected $selectExistingFieldClassName = "FormField";
+    protected $selectExistingFieldClassName = FormField::class;
 
     /**
      * @var boolean
@@ -165,7 +177,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
             $source = $this->existingSelectors;
         } else {
             $foreignSingleton = $this->getForeignSingleton();
-            if ($foreignSingleton->hasExtension('FrontEndDataExtension')) {
+            if ($foreignSingleton->hasExtension(FrontEndDataExtension::class)) {
                 $source = $foreignSingleton->FrontEndSiblings($this->recordBeingEdited->FrontEndRootParentObject(), true);
                 $newSource = [];
                 foreach ($source as $obj) {
@@ -180,7 +192,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
             $dropdownSource = null;
             if ($source && $source instanceof FormField) {
                 $existingSelectorField = $source;
-            } elseif ($source && $source instanceof SS_Map) {
+            } elseif ($source && $source instanceof Map) {
                 if ($source->count()) {
                     $dropdownSource = $source->toArray();
                 }
@@ -188,7 +200,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
                 if ($source->count()) {
                     if ($source->first() instanceof FrontEndEditable) {
                         $dropdownSource = $source->map('ID', 'FrontEndShortTitle');
-                        if ($dropdownSource instanceof SS_Map) {
+                        if ($dropdownSource instanceof Map) {
                             $dropdownSource = $dropdownSource->toArray();
                         }
                     }
@@ -211,7 +223,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
                 } else {
                     if ($currentValues instanceof SS_List) {
                         $defaultValue = $currentValues->map("ID", "ID")->toArray();
-                    } elseif ($currentValues instanceof SS_Map) {
+                    } elseif ($currentValues instanceof Map) {
                         $defaultValue = $currentValues->map("ID", "ID")->toArray();
                     }
                     if (is_array($dropdownSource) && is_array($defaultValue)) {
@@ -231,7 +243,7 @@ abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
                         $className = $this->getForeignClassName();
-                        if ($fieldTypeClassName != "DropdownField") {
+                        if ($fieldTypeClassName != DropdownField::class) {
                             foreach ($dropdownSource as $id => $value) {
 
 /**

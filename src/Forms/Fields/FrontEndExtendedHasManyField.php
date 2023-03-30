@@ -2,8 +2,13 @@
 
 namespace SunnySideUp\FrontendEditor\Forms\Fields;
 
-use SS_List;
-use LiteralField;
+
+
+use SilverStripe\Forms\CheckboxSetField;
+use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
+use SilverStripe\ORM\SS_List;
+use SilverStripe\Forms\LiteralField;
+
 
 
 class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
@@ -30,7 +35,7 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
     /**
      * @var string
      */
-    protected $selectExistingFieldClassName = "CheckboxSetField";
+    protected $selectExistingFieldClassName = CheckboxSetField::class;
 
 
     public function __construct($name, $title)
@@ -88,7 +93,7 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
             //if object exists:
             if ($this->recordBeingEdited) {
                 $hasManyObjectSingleton = $this->getForeignSingleton();
-                if ($hasManyObjectSingleton->hasExtension('FrontEndDataExtension')) {
+                if ($hasManyObjectSingleton->hasExtension(FrontEndDataExtension::class)) {
                     $customRelationFields = $this->recordBeingEdited->FrontEndCustomRelationsOptionProvider();
                     if (
                         isset($customRelationFields[$hasManyField]) &&

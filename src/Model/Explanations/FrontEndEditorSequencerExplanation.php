@@ -2,7 +2,10 @@
 
 namespace SunnySideUp\FrontendEditor\Model\Explanations;
 
-use FrontEndEditorExplanationsBaseClass;
+
+use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorSequencerExplanation;
+use SunnySideUp\FrontendEditor\Model\FrontEndEditorExplanationsBaseClass;
+
 
 
 class FrontEndEditorSequencerExplanation extends FrontEndEditorExplanationsBaseClass
@@ -39,7 +42,7 @@ class FrontEndEditorSequencerExplanation extends FrontEndEditorExplanationsBaseC
   * EXP: Check if the class name can still be used as such
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
-    public static function add_or_find_item($className, $type = 'FrontEndEditorSequencerExplanation'): FrontEndEditorExplanationsBaseClass
+    public static function add_or_find_item($className, $type = FrontEndEditorSequencerExplanation::class): FrontEndEditorExplanationsBaseClass
     {
 
 /**

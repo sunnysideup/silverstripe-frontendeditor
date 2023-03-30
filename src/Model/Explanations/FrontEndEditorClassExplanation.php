@@ -2,14 +2,18 @@
 
 namespace SunnySideUp\FrontendEditor\Model\Explanations;
 
-use FrontEndEditorExplanationsBaseClass;
+
+use SilverStripe\ORM\DataObject;
+use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorClassExplanation;
+use SunnySideUp\FrontendEditor\Model\FrontEndEditorExplanationsBaseClass;
+
 
 
 class FrontEndEditorClassExplanation extends FrontEndEditorExplanationsBaseClass
 {
     private static $field_labels = array(
         "ObjectClassName" => "DataObject Code",
-        "ClassNameNice" => "DataObject",
+        "ClassNameNice" => DataObject::class,
         "LongDescription" => "Details of DataObject"
     );
 
@@ -39,7 +43,7 @@ class FrontEndEditorClassExplanation extends FrontEndEditorExplanationsBaseClass
   * EXP: Check if the class name can still be used as such
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
-    public static function add_or_find_item($className, $type = 'FrontEndEditorClassExplanation'): FrontEndEditorExplanationsBaseClass
+    public static function add_or_find_item($className, $type = FrontEndEditorClassExplanation::class): FrontEndEditorExplanationsBaseClass
     {
 
 /**

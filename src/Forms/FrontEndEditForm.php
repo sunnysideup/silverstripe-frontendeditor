@@ -2,28 +2,54 @@
 
 namespace SunnySideUp\FrontendEditor\Forms;
 
-use Form;
-use FrontEndEditorSessionManager;
-use LiteralField;
-use FrontEndExtendedHasOneField;
-use Config;
-use FrontEndExtendedHasManyField;
-use FrontEndEditorClassExplanation;
-use FrontEndEditorRightTitle;
-use CheckboxField;
-use GridField;
-use DataObjectOneFieldUpdateController;
-use HiddenField;
-use CheckboxSetField;
-use RequiredFields;
-use Requirements;
-use FieldList;
-use FormAction;
-use DateField;
-use SiteTree;
-use Director;
-use FrontEndEditable;
-use Injector;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+use SunnySideUp\FrontendEditor\Api\FrontEndEditorSessionManager;
+use SilverStripe\Forms\LiteralField;
+use SunnySideUp\FrontendEditor\Forms\Fields\FrontEndExtendedHasOneField;
+use SilverStripe\Core\Config\Config;
+use SunnySideUp\FrontendEditor\Forms\Fields\FrontEndExtendedHasManyField;
+use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorClassExplanation;
+use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorRightTitle;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\GridField\GridField;
+use Sunnysideup\DataObjectSorter\DataObjectOneFieldUpdateController;
+use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Forms\RequiredFields;
+use SilverStripe\View\Requirements;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\ORM\FieldType\DBDate;
+use SilverStripe\Forms\DateField;
+use SilverStripe\Forms\GridField\GridState;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Director;
+use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
+use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Forms\Form;
+
 
 
 
@@ -203,7 +229,7 @@ class FrontEndEditForm extends Form
         }
 
         //sibling edits
-        if (class_exists("DataObjectOneFieldUpdateController")) {
+        if (class_exists(DataObjectOneFieldUpdateController::class)) {
             $noSiblingEdits = $this->recordBeingEdited->FrontEndNoSiblingEdits();
             $readOnlyFields = $this->recordBeingEdited->FrontEndMakeReadonlyFields();
             $siblingWhere = $this->recordBeingEdited->FrontEndSiblings(null, false);
@@ -464,7 +490,7 @@ class FrontEndEditForm extends Form
                     } else {
                         $this->recordBeingEdited->$name = true;
                     }
-                } elseif ($type === 'Date') {
+                } elseif ($type === DBDate::class) {
                     $value = DateField::create('MyDate')->setValue($data[$name])->dataValue();
                     $this->recordBeingEdited->$name = $value;
                 } elseif (isset($data[$name])) {
@@ -505,7 +531,7 @@ class FrontEndEditForm extends Form
                 if ($relationName) {
                     if (isset($data[$relationName])) {
                         //special case ???
-                        if (isset($data[$relationName]["GridState"])) {
+                        if (isset($data[$relationName][GridState::class])) {
                             //do nothing ..
                         } else {
                             if (isset($manyMany[$relationName])) {
@@ -825,7 +851,7 @@ class FrontEndEditForm extends Form
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
                     $this->recordBeingEdited = $className::get()->byID($id);
-                    if ($this->recordBeingEdited->hasExtension('FrontEndDataExtension')) {
+                    if ($this->recordBeingEdited->hasExtension(FrontEndDataExtension::class)) {
                         return $this->recordBeingEdited;
                     }
                 }
@@ -852,7 +878,7 @@ class FrontEndEditForm extends Form
   */
                     if ($className && class_exists($className)) {
                         $obj = Injector::inst()->get("Provider");
-                        if ($obj->hasExtension('FrontEndDataExtension')) {
+                        if ($obj->hasExtension(FrontEndDataExtension::class)) {
                             if ($obj->canCreate()) {
 
 /**

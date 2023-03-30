@@ -2,8 +2,13 @@
 
 namespace SunnySideUp\FrontendEditor\Forms\Fields;
 
-use CompositeField;
-use LiteralField;
+
+
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\CompositeField;
+use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
+use SilverStripe\Forms\LiteralField;
+
 
 
 class FrontEndExtendedHasOneField extends FrontEndExtendedHasOneOrManyField
@@ -30,7 +35,7 @@ class FrontEndExtendedHasOneField extends FrontEndExtendedHasOneOrManyField
     /**
      * @var string
      */
-    protected $selectExistingFieldClassName = "DropdownField";
+    protected $selectExistingFieldClassName = DropdownField::class;
 
 
 
@@ -92,7 +97,7 @@ class FrontEndExtendedHasOneField extends FrontEndExtendedHasOneOrManyField
                 $this->push($existingSelectorField);
             }
             if ($hasOneObject && $hasOneObject->exists()) {
-                if ($hasOneObject->hasExtension('FrontEndDataExtension')) {
+                if ($hasOneObject->hasExtension(FrontEndDataExtension::class)) {
                     if ($hasOneObject->canEdit()) {
                         $deleteLink = "";
                         $deleteAlternatives = $this->recordBeingEdited->FrontEndDeleteAlternatives();
@@ -119,7 +124,7 @@ class FrontEndExtendedHasOneField extends FrontEndExtendedHasOneOrManyField
             } else {
                 $hasOneObject = $this->getForeignSingleton();
                 if ($hasOneObject->canCreate()) {
-                    if ($hasOneObject->hasExtension('FrontEndDataExtension')) {
+                    if ($hasOneObject->hasExtension(FrontEndDataExtension::class)) {
                         $this->push(
                             LiteralField::create(
                                 $hasOneFieldWithID."_ADD",

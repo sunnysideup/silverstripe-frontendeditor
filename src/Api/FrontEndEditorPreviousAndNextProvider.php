@@ -2,14 +2,24 @@
 
 namespace SunnySideUp\FrontendEditor\Api;
 
-use ViewableData;
-use Injector;
-use ArrayList;
-use ClassInfo;
-use FrontEndEditorSequencerExplanation;
-use ArrayData;
-use FrontEndEditable;
+
+
+
+
+
+
+
 use int;
+use SilverStripe\Core\Injector\Injector;
+use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextProvider;
+use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextSequencer;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\ORM\ArrayList;
+use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorSequencerExplanation;
+use SilverStripe\View\ArrayData;
+use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
+use SilverStripe\View\ViewableData;
+
 
 
 /**
@@ -47,7 +57,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
     public static function inst($sequencerClassName = null, $currentRecordBeingEdited = null) : FrontEndEditorPreviousAndNextProvider
     {
         if (self::$_me_cached === null) {
-            self::$_me_cached = Injector::inst()->get('FrontEndEditorPreviousAndNextProvider');
+            self::$_me_cached = Injector::inst()->get(FrontEndEditorPreviousAndNextProvider::class);
         }
         if ($sequencerClassName) {
             self::$_me_cached->setSequenceProvider($sequencerClassName);
@@ -69,8 +79,8 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
     public function ListOfSequences($member = null) : ArrayList
     {
         $array = [];
-        $list = ClassInfo::subclassesFor('FrontEndEditorPreviousAndNextSequencer');
-        unset($list['FrontEndEditorPreviousAndNextSequencer']);
+        $list = ClassInfo::subclassesFor(FrontEndEditorPreviousAndNextSequencer::class);
+        unset($list[FrontEndEditorPreviousAndNextSequencer::class]);
         $currentSequencerClassName = $this->getClassName();
         $al = ArrayList::create();
 
@@ -148,7 +158,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
   */
     public function setSequenceProvider($className) : FrontEndEditorPreviousAndNextProvider
     {
-        $list = ClassInfo::subclassesFor('FrontEndEditorPreviousAndNextSequencer');
+        $list = ClassInfo::subclassesFor(FrontEndEditorPreviousAndNextSequencer::class);
         $list = array_change_key_case($list);
 
 /**
@@ -159,7 +169,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
   * EXP: Check if the class name can still be used as such
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
-        if (isset($list[$className]) && $className !== 'FrontEndEditorPreviousAndNextSequencer') {
+        if (isset($list[$className]) && $className !== FrontEndEditorPreviousAndNextSequencer::class) {
 
 /**
   * ### @@@@ START REPLACEMENT @@@@ ###

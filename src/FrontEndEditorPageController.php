@@ -3,19 +3,35 @@
 namespace SunnySideUp\FrontendEditor;
 
 use PageController;
-use Requirements;
-use FrontEndEditorSessionManager;
-use FrontEndEditForm;
-use ArrayList;
-use ArrayData;
-use FrontEndEditable;
-use Permission;
-use Director;
-use Config;
-use SiteTree;
-use Controller;
-use SS_HTTPResponse;
-use FrontEndEditorPreviousAndNextProvider;
+
+
+
+
+
+
+
+
+
+
+
+
+
+use SilverStripe\View\Requirements;
+use SilverStripe\ORM\DataObject;
+use SunnySideUp\FrontendEditor\Api\FrontEndEditorSessionManager;
+use SilverStripe\Forms\Form;
+use SunnySideUp\FrontendEditor\Forms\FrontEndEditForm;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\View\ArrayData;
+use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
+use SilverStripe\Security\Permission;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Controller;
+use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
+use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextProvider;
+
 
 
 class FrontEndEditorPageController extends PageController
@@ -90,7 +106,7 @@ class FrontEndEditorPageController extends PageController
         if (!$model) {
             $model = $this->Config()->get("default_model");
         }
-        if ($model && is_subclass_of($model, 'DataObject', true)) {
+        if ($model && is_subclass_of($model, DataObject::class, true)) {
             $id = $this->request->param("OtherID");
             if ($id) {
                 $this->recordBeingEdited = $model::get()->byID($id);
@@ -127,7 +143,7 @@ class FrontEndEditorPageController extends PageController
 
     public function Form()
     {
-        $form = FrontEndEditForm::create($this, "Form", $this->recordBeingEdited);
+        $form = FrontEndEditForm::create($this, Form::class, $this->recordBeingEdited);
         if ($this->recordBeingEdited) {
             if ($this->recordBeingEdited->hasMethod("ExtraClassesForFrontEndForm")) {
                 $form->addExtraClass($this->recordBeingEdited->ExtraClassesForFrontEndForm());
@@ -292,7 +308,7 @@ class FrontEndEditorPageController extends PageController
      */
     public function frontendaddrelation()
     {
-        Config::modify()->update('DataObject', 'validation_enabled', false);
+        Config::modify()->update(DataObject::class, 'validation_enabled', false);
         $foreignObject = explode(",", $this->request->getVar("goingto"));
         $relationName = $foreignObject[0];
         $type = $this->frontEndDetermineRelationType($relationName);
@@ -413,7 +429,7 @@ class FrontEndEditorPageController extends PageController
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
                         $obj = $className::get()->byID($id);
-                        if ($obj && $obj->hasExtension('FrontEndDataExtension')) {
+                        if ($obj && $obj->hasExtension(FrontEndDataExtension::class)) {
                             if (!$al) {
                                 $al = ArrayList::create();
                             }

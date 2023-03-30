@@ -2,11 +2,18 @@
 
 namespace SunnySideUp\FrontendEditor\Model;
 
-use DataObject;
-use DropdownField;
-use TextField;
-use ReadonlyField;
-use Injector;
+
+
+
+
+
+use SunnySideUp\FrontendEditor\Model\FrontEndEditorExplanationsBaseClass;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Core\Injector\Injector;
+
 
 
 class FrontEndEditorExplanationsBaseClass extends DataObject
@@ -79,7 +86,7 @@ class FrontEndEditorExplanationsBaseClass extends DataObject
   */
     public static function add_or_find_item($className, $type = '') : FrontEndEditorExplanationsBaseClass
     {
-        if (! $type || $type === 'FrontEndEditorExplanationsBaseClass') {
+        if (! $type || $type === FrontEndEditorExplanationsBaseClass::class) {
             user_error('A type must be provided!');
         }
 
@@ -268,8 +275,8 @@ class FrontEndEditorExplanationsBaseClass extends DataObject
   * EXP: Check if the class name can still be used as such
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
-                $className = 'DataObject';
-                $this->ObjectClassName = "DataObject";
+                $className = DataObject::class;
+                $this->ObjectClassName = DataObject::class;
             }
 
 /**
