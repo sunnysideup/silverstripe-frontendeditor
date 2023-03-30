@@ -60,7 +60,7 @@ class FrontEndEditForm extends Form
         $this->recordBeingEdited = $recordBeingEdited;
         $this->addExtraClass($recordBeingEdited);
         if (!$this->recordBeingEdited) {
-            $this->recordBeingEdited = FrontEndEditorSessionManager::get_current_record_being_edited();
+            $this->recordBeingEdited = FrontEndEditorSessionManager::get_current_record_being_edited($this->recordBeingEdited);
         } elseif ($this->recordBeingEdited->getTitle()) {
             FrontEndEditorSessionManager::set_current_record_being_edited($this->recordBeingEdited);
         }

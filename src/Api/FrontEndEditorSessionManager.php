@@ -205,7 +205,7 @@ class FrontEndEditorSessionManager extends ViewableData
               * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly.
               * ### @@@@ STOP REPLACEMENT @@@@ ###
               */
-            Controller::curr()->getRequest()->getSession()->save();
+            // Controller::curr()->getRequest()->getSession()->save();
         }
     }
 
@@ -325,7 +325,7 @@ class FrontEndEditorSessionManager extends ViewableData
           * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly.
           * ### @@@@ STOP REPLACEMENT @@@@ ###
           */
-        Controller::curr()->getRequest()->getSession()->save();
+        // Controller::curr()->getRequest()->getSession()->save();
     }
 
     public static function clear_all_previous_objects()
