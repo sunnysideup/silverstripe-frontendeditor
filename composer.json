@@ -24,7 +24,5 @@
         "i-lateral/silverstripe-trumbowyg-htmleditor": "*",
         "silverstripe/recipe-cms": "*"
     },
-    "extra": {
-        "installer-name": "frontendeditor"
-    }
+    "extra": []
 }
