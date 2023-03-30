@@ -20,7 +20,7 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
 
     /**
      * returns false on OK - or a message on error
-     * @return bool
+     * @return mixed
      */
     public function check($request)
     {

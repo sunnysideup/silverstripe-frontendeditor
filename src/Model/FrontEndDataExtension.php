@@ -145,15 +145,6 @@ class FrontEndDataExtension extends DataExtension
     {
         return FrontEndEditorClassExplanation::get()
             ->filter(
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $this->ClassName (case sensitive)
-  * NEW: $this->ClassName (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
               ['ObjectClassName' => ($this->getOwner()->ClassName ? : get_class($this->owner))]
             )
             ->first();
@@ -166,7 +157,7 @@ class FrontEndDataExtension extends DataExtension
     {
         $page = DataObject::get_one(FrontEndEditorPage::class);
         if ($page) {
-            return $page->Link("edit/".$this->owner->ClassName."/".$this->owner->ID."/");
+            return $page->Link() . "edit/".$this->owner->ClassName."/".$this->owner->ID."/";
         } elseif ($this->owner->hasMethod("CMSEditLink")) {
             return $this->owner->CMSEditLink();
         }
@@ -208,14 +199,7 @@ class FrontEndDataExtension extends DataExtension
     public function canCreate($member)
     {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: Config::inst()->get(" (case sensitive)
-  * NEW: Config::inst()->get(" (COMPLEX)
-  * EXP: Check if you should be using Name::class here instead of hard-coded class.
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
         if ($this->owner->ClassName == Config::inst()->get("FrontEndEditorPage_Controller", "default_model")) {
             return true;
         }
@@ -273,7 +257,7 @@ class FrontEndDataExtension extends DataExtension
                             )
                         )
                     );
-                    $validationResult->error($errorMessage, $name);
+                    $validationResult->addFieldError($errorMessage, $name);
                 }
             }
         }

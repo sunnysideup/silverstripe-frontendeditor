@@ -44,14 +44,7 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
      * @return array
      */
 
-    /**
-      * ### @@@@ START REPLACEMENT @@@@ ###
-      * WHY: automated upgrade
-      * OLD: $className (case sensitive)
-      * NEW: $className (COMPLEX)
-      * EXP: Check if the class name can still be used as such
-      * ### @@@@ STOP REPLACEMENT @@@@ ###
-      */
+
     public static function get_entered_ones($className)
     {
         $array = [];
@@ -137,24 +130,10 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
         foreach ($rows as $row) {
             $combo = $row['COMBO'];
 
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             list($className, $fieldName) = explode(',', $combo);
 
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             if ($className && $fieldName) {
 
                 $newList[$fieldName] = $this->getFieldNameNice($className, $fieldName).
@@ -201,25 +180,11 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
     private static $_cache_for_field_labels = [];
 
 
-    /**
-      * ### @@@@ START REPLACEMENT @@@@ ###
-      * WHY: automated upgrade
-      * OLD: $className (case sensitive)
-      * NEW: $className (COMPLEX)
-      * EXP: Check if the class name can still be used as such
-      * ### @@@@ STOP REPLACEMENT @@@@ ###
-      */
+
     public function getFieldNameNice($className = null, $fieldName = null)
     {
         if ($className === null) {
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             $className = $this->ObjectClassName;
         }
         if ($fieldName === null) {
@@ -227,14 +192,7 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
         }
 
         if (!isset(self::$_cache_for_field_labels[$className])) {
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             if ($obj = $this->getClassNameObjectFromCache($className)) {
 
                 self::$_cache_for_field_labels[$className] = $obj->FieldLabels();
@@ -242,14 +200,7 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
         }
 
         if (isset(self::$_cache_for_field_labels[$className])) {
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             if ($array = self::$_cache_for_field_labels[$className]) {
                 if (isset($array[$fieldName])) {
                     return $array[$fieldName];

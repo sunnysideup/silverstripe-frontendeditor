@@ -19,14 +19,7 @@ use SilverStripe\View\ViewableData;
  */
 
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD:  extends Object (ignore case)
-  * NEW:  extends ViewableData (COMPLEX)
-  * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
 class FrontEndEditorPreviousAndNextProvider extends ViewableData
 {
     /**
@@ -73,14 +66,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
         $al = ArrayList::create();
 
         foreach ($list as $className) {
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             $classObject = Injector::inst()->get($className);
             if ($classObject->canView($member = null)) {
 
@@ -119,58 +105,23 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      * @return FrontEndEditorPreviousAndNextProvider
      */
 
-    /**
-      * ### @@@@ START REPLACEMENT @@@@ ###
-      * WHY: automated upgrade
-      * OLD: $className (case sensitive)
-      * NEW: $className (COMPLEX)
-      * EXP: Check if the class name can still be used as such
-      * ### @@@@ STOP REPLACEMENT @@@@ ###
-      */
+
     public function setSequenceProvider($className): FrontEndEditorPreviousAndNextProvider
     {
         $list = ClassInfo::subclassesFor(FrontEndEditorPreviousAndNextSequencer::class);
         $list = array_change_key_case($list);
 
         if (isset($list[$className]) && $className !== FrontEndEditorPreviousAndNextSequencer::class) {
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             $className = $list[$className];
 
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             $this->sequencerClassName = $className;
 
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             FrontEndEditorSessionManager::set_sequencer($className);
         } else {
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             user_error($className.' does not extend FrontEndEditorPreviousAndNextSequencer.');
         }
 
@@ -243,24 +194,10 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
     public function getSequencer()
     {
         if (self::$_my_sequencer === null) {
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             $className = $this->getClassName();
 
-            /**
-              * ### @@@@ START REPLACEMENT @@@@ ###
-              * WHY: automated upgrade
-              * OLD: $className (case sensitive)
-              * NEW: $className (COMPLEX)
-              * EXP: Check if the class name can still be used as such
-              * ### @@@@ STOP REPLACEMENT @@@@ ###
-              */
+
             if ($className) {
 
                 self::$_my_sequencer = Injector::inst()->get($className);

@@ -10,4 +10,5 @@ use SilverStripe\Core\Injector\Injector;
 
 class FrontEndEditorExplanationsBaseClass extends DataObject
 {
+
 }
