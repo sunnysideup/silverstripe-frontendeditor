@@ -21,7 +21,8 @@
     ],
     "require": {
         "sunnysideup/dataobjectsorter": "*",
-        "i-lateral/silverstripe-trumbowyg-htmleditor": "*"
+        "i-lateral/silverstripe-trumbowyg-htmleditor": "*",
+        "silverstripe/recipe-cms": "^4.4"
     },
     "extra": {
         "installer-name": "frontendeditor"
