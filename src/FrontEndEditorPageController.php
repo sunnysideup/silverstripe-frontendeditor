@@ -29,6 +29,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPResponse;
 use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
 use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextProvider;
 
@@ -47,13 +48,13 @@ class FrontEndEditorPageController extends PageController
 
     /**
      *
-     * @var FrontEndEditable|null
+     * @var DataObject|null
      */
     protected $recordBeingEdited = null;
 
     /**
      *
-     * @var FrontEndEditable|null
+     * @var DataObject|null
      */
     protected $rootParentObject = null;
 
@@ -308,7 +309,7 @@ class FrontEndEditorPageController extends PageController
      */
     public function frontendaddrelation()
     {
-        Config::modify()->update(DataObject::class, 'validation_enabled', false);
+        Config::modify()->merge(DataObject::class, 'validation_enabled', false);
         $foreignObject = explode(",", $this->request->getVar("goingto"));
         $relationName = $foreignObject[0];
         $type = $this->frontEndDetermineRelationType($relationName);
@@ -376,16 +377,7 @@ class FrontEndEditorPageController extends PageController
 
     protected function redirectToRelation($obj)
     {
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: Session:: (case sensitive)
-  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
-  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly.
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
-        Controller::curr()->getRequest()->getSession()->save();
+        //Controller::curr()->getRequest()->getSession()->save();
         return $this->redirect($obj->FrontEndEditLink());
     }
 
@@ -533,7 +525,7 @@ class FrontEndEditorPageController extends PageController
         return $this->RenderWith('FrontEndEditorPageStartSequence', 'Page');
     }
 
-    public function startsequence($request) : SS_HTTPResponse
+    public function startsequence($request) : HTTPResponse
     {
 
 
@@ -550,7 +542,7 @@ class FrontEndEditorPageController extends PageController
             return $this->redirect('can-not-find-sequence');
         }
     }
-    public function gotopreviouspageinsequence($request) : SS_HTTPResponse
+    public function gotopreviouspageinsequence($request) : HTTPResponse
     {
         FrontEndEditorSessionManager::set_note_current_record(true);
         $link = $this->PreviousAndNextProvider()->goPreviousPage();
@@ -558,7 +550,7 @@ class FrontEndEditorPageController extends PageController
         return $this->redirect($link);
     }
 
-    public function gotonextpageinsequence($request) : SS_HTTPResponse
+    public function gotonextpageinsequence($request) : HTTPResponse
     {
         FrontEndEditorSessionManager::set_note_current_record(true);
         $link = $this->PreviousAndNextProvider()->goNextPage();
@@ -566,7 +558,7 @@ class FrontEndEditorPageController extends PageController
         return $this->redirect($link);
     }
 
-    public function gotoaddanother($request) : SS_HTTPResponse
+    public function gotoaddanother($request) : HTTPResponse
     {
         FrontEndEditorSessionManager::set_note_current_record(true);
         $link = $this->PreviousAndNextProvider()->goAddAnother();

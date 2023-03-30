@@ -213,15 +213,6 @@ class FrontEndEditForm extends Form
             $readOnlyFields = $this->recordBeingEdited->FrontEndMakeReadonlyFields();
             $siblingWhere = $this->recordBeingEdited->FrontEndSiblings(null, false);
             $siblingClassName = $siblingWhere->dataClass();
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: ->db() (case sensitive)
-  * NEW: ->Config()->get('db') (COMPLEX)
-  * EXP: Check implementation
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
             $dbFields = $this->recordBeingEdited->Config()->get('db');
             if (count($dbFields) && class_exists($siblingClassName)) {
                 $siblingArray = $siblingWhere->map("ID", "ID")->toArray();
@@ -536,7 +527,7 @@ class FrontEndEditForm extends Form
 
             $ajaxGetVariable = "";
             if (Director::is_ajax()) {
-                $ajaxGetVariable = "?ajax=".rand(0, 9999999999999999999);
+                $ajaxGetVariable = "?ajax=".rand(0, 99999999);
             }
 
             if ($this->isGoBack) {
@@ -561,8 +552,8 @@ class FrontEndEditForm extends Form
             } elseif ($this->isAddAnother) {
                 if ($controller->HasSequence()) {
                     return $controller->redirect($controller->AddAnotherSequenceLink().$ajaxGetVariable);
-                    if ($obj) {
-                        return $controller->redirect($obj->FrontEndEditLink().$ajaxGetVariable);
+                    if ($this->recordBeingEdited) {
+                        return $controller->redirect($this->recordBeingEdited->FrontEndEditLink().$ajaxGetVariable);
                     }
                 }
             }

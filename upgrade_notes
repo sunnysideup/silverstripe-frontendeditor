@@ -352,7 +352,7 @@ modified:	src/FrontEndEditorPageController.php
 -use Config;
 -use SiteTree;
 -use Controller;
--use SS_HTTPResponse;
+-use HTTPResponse;
 -use FrontEndEditorPreviousAndNextProvider;
 +
 +
