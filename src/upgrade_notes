@@ -139,3 +139,71 @@ To continue, please use the following parameter: startFrom=InspectAPIChanges-1
 e.g. php runme.php startFrom=InspectAPIChanges-1
 ------------------------------------------------------------------------
             
+# running php upgrade inspect see: https://github.com/silverstripe/silverstripe-upgrader
+cd /var/www/upgrades/upgradeto4
+php /var/www/ss4/upgrader/vendor/silverstripe/upgrader/bin/upgrade-code inspect /var/www/upgrades/upgradeto4/frontendeditor/src  --root-dir=/var/www/upgrades/upgradeto4 --write -vvv
+Array
+(
+    [0] => Running post-upgrade on "/var/www/upgrades/upgradeto4/frontendeditor/src"
+    [1] => [2023-03-30 23:44:28] Applying ApiChangeWarningsRule to FrontEndFieldsWithAjaxValidation.php...
+    [2] => 
+    [3] => In ParserAbstract.php line 293:
+    [4] => 
+    [5] =>   [PhpParser\Error]
+    [6] =>   Syntax error, unexpected T_STRING, expecting T_FUNCTION or T_CONST on line 4234
+    [7] => 
+    [8] => 
+    [9] => Exception trace:
+    [10] =>   at /var/www/ss4/upgrader/vendor/nikic/php-parser/lib/PhpParser/ParserAbstract.php:293
+    [11] =>  PhpParser\ParserAbstract->parse() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Parser/DirectParser.php:41
+    [12] =>  PHPStan\Parser\DirectParser->parseString() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Parser/DirectParser.php:32
+    [13] =>  PHPStan\Parser\DirectParser->parseFile() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Parser/CachedParser.php:29
+    [14] =>  PHPStan\Parser\CachedParser->parseFile() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Type/FileTypeMapper.php:110
+    [15] =>  PHPStan\Type\FileTypeMapper->createResolvedPhpDocMap() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Type/FileTypeMapper.php:81
+    [16] =>  PHPStan\Type\FileTypeMapper->getResolvedPhpDocMap() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Type/FileTypeMapper.php:61
+    [17] =>  PHPStan\Type\FileTypeMapper->getResolvedPhpDoc() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Reflection/Annotations/AnnotationsMethodsClassReflectionExtension.php:72
+    [18] =>  PHPStan\Reflection\Annotations\AnnotationsMethodsClassReflectionExtension->createMethods() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Reflection/Annotations/AnnotationsMethodsClassReflectionExtension.php:27
+    [19] =>  PHPStan\Reflection\Annotations\AnnotationsMethodsClassReflectionExtension->hasMethod() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Reflection/Php/PhpClassReflectionExtension.php:199
+    [20] =>  PHPStan\Reflection\Php\PhpClassReflectionExtension->createMethod() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Reflection/Php/PhpClassReflectionExtension.php:167
+    [21] =>  PHPStan\Reflection\Php\PhpClassReflectionExtension->getMethod() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Reflection/ClassReflection.php:170
+    [22] =>  PHPStan\Reflection\ClassReflection->getMethod() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Type/ObjectType.php:177
+    [23] =>  PHPStan\Type\ObjectType->getMethod() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Rules/Methods/CallStaticMethodsRule.php:164
+    [24] =>  PHPStan\Rules\Methods\CallStaticMethodsRule->processNode() at /var/www/ss4/upgrader/vendor/silverstripe/upgrader/src/UpgradeRule/PHP/Visitor/PHPStanScopeVisitor.php:80
+    [25] =>  SilverStripe\Upgrader\UpgradeRule\PHP\Visitor\PHPStanScopeVisitor->SilverStripe\Upgrader\UpgradeRule\PHP\Visitor\{closure}() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:316
+    [26] =>  PHPStan\Analyser\NodeScopeResolver->processNode() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:777
+    [27] =>  PHPStan\Analyser\NodeScopeResolver->processNode() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:176
+    [28] =>  PHPStan\Analyser\NodeScopeResolver->processNodes() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:699
+    [29] =>  PHPStan\Analyser\NodeScopeResolver->processNode() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:497
+    [30] =>  PHPStan\Analyser\NodeScopeResolver->processNode() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:176
+    [31] =>  PHPStan\Analyser\NodeScopeResolver->processNodes() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:475
+    [32] =>  PHPStan\Analyser\NodeScopeResolver->processNode() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:176
+    [33] =>  PHPStan\Analyser\NodeScopeResolver->processNodes() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:699
+    [34] =>  PHPStan\Analyser\NodeScopeResolver->processNode() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:176
+    [35] =>  PHPStan\Analyser\NodeScopeResolver->processNodes() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:699
+    [36] =>  PHPStan\Analyser\NodeScopeResolver->processNode() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:176
+    [37] =>  PHPStan\Analyser\NodeScopeResolver->processNodes() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:699
+    [38] =>  PHPStan\Analyser\NodeScopeResolver->processNode() at /var/www/ss4/upgrader/vendor/phpstan/phpstan/src/Analyser/NodeScopeResolver.php:176
+    [39] =>  PHPStan\Analyser\NodeScopeResolver->processNodes() at /var/www/ss4/upgrader/vendor/silverstripe/upgrader/src/UpgradeRule/PHP/Visitor/PHPStanScopeVisitor.php:82
+    [40] =>  SilverStripe\Upgrader\UpgradeRule\PHP\Visitor\PHPStanScopeVisitor->enterNode() at /var/www/ss4/upgrader/vendor/nikic/php-parser/lib/PhpParser/NodeTraverser.php:159
+    [41] =>  PhpParser\NodeTraverser->traverseArray() at /var/www/ss4/upgrader/vendor/nikic/php-parser/lib/PhpParser/NodeTraverser.php:85
+    [42] =>  PhpParser\NodeTraverser->traverse() at /var/www/ss4/upgrader/vendor/silverstripe/upgrader/src/UpgradeRule/PHP/PHPUpgradeRule.php:28
+    [43] =>  SilverStripe\Upgrader\UpgradeRule\PHP\PHPUpgradeRule->transformWithVisitors() at /var/www/ss4/upgrader/vendor/silverstripe/upgrader/src/UpgradeRule/PHP/ApiChangeWarningsRule.php:88
+    [44] =>  SilverStripe\Upgrader\UpgradeRule\PHP\ApiChangeWarningsRule->mutateSourceWithVisitors() at /var/www/ss4/upgrader/vendor/silverstripe/upgrader/src/UpgradeRule/PHP/ApiChangeWarningsRule.php:60
+    [45] =>  SilverStripe\Upgrader\UpgradeRule\PHP\ApiChangeWarningsRule->upgradeFile() at /var/www/ss4/upgrader/vendor/silverstripe/upgrader/src/Upgrader.php:61
+    [46] =>  SilverStripe\Upgrader\Upgrader->upgrade() at /var/www/ss4/upgrader/vendor/silverstripe/upgrader/src/Console/InspectCommand.php:88
+    [47] =>  SilverStripe\Upgrader\Console\InspectCommand->execute() at /var/www/ss4/upgrader/vendor/symfony/console/Command/Command.php:255
+    [48] =>  Symfony\Component\Console\Command\Command->run() at /var/www/ss4/upgrader/vendor/symfony/console/Application.php:1021
+    [49] =>  Symfony\Component\Console\Application->doRunCommand() at /var/www/ss4/upgrader/vendor/symfony/console/Application.php:275
+    [50] =>  Symfony\Component\Console\Application->doRun() at /var/www/ss4/upgrader/vendor/symfony/console/Application.php:149
+    [51] =>  Symfony\Component\Console\Application->run() at /var/www/ss4/upgrader/vendor/silverstripe/upgrader/bin/upgrade-code:55
+    [52] => 
+    [53] => inspect [-d|--root-dir ROOT-DIR] [-w|--write] [--skip-visibility] [--] <path>
+    [54] => 
+)
+
+
+------------------------------------------------------------------------
+To continue, please use the following parameter: startFrom=InspectAPIChanges-1
+e.g. php runme.php startFrom=InspectAPIChanges-1
+------------------------------------------------------------------------
+            
