@@ -18,7 +18,7 @@ interface FrontEndEditable
      */
 
 
-    public static function add_another($rootParentObject, $className, $sibling = null, $params);
+    public static function add_another($rootParentObject, $className, $sibling = null, $params = []);
 
     /**
      * required fields for front end...

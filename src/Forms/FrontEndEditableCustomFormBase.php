@@ -36,7 +36,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
   * EXP: Check if the class name can still be used as such
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
-    public static function add_another($rootParentObject, $className, $sibling = null, $params)
+    public static function add_another($rootParentObject, $className, $sibling = null, $params = [])
     {
         return null;
     }
