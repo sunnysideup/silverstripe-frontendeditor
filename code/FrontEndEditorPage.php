@@ -78,3 +78,4 @@ class FrontEndEditorPage extends Page
         );
     }
 }
+

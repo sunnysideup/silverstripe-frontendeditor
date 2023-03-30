@@ -266,3 +266,4 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
         return '';
     }
 }
+

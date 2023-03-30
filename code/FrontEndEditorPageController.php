@@ -621,3 +621,4 @@ class FrontEndEditorPageController extends PageController
         return $this->PreviousAndNextProvider()->AllPages();
     }
 }
+

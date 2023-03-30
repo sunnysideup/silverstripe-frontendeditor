@@ -402,3 +402,4 @@ class FrontEndDataExtension extends DataExtension
         }
     }
 }
+

@@ -350,3 +350,4 @@ class FrontEndEditorSessionManager extends Object
         }
     }
 }
+

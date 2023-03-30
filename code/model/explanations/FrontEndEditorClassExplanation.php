@@ -30,3 +30,4 @@ class FrontEndEditorClassExplanation extends FrontEndEditorExplanationsBaseClass
         return parent::add_or_find_item($className, $type);
     }
 }
+

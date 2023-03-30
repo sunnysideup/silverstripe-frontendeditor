@@ -246,3 +246,4 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
         return $this;
     }
 }
+

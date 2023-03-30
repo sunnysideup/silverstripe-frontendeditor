@@ -99,3 +99,4 @@ class FrontEndFieldsWithAjaxValidation extends ContentController
         return false;
     }
 }
+

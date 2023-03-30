@@ -140,3 +140,4 @@ class FrontEndExtendedHasManyField extends FrontEndExtendedHasOneOrManyField
         return parent::FieldHolder($properties = []);
     }
 }
+

@@ -570,3 +570,4 @@ class FrontEndEditorPreviousAndNextProvider extends Object
         return $html;
     }
 }
+

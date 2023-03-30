@@ -506,3 +506,4 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         return $obj->i18n_singular_name().': '.$obj->Title;
     }
 }
+

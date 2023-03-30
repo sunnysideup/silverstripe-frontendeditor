@@ -713,3 +713,4 @@ class FrontEndEditForm extends Form
         user_error("Form can not find object being edited...<pre>".print_r($data, 1)."</pre>");
     }
 }
+

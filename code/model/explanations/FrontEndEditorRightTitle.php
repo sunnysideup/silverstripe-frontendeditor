@@ -217,3 +217,4 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
         return false;
     }
 }
+

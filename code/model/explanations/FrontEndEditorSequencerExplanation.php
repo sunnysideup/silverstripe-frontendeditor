@@ -39,3 +39,4 @@ class FrontEndEditorSequencerExplanation extends FrontEndEditorExplanationsBaseC
         return $fields;
     }
 }
+

@@ -105,3 +105,4 @@ class FrontEndEditorCheckRootObjectTask extends BuildTask
         echo "==========================";
     }
 }
+
