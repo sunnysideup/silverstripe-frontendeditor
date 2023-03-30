@@ -1,6 +1,6 @@
 {
     "name": "sunnysideup/frontendeditor",
-    "type": "silverstripe-module",
+    "type": "silverstripe-vendormodule",
     "description": "Silverstripe Front-End Editor. Useful for places where you have listings and users can maintain their own page.",
     "keywords": [
         "Silverstripe-CMS",
