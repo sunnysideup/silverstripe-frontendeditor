@@ -7,6 +7,7 @@ use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextSequencer;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Member;
 use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorSequencerExplanation;
 use SilverStripe\View\ArrayData;
 use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
@@ -18,9 +19,6 @@ use SilverStripe\View\ViewableData;
  * it provides functions that are independent from the
  * sequencer being used so that it can run any type of sequence.
  */
-
-
-
 class FrontEndEditorPreviousAndNextProvider extends ViewableData
 {
     /**
@@ -51,6 +49,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
         return self::$_me_cached;
     }
 
+
     /**
      * returns a list of sequences available to the current member
      *
@@ -58,7 +57,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return ArrayList
      */
-    public function ListOfSequences($member = null): ArrayList
+    public function ListOfSequences(?Member $member = null): ArrayList
     {
         $array = [];
         $list = ClassInfo::subclassesFor(FrontEndEditorPreviousAndNextSequencer::class);
@@ -89,7 +88,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
         return $al;
     }
 
-    public function ArrayOfClassesToSequence()
+    public function ArrayOfClassesToSequence() : array
     {
         return $this->runOnSequencer('ArrayOfClassesToSequence', []);
     }
@@ -105,9 +104,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return FrontEndEditorPreviousAndNextProvider
      */
-
-
-    public function setSequenceProvider($className): FrontEndEditorPreviousAndNextProvider
+    public function setSequenceProvider(string $className): FrontEndEditorPreviousAndNextProvider
     {
         $list = ClassInfo::subclassesFor(FrontEndEditorPreviousAndNextSequencer::class);
         $list = array_change_key_case($list);
@@ -186,7 +183,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
         return $this->HasSequencer() && $this->getCurrentRecordBeingEdited() ? true : false;
     }
 
-    private static $_my_sequencer = null;
+    protected static $mySequencer = null;
 
     /**
      *
@@ -194,18 +191,18 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      */
     public function getSequencer()
     {
-        if (self::$_my_sequencer === null) {
+        if (self::$mySequencer === null) {
 
             $className = $this->getClassName();
 
 
             if ($className) {
 
-                self::$_my_sequencer = Injector::inst()->get($className);
+                self::$mySequencer = Injector::inst()->get($className);
             }
         }
 
-        return self::$_my_sequencer;
+        return self::$mySequencer;
     }
 
     /**

@@ -88,6 +88,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function PrepareForNextPage() : bool
     {
+        /** @var FrontEndEditable|DataObject $nextObject */
         $nextObject = $this->NextPageObject();
         if (! $nextObject->exists()) {
             //create one
@@ -103,6 +104,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function prepareAddAnother() : bool
     {
+        /** @var FrontEndEditable|DataObject $currentRecord */
         $currentRecord = $this->getCurrentRecordBeingEdited();
         if ($currentRecord && $currentRecord->exists()) {
             $this->AddAnotherOfThisClass($currentRecord);
@@ -127,9 +129,10 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function Link(): string
     {
+        /** @var FrontEndEditorPage $page */
         $page = DataObject::get_one(FrontEndEditorPage::class);
         if ($page) {
-            return $page->Link('startsequence/'.strtolower(get_class($this)).'/');
+            return $page->Link().'startsequence/'.strtolower(get_class($this)).'/';
         }
 
         return '404-front-end-editor-page-not-found';
@@ -142,6 +145,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      */
     public function canView($member = null) : bool
     {
+        /** @var FrontEndEditable|DataObject $obj */
         $obj = $this->getCurrentRecordBeingEdited();
         if ($obj && $obj instanceof FrontEndEditable && $obj->canEdit($member = null)) {
             return true;

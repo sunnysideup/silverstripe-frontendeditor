@@ -381,7 +381,7 @@ class FrontEndDataExtension extends DataExtension
         return $this->owner;
     }
 
-    public function FrontEndUID()
+    public function FrontEndUID() : string
     {
         return FrontEndEditorSessionManager::object_to_string($this->owner);
     }

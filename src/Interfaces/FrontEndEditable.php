@@ -3,7 +3,8 @@
 namespace SunnySideUp\FrontendEditor\Interfaces;
 
 
-
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DataObjectInterface;
 
 
 
@@ -258,4 +259,5 @@ interface FrontEndEditable
      * @return string
      */
     public function FrontEndEditColour();
+
 }
