@@ -24,7 +24,12 @@
         "i-lateral/silverstripe-trumbowyg-htmleditor": "*",
         "silverstripe/recipe-cms": "*"
     },
-    "extra": [],
+    "extra": {
+        "expose": [
+            "client/javascript",
+            "client/images"
+        ]
+    },
     "autoload": {
         "psr-4": {
             "SunnySideUp\\FrontendEditor\\": "src/"
