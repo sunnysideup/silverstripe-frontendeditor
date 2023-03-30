@@ -6,6 +6,7 @@ use SilverStripe\Core\Injector\Injector;
 use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextSequencer;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataObject;
 use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorSequencerExplanation;
 use SilverStripe\View\ArrayData;
 use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
@@ -458,6 +459,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
         if ($currentPageNumber === 1) {
             return false;
         }
+        /** @var DataObject $object */
         $object = $this->PreviousPageObject();
 
         return $object && $object->exists() ? true : false;
@@ -474,6 +476,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
         if ($currentPageNumber === $this->TotalNumberOfPages()) {
             return false;
         }
+        /** @var DataObject $object */
         $object = $this->NextPageObject();
 
         return $object && $object->exists() ? true : false;
