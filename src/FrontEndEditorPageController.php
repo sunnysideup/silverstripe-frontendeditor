@@ -67,7 +67,7 @@ class FrontEndEditorPageController extends PageController
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
         header('Cache-Control: no-store, no-cache, must-revalidate post-check=0, pre-check=0', false);
         header('Pragma: no-cache');
-        Requirements::themedCSS("FrontEndEditForm", "frontendeditor");
+        Requirements::themedCSS("sunnysideup/frontendeditor: FrontEndEditForm", "frontendeditor");
         $model = $this->request->param("ID");
         if (!$model) {
             $model = $this->Config()->get("default_model");
@@ -85,7 +85,7 @@ class FrontEndEditorPageController extends PageController
                 $this->recordBeingEdited = $model::create();
             }
         }
-        Requirements::javascript("app/javascript/RecentlyEdited.js");
+        Requirements::javascript("sunnysideup/frontendeditor: app/javascript/RecentlyEdited.js");
     }
 
     public function index()

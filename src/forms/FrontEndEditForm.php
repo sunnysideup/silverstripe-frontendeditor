@@ -344,8 +344,8 @@ class FrontEndEditForm extends Form
   * EXP: Check for best usage and inclusion of Jquery
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
-        Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
-        Requirements::javascript("frontendeditor/javascript/FrontEndEditForm.js");
+        Requirements::javascript('sunnysideup/frontendeditor: silverstripe/admin: thirdparty/jquery/jquery.js');
+        Requirements::javascript("sunnysideup/frontendeditor: frontendeditor/javascript/FrontEndEditForm.js");
         Requirements::customScript(
             "var FrontEndEditFormFormSelector = '#".$this->FormName()."'; ",
             "FrontEndEditFormFormSelector"
