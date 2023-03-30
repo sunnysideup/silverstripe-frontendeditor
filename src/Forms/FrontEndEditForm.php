@@ -295,9 +295,9 @@ class FrontEndEditForm extends Form
         $currentlyAddingTo = "";
         foreach ($fields as $field) {
             $fieldName = $field->ID();
-            $headerStartsHere = isset($headers[$fieldName]) ? true : false;
+            $headerStartsHere = isset($headerArray[$fieldName]) ? true : false;
             if ($headerStartsHere) {
-                $headerIsStandard = (is_string($headers[$fieldName])) ? true : false;
+                $headerIsStandard = (is_string($headerArray[$fieldName])) ? true : false;
             } else {
                 $headerIsStandard = false;
             }
@@ -324,7 +324,7 @@ class FrontEndEditForm extends Form
             }
         }
         foreach ($headerArray as $fieldName => $fieldArray) {
-            $toggleField = ToggleCompositeField::create($fieldName."_HEADING", $headers[$fieldName]);
+            $toggleField = ToggleCompositeField::create($fieldName."_HEADING", $headerArray[$fieldName]);
             unset($headers[$fieldName]);
             $fields->insertBefore($toggleField, $fieldName);
             foreach ($fieldArray as $fieldNameToRemove => $fieldToAdd) {
@@ -445,14 +445,7 @@ class FrontEndEditForm extends Form
 
             //start hack
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: ->db() (case sensitive)
-  * NEW: ->Config()->get('db') (COMPLEX)
-  * EXP: Check implementation
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
             foreach ($this->recordBeingEdited->Config()->get('db') as $name => $type) {
                 if (stripos($type, "oolean")) {
                     if (!isset($data[$name])) {
