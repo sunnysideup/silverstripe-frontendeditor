@@ -5,25 +5,6 @@ namespace SunnySideUp\FrontendEditor\Forms;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 use SunnySideUp\FrontendEditor\Api\FrontEndEditorSessionManager;
 use SilverStripe\Forms\LiteralField;
 use SunnySideUp\FrontendEditor\Forms\Fields\FrontEndExtendedHasOneField;
@@ -49,9 +30,7 @@ use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
 use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\Form;
-
-
-
+use SilverStripe\Forms\ToggleCompositeField;
 
 class FrontEndEditForm extends Form
 {
@@ -354,7 +333,7 @@ class FrontEndEditForm extends Form
             }
         }
         foreach ($headerArray as $fieldName => $fieldArray) {
-            $toggleField = ToggleCompositeField($fieldName."_HEADING", $headers[$fieldName]);
+            $toggleField = ToggleCompositeField::create($fieldName."_HEADING", $headers[$fieldName]);
             unset($headers[$fieldName]);
             $fields->insertBefore($toggleField, $fieldName);
             foreach ($fieldArray as $fieldNameToRemove => $fieldToAdd) {
