@@ -192,12 +192,8 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
     public function getSequencer()
     {
         if (self::$mySequencer === null) {
-
             $className = $this->getClassName();
-
-
             if ($className) {
-
                 self::$mySequencer = Injector::inst()->get($className);
             }
         }
