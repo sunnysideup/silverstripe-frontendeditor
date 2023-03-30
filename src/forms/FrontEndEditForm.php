@@ -179,10 +179,19 @@ class FrontEndEditForm extends Form
         //sibling edits
         if (class_exists("DataObjectOneFieldUpdateController")) {
             $noSiblingEdits = $this->recordBeingEdited->FrontEndNoSiblingEdits();
-            $readOnlyFields = $this->recordBeingEdited->FrontEndMakeReadOnlyFields();
+            $readOnlyFields = $this->recordBeingEdited->FrontEndMakeReadonlyFields();
             $siblingWhere = $this->recordBeingEdited->FrontEndSiblings(null, false);
             $siblingClassName = $siblingWhere->dataClass();
-            $dbFields = $this->recordBeingEdited->db();
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: ->db() (case sensitive)
+  * NEW: ->Config()->get('db') (COMPLEX)
+  * EXP: Check implementation
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            $dbFields = $this->recordBeingEdited->Config()->get('db');
             if (count($dbFields) && class_exists($siblingClassName)) {
                 $siblingArray = $siblingWhere->map("ID", "ID")->toArray();
                 if (count($siblingArray)) {
@@ -248,7 +257,7 @@ class FrontEndEditForm extends Form
 
 
         //make readonly
-        $readOnlyFieldNames = $this->recordBeingEdited->FrontEndMakeReadOnlyFields();
+        $readOnlyFieldNames = $this->recordBeingEdited->FrontEndMakeReadonlyFields();
         if (is_array($readOnlyFieldNames) && count($readOnlyFieldNames)) {
             foreach ($readOnlyFieldNames as $readOnlyFieldName) {
                 $readOnlyField = $fields->dataFieldByName($readOnlyFieldName);
@@ -326,7 +335,16 @@ class FrontEndEditForm extends Form
         //build!
         $actions = $this->selectActions();
         parent::__construct($controller, $name, $fields, $actions, $validator);
-        Requirements::javascript(THIRDPARTY_DIR."/jquery-form/jquery.form.js");
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: THIRDPARTY_DIR."/jquery-form/jquery.form.js" (case sensitive)
+  * NEW: 'silverstripe/admin: thirdparty/jquery/jquery.js' (COMPLEX)
+  * EXP: Check for best usage and inclusion of Jquery
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
         Requirements::javascript("frontendeditor/javascript/FrontEndEditForm.js");
         Requirements::customScript(
             "var FrontEndEditFormFormSelector = '#".$this->FormName()."'; ",
@@ -404,7 +422,16 @@ class FrontEndEditForm extends Form
         if ($this->recordBeingEdited && $this->recordBeingEdited->canEdit()) {
 
             //start hack
-            foreach ($this->recordBeingEdited->db() as $name => $type) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: ->db() (case sensitive)
+  * NEW: ->Config()->get('db') (COMPLEX)
+  * EXP: Check implementation
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            foreach ($this->recordBeingEdited->Config()->get('db') as $name => $type) {
                 if (stripos($type, "oolean")) {
                     if (!isset($data[$name])) {
                         $this->recordBeingEdited->$name = false;
@@ -568,11 +595,29 @@ class FrontEndEditForm extends Form
      * @param  string|null $classNMame
      * @return bool
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public function HasNextPage($className = null) : bool
     {
         if ($this->controller->HasSequence()) {
             return $this
                 ->PreviousAndNextSequencer()
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                 ->HasNextPage($className);
         } else {
             return false;
@@ -586,11 +631,29 @@ class FrontEndEditForm extends Form
      * @param  string|null $classNMame
      * @return bool
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public function HasPreviousPage($className = null) : bool
     {
         if ($this->controller->HasSequence()) {
             return $this
                 ->PreviousAndNextSequencer()
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                 ->HasPreviousPage($className);
         } else {
             return FrontEndEditorSessionManager::previous_object_based_on_browsing($this->recordBeingEdited) ? true : false;
@@ -679,17 +742,62 @@ class FrontEndEditForm extends Form
             return $this->recordBeingEdited;
         }
         $id = 0;
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         $className = "";
         if (isset($data["IDToUse"])) {
             $id = $data["IDToUse"];
         }
         if (isset($data["ClassNameToUse"])) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             $className = $data["ClassNameToUse"];
         }
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         if ($className) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             if (class_exists($className)) {
                 //find existing ...
                 if ($id) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                     $this->recordBeingEdited = $className::get()->byID($id);
                     if ($this->recordBeingEdited->hasExtension('FrontEndDataExtension')) {
                         return $this->recordBeingEdited;
@@ -697,11 +805,38 @@ class FrontEndEditForm extends Form
                 }
                 //create new ...
                 else {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                     $className = $data["ClassNameToUse"];
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                     if ($className && class_exists($className)) {
                         $obj = Injector::inst()->get("Provider");
                         if ($obj->hasExtension('FrontEndDataExtension')) {
                             if ($obj->canCreate()) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                                 $this->recordBeingEdited = $className::create();
                                 return $this->recordBeingEdited;
                             }

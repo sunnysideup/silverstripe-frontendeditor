@@ -1,6 +1,6 @@
 <?php
 
-abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
+abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
 {
 
 
@@ -206,10 +206,28 @@ abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
                     $title = _t("FrontEndEditor.ADD_EXISTING", "add existing");
                 }
                 if (count($dropdownSource)) {
-                    if ($fieldTypeClassName != "CheckboxOptionSetField") {
+                    if ($fieldTypeClassName != "CheckboxOptionsetField") {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                         $className = $this->getForeignClassName();
                         if ($fieldTypeClassName != "DropdownField") {
                             foreach ($dropdownSource as $id => $value) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                                 $object = $className::get()->byID($id);
                                 if ($object) {
                                     $dropdownSource[$id] = DBField::create_field('HTMLText', "<a href=\"".$object->FrontEndEditLink()."\">".$value."</a>");

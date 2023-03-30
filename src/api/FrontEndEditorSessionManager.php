@@ -5,7 +5,16 @@
  *
  */
 
-class FrontEndEditorSessionManager extends Object
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD:  extends Object (ignore case)
+  * NEW:  extends ViewableData (COMPLEX)
+  * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+class FrontEndEditorSessionManager extends ViewableData
 {
 
     /**
@@ -22,15 +31,69 @@ class FrontEndEditorSessionManager extends Object
 
     public static function set_current_record_being_edited($record)
     {
-        Session::set('FEE_CurrentRecordClassName', $record->ClassName);
-        Session::set('FEE_CurrentRecordID', $record->ID);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        Controller::curr()->getRequest()->getSession()->set('FEE_CurrentRecordClassName', $record->ClassName);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        Controller::curr()->getRequest()->getSession()->set('FEE_CurrentRecordID', $record->ID);
     }
 
     public static function get_current_record_being_edited($record)
     {
-        $className = Session::get('FEE_CurrentRecordClassName');
-        $id = Session::get('FEE_CurrentRecordID');
 
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        $className = Controller::curr()->getRequest()->getSession()->get('FEE_CurrentRecordClassName');
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        $id = Controller::curr()->getRequest()->getSession()->get('FEE_CurrentRecordID');
+
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         return $className::get()->byID(intval($id));
     }
 
@@ -50,12 +113,30 @@ class FrontEndEditorSessionManager extends Object
 
     public static function set_form_data($data)
     {
-        Session::set('FormInfo.FrontEndEditForm.data', $data);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        Controller::curr()->getRequest()->getSession()->set('FormInfo.FrontEndEditForm.data', $data);
     }
 
     public static function get_form_data()
     {
-        return Session::get('FormInfo.FrontEndEditForm.data');
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        return Controller::curr()->getRequest()->getSession()->get('FormInfo.FrontEndEditForm.data');
     }
 
     public static function clear_form_data()
@@ -73,30 +154,102 @@ class FrontEndEditorSessionManager extends Object
     public static function add_go_back_link($object)
     {
         $backObjectClassName = '';
-        $sequenceNumber = Session::get('FEE_GoBackInBrowserSteps');
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        $sequenceNumber = Controller::curr()->getRequest()->getSession()->get('FEE_GoBackInBrowserSteps');
         if (!$sequenceNumber) {
             $sequenceNumber = 1;
         }
-        if (count(Session::get('FEE_GoBackInBrowserSteps'))) {
-            $data = explode(",", Session::get('FEE_GoBackInBrowserStepsDetails'.$sequenceNumber));
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        if (count(Controller::curr()->getRequest()->getSession()->get('FEE_GoBackInBrowserSteps'))) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            $data = explode(",", Controller::curr()->getRequest()->getSession()->get('FEE_GoBackInBrowserStepsDetails'.$sequenceNumber));
             list($backObjectClassName, $backObjectID) = $data;
         }
         if ($backObjectClassName != $object->ClassName) {
             $sequenceNumber++;
-            Session::set('FEE_GoBackInBrowserSteps', $sequenceNumber);
-            Session::set('FEE_GoBackInBrowserStepsDetails'.$sequenceNumber, $object->ClassName.",".$object->ID);
-            Session::save();
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            Controller::curr()->getRequest()->getSession()->set('FEE_GoBackInBrowserSteps', $sequenceNumber);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            Controller::curr()->getRequest()->getSession()->set('FEE_GoBackInBrowserStepsDetails'.$sequenceNumber, $object->ClassName.",".$object->ID);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            Controller::curr()->getRequest()->getSession()->save();
         }
     }
 
     public static function get_sequence_number()
     {
-        return Session::get('FEE_GoBackInBrowserSteps');
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        return Controller::curr()->getRequest()->getSession()->get('FEE_GoBackInBrowserSteps');
     }
 
     public static function get_sequence_number_details($number)
     {
-        return Session::get('FEE_GoBackInBrowserStepsDetails'.$number);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        return Controller::curr()->getRequest()->getSession()->get('FEE_GoBackInBrowserStepsDetails'.$number);
     }
 
 
@@ -108,8 +261,26 @@ class FrontEndEditorSessionManager extends Object
      */
     public static function previous_object_based_on_browsing($currentRecord = null)
     {
-        $sequenceNumber = Session::get('FEE_GoBackInBrowserSteps')-1;
-        $data = explode(",", Session::get('FEE_GoBackInBrowserStepsDetails'.$sequenceNumber));
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        $sequenceNumber = Controller::curr()->getRequest()->getSession()->get('FEE_GoBackInBrowserSteps')-1;
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        $data = explode(",", Controller::curr()->getRequest()->getSession()->get('FEE_GoBackInBrowserStepsDetails'.$sequenceNumber));
         if (count($data) != 2) {
             $data = array("", "");
         }
@@ -134,10 +305,46 @@ class FrontEndEditorSessionManager extends Object
 
     public static function clear_previous_object_based_on_browsing()
     {
-        $sequenceNumber = Session::get('FEE_GoBackInBrowserSteps');
-        Session::set('FEE_GoBackInBrowserSteps', $sequenceNumber - 1);
-        Session::clear('FEE_GoBackInBrowserStepsDetails'.$sequenceNumber);
-        Session::save();
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        $sequenceNumber = Controller::curr()->getRequest()->getSession()->get('FEE_GoBackInBrowserSteps');
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        Controller::curr()->getRequest()->getSession()->set('FEE_GoBackInBrowserSteps', $sequenceNumber - 1);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        Controller::curr()->getRequest()->getSession()->clear('FEE_GoBackInBrowserStepsDetails'.$sequenceNumber);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        Controller::curr()->getRequest()->getSession()->save();
     }
 
     public static function clear_all_previous_objects()
@@ -177,7 +384,16 @@ class FrontEndEditorSessionManager extends Object
     public static function get_can_edit_object()
     {
         if (self::$_can_edit_object === null) {
-            $objectString = Session::get('FEE_canEditObject');
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            $objectString = Controller::curr()->getRequest()->getSession()->get('FEE_canEditObject');
             if ($objectString) {
                 self::$_can_edit_object = self::string_to_object($objectString);
             }
@@ -195,7 +411,16 @@ class FrontEndEditorSessionManager extends Object
     public static function set_can_edit_object($object)
     {
         $string = self::object_to_string($object);
-        $objectString = Session::set('FEE_canEditObject', $string);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        $objectString = Controller::curr()->getRequest()->getSession()->set('FEE_canEditObject', $string);
         self::$_can_edit_object = $object;
 
         return $objectString;
@@ -206,8 +431,26 @@ class FrontEndEditorSessionManager extends Object
      * @param string $className
      * @return DataList
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public static function editable_lists_based_on_can_edit($className)
     {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         return $className::get()->filter(array('FrontEndRootCanEditObject' => self::get_root_can_edit_object_string()));
     }
 
@@ -240,9 +483,36 @@ class FrontEndEditorSessionManager extends Object
     # FrontEndEditorSequencerClassName
     ###
 
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public static function set_sequencer($className)
     {
-        Session::set('FEE_SequencerClassName', $className);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        Controller::curr()->getRequest()->getSession()->set('FEE_SequencerClassName', $className);
     }
 
     /**
@@ -252,7 +522,16 @@ class FrontEndEditorSessionManager extends Object
      */
     public static function get_sequencer()
     {
-        return Session::get('FEE_SequencerClassName');
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        return Controller::curr()->getRequest()->getSession()->get('FEE_SequencerClassName');
     }
 
     /**
@@ -261,7 +540,16 @@ class FrontEndEditorSessionManager extends Object
      */
     public static function set_note_current_record(bool $bool)
     {
-        return Session::set('FEE_SequencerNoteCurrentRecord', $bool);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        return Controller::curr()->getRequest()->getSession()->set('FEE_SequencerNoteCurrentRecord', $bool);
     }
 
 
@@ -279,14 +567,32 @@ class FrontEndEditorSessionManager extends Object
      */
     public static function get_note_current_record() : bool
     {
-        return Session::get('FEE_SequencerNoteCurrentRecord') ? true : false;
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        return Controller::curr()->getRequest()->getSession()->get('FEE_SequencerNoteCurrentRecord') ? true : false;
     }
 
 
     public static function set_record_being_edited_in_sequence($object)
     {
         if (self::get_note_current_record() && $object) {
-            Session::set(
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            Controller::curr()->getRequest()->getSession()->set(
                 'FEE_SequencerCurrentRecordBeingEdited',
                 self::object_to_string($object)
             );
@@ -297,7 +603,16 @@ class FrontEndEditorSessionManager extends Object
 
     public static function get_record_being_edited_in_sequence($asString = false)
     {
-        $string = Session::get(
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        $string = Controller::curr()->getRequest()->getSession()->get(
             'FEE_SequencerCurrentRecordBeingEdited'
         );
         if ($string) {
@@ -334,8 +649,26 @@ class FrontEndEditorSessionManager extends Object
     public static function string_to_object($string)
     {
         if ($string) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             list($className, $id) = explode(',', $string);
 
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             return $className::get()->byID(intval($id));
         }
     }
@@ -343,10 +676,46 @@ class FrontEndEditorSessionManager extends Object
     protected static function clear_variable($variable)
     {
         for ($i = 0; $i < 3; $i++) {
-            Session::set($variable, '');
-            Session::set($variable, null);
-            Session::clear($variable);
-            Session::save();
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            Controller::curr()->getRequest()->getSession()->set($variable, '');
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            Controller::curr()->getRequest()->getSession()->set($variable, null);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            Controller::curr()->getRequest()->getSession()->clear($variable);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Session:: (case sensitive)
+  * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+            Controller::curr()->getRequest()->getSession()->save();
         }
     }
 }

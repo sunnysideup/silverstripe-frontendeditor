@@ -51,6 +51,15 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      * @param string $className - set ClassName to get the data for only one item
      * @return array
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     abstract public function ArrayOfClassesToSequence($className = null) : array;
 
     /**
@@ -95,6 +104,15 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      *
      * @return FrontEndEditable|null
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     abstract public function AddAnotherOfThisClass($className);
 
     /**
@@ -118,7 +136,7 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
     public function canView($member = null) : bool
     {
         $obj = $this->getCurrentRecordBeingEdited();
-        if ($obj && $obj instanceof FrontEndEditable && $obj->canEdit($member)) {
+        if ($obj && $obj instanceof FrontEndEditable && $obj->canEdit($member = null)) {
             return true;
         }
 
@@ -162,6 +180,15 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      *
      * @return ArrayList
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public function AllPages($className = null) : ArrayList
     {
         if ($this->_allPages === null) {
@@ -172,6 +199,15 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
                     $this->_allPages = ArrayList::create();
                     $array = $this->ArrayOfClassesToSequence();
                     foreach ($array as $myClassName => $configs) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                         if ($className === null || $className === $myClassName) {
                             $linkingMode = 'link';
                             $items =  $this->FrontEndFindChildObjects($myClassName)->sort(['ID' => 'ASC'])->limit(50);
@@ -212,8 +248,26 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
         return $this->_allPages;
     }
 
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public function CountForClassName($className)
     {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         $allPages = $this->AllPages($className)->count();
     }
 
@@ -225,10 +279,28 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      *
      * @return int
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public function CurrentRecordPositionInSequence($className = null) : int
     {
         $position = 0;
         $currentRecordBeingEdited = $this->getCurrentRecordBeingEdited();
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         $allPages = $this->AllPages($className);
         foreach ($allPages as $count => $page) {
             if ($page->FrontEndUID() === $currentRecordBeingEdited->FrontEndUID()) {
@@ -333,9 +405,36 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      * @param  string $className
      * @return bool
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public function MustAddAnotherOfThisClass($className) : bool
     {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         $existingChildren = $this->FrontEndFindChildObjects($className);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         $config = $this->ArrayOfClassesToSequence($className);
         $count = $existingChildren->count();
 
@@ -350,9 +449,36 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      *
      * @return bool
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public function CanAddAnotherOfThisClass($className, $currentRecordIsNew = false) : bool
     {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         $existingChildren = $this->FrontEndFindChildObjects($className);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         $config = $this->ArrayOfClassesToSequence($className);
         $count = $existingChildren->count();
         if ($currentRecordIsNew) {
@@ -371,27 +497,99 @@ abstract class FrontEndEditorPreviousAndNextSequencer extends ViewableData
      *
      * @return ArrayList
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public function FrontEndFindChildObjects($className) : SS_List
     {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         if (! isset(self::$_child_object_cache[$className])) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             self::$_child_object_cache[$className] = ArrayList::create();
             $rootParent = $this->FrontEndRootParentObject();
             if ($rootParent && $rootParent->exists()) {
 
                 //exception for the root parent itself ...
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                 if ($rootParent->ClassName === $className) {
                     $al = ArrayList::create();
                     $al->push($rootParent);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                     self::$_child_object_cache[$className] = $al;
                 } else {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                     $list = $rootParent->FrontEndFindChildObjects($className);
                     if ($list instanceof SS_List) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                         self::$_child_object_cache[$className] = $list;
                     }
                 }
             }
         }
 
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         return self::$_child_object_cache[$className];
     }
 

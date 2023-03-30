@@ -1,6 +1,15 @@
 <?php
 
 
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD:  extends DataExtension (ignore case)
+  * NEW:  extends DataExtension (COMPLEX)
+  * EXP: Check for use of $this->anyVar and replace with $this->anyVar[$this->owner->ID] or consider turning the class into a trait
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
 class FrontEndDataExtension extends DataExtension
 {
     public static $db = array(
@@ -52,6 +61,15 @@ class FrontEndDataExtension extends DataExtension
                     "<a target=\"_blank\" href=\"".$link."\">Open <em>".$this->owner->getTitle()."</em></a>"
                 )
             );
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: ->dontEscape (case sensitive)
+  * NEW: ->dontEscape (COMPLEX)
+  * EXP: dontEscape is not longer in use for form fields, please use HTMLReadonlyField (or similar) instead.
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             $field1->dontEscape = true;
         }
         //$fields->removeByName("FrontEndRootCanEditObject");
@@ -65,6 +83,15 @@ class FrontEndDataExtension extends DataExtension
                     "<a target=\"_blank\" href=\"".$rootParentObject->CMSEditLink()."\">Open <em>".$rootParentObject->getTitle()."</em></a>"
                 )
             );
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: ->dontEscape (case sensitive)
+  * NEW: ->dontEscape (COMPLEX)
+  * EXP: dontEscape is not longer in use for form fields, please use HTMLReadonlyField (or similar) instead.
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             $field2->dontEscape = true;
         }
         $fields->removeFieldFromTab("Root.Main", "FrontEndRootCanEditObject");
@@ -104,6 +131,15 @@ class FrontEndDataExtension extends DataExtension
     {
         return FrontEndEditorClassExplanation::get()
             ->filter(
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $this->ClassName (case sensitive)
+  * NEW: $this->ClassName (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
               ['ObjectClassName' => ($this->ClassName ? $this->ClassName : get_class($this->owner))]
             )
             ->first();
@@ -157,19 +193,28 @@ class FrontEndDataExtension extends DataExtension
 
     public function canCreate($member)
     {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: Config::inst()->get(" (case sensitive)
+  * NEW: Config::inst()->get(" (COMPLEX)
+  * EXP: Check if you should be using Name::class here instead of hard-coded class.
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         if ($this->owner->ClassName == Config::inst()->get("FrontEndEditorPage_Controller", "default_model")) {
             return true;
         }
     }
 
-    public function canView($member)
+    public function canView($member = null)
     {
         if ($this->owner->FrontEndRootCanEditObject == FrontEndEditorSessionManager::get_root_can_edit_object_string()) {
             return true;
         }
     }
 
-    public function canEdit($member)
+    public function canEdit($member = null)
     {
         if ($this->owner->FrontEndRootCanEditObject == FrontEndEditorSessionManager::get_root_can_edit_object_string()) {
             return true;
@@ -182,7 +227,16 @@ class FrontEndDataExtension extends DataExtension
      */
     public function validate(ValidationResult $validationResult)
     {
-        $requiredFields = Config::inst()->get($this->owner->class, 'required_fields', Config::INHERITED);
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $this->owner->class (case sensitive)
+  * NEW: get_class($this->owner) (COMPLEX)
+  * EXP: See: https://docs.silverstripe.org/en/4/changelogs/4.0.0#object-replace
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+        $requiredFields = Config::inst()->get(get_class($this->owner), 'required_fields', Config::INHERITED);
         if ($requiredFields) {
             foreach ($requiredFields as $name) {
                 $error = false;
@@ -346,6 +400,15 @@ class FrontEndDataExtension extends DataExtension
      */
     public function FrontEndDefaultSiblings($rootParent = null, $includeMe = false)
     {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         $className = $this->owner->ClassName;
         if ($rootParent) {
             $myObj = $rootParent;
@@ -353,6 +416,15 @@ class FrontEndDataExtension extends DataExtension
             $myObj = $this->owner;
         }
         $rootObjectAsString = $myObj->FrontEndRootParentObjectAsString();
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         $list = $className::get()->filter(array("FrontEndRootCanEditObject" => $rootObjectAsString));
         if (! $includeMe) {
             $list = $list->exclude(array("ID" => $this->owner->ID));
@@ -371,8 +443,26 @@ class FrontEndDataExtension extends DataExtension
      *
      * @return DataList
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public function FrontEndFindChildObjects($className)
     {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         return $className::get()->filter(array('FrontEndRootCanEditObject' => $this->owner->FrontEndRootCanEditObject));
     }
 

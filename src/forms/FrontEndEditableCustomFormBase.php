@@ -12,6 +12,15 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
      * @param  array                       $allParams
      * @return FrontEndEditable
      */
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     public static function add_another($rootParentObject, $className, $sibling = null, $params)
     {
         return null;
@@ -133,7 +142,7 @@ class FrontEndEditableCustomFormBase extends DataObject implements FrontEndEdita
      * e.g. the preset Title
      * @return array
      */
-    public function FrontEndMakeReadOnlyFields()
+    public function FrontEndMakeReadonlyFields()
     {
         return [];
     }
