@@ -8,7 +8,7 @@ namespace SunnySideUp\FrontendEditor\Api;
 
 
 
-use int;
+
 
 use SunnySideUp\FrontendEditor\FrontEndEditorPage;
 use SilverStripe\ORM\DataObject;

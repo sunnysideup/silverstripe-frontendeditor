@@ -9,7 +9,7 @@ namespace SunnySideUp\FrontendEditor\Api;
 
 
 
-use int;
+
 use SilverStripe\Core\Injector\Injector;
 use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextProvider;
 use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextSequencer;
