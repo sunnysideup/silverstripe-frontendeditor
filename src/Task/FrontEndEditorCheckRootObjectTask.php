@@ -38,44 +38,16 @@ class FrontEndEditorCheckRootObjectTask extends BuildTask
         Silverstripe\Core\Environment::increaseMemoryLimitTo('512M');
         $array = ClassInfo::subclassesFor(DataObject::class);
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
         foreach ($array as $key => $className) {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
             if (is_subclass_of($className, FrontEndEditable::class)) {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
                 $objects = $className::get();
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
                 echo "<h2>".$className."</h2>";
                 foreach ($objects as $obj) {
                     $save = false;
@@ -87,25 +59,11 @@ class FrontEndEditorCheckRootObjectTask extends BuildTask
                         $save = true;
                     } else {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
                         $className = $array[0];
                         $id = $array[1];
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
                         if (!class_exists($className)) {
                             $save = true;
                         }
@@ -114,14 +72,7 @@ class FrontEndEditorCheckRootObjectTask extends BuildTask
                         }
                         if (!$save) {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
                             $rootObject = $className::get()->byID($id);
                             if (!$rootObject) {
                                 $save = true;
@@ -140,12 +91,12 @@ class FrontEndEditorCheckRootObjectTask extends BuildTask
                                 foreach (array("Live", "Stage") as $stage) {
                                     Versioned::reading_stage($stage);
                                     $record = DataObject::get_by_id(SiteTree::class, $obj->ID);
-                                    
+
                                     $descRemoved = '';
                                     $descendantsRemoved = 0;
                                     $recordTitle = $record->Title;
                                     $recordID = $record->ID;
-                                    
+
                                     // before deleting the records, get the descendants of this tree
                                     if ($record) {
                                         $descendantIDs = $record->getDescendantIDList();

@@ -39,14 +39,7 @@ use SilverStripe\ORM\DataExtension;
 
 
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD:  extends DataExtension (ignore case)
-  * NEW:  extends DataExtension (COMPLEX)
-  * EXP: Check for use of $this->anyVar and replace with $this->anyVar[$this->owner->ID] or consider turning the class into a trait
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
 class FrontEndDataExtension extends DataExtension
 {
     public static $db = array(
@@ -99,14 +92,6 @@ class FrontEndDataExtension extends DataExtension
                 )
             );
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: ->dontEscape (case sensitive)
-  * NEW: ->dontEscape (COMPLEX)
-  * EXP: dontEscape is not longer in use for form fields, please use HTMLReadonlyField (or similar) instead.
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
             $field1->dontEscape = true;
         }
         //$fields->removeByName("FrontEndRootCanEditObject");
@@ -121,14 +106,6 @@ class FrontEndDataExtension extends DataExtension
                 )
             );
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: ->dontEscape (case sensitive)
-  * NEW: ->dontEscape (COMPLEX)
-  * EXP: dontEscape is not longer in use for form fields, please use HTMLReadonlyField (or similar) instead.
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
             $field2->dontEscape = true;
         }
         $fields->removeFieldFromTab("Root.Main", "FrontEndRootCanEditObject");
@@ -177,7 +154,7 @@ class FrontEndDataExtension extends DataExtension
   * EXP: Check if the class name can still be used as such
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
-              ['ObjectClassName' => ($this->ClassName ? $this->ClassName : get_class($this->owner))]
+              ['ObjectClassName' => ($this->getOwner()->ClassName ? : get_class($this->owner))]
             )
             ->first();
     }
@@ -273,7 +250,7 @@ class FrontEndDataExtension extends DataExtension
   * EXP: See: https://docs.silverstripe.org/en/4/changelogs/4.0.0#object-replace
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
-        $requiredFields = Config::inst()->get(get_class($this->owner), 'required_fields', Config::INHERITED);
+        $requiredFields = Config::inst()->get(get_class($this->owner), 'required_fields');
         if ($requiredFields) {
             foreach ($requiredFields as $name) {
                 $error = false;
@@ -438,14 +415,7 @@ class FrontEndDataExtension extends DataExtension
     public function FrontEndDefaultSiblings($rootParent = null, $includeMe = false)
     {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
         $className = $this->owner->ClassName;
         if ($rootParent) {
             $myObj = $rootParent;
@@ -454,14 +424,7 @@ class FrontEndDataExtension extends DataExtension
         }
         $rootObjectAsString = $myObj->FrontEndRootParentObjectAsString();
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
         $list = $className::get()->filter(array("FrontEndRootCanEditObject" => $rootObjectAsString));
         if (! $includeMe) {
             $list = $list->exclude(array("ID" => $this->owner->ID));
@@ -481,25 +444,11 @@ class FrontEndDataExtension extends DataExtension
      * @return DataList
      */
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
     public function FrontEndFindChildObjects($className)
     {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
         return $className::get()->filter(array('FrontEndRootCanEditObject' => $this->owner->FrontEndRootCanEditObject));
     }
 

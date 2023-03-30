@@ -2,19 +2,11 @@
 
 namespace SunnySideUp\FrontendEditor\Model\Explanations;
 
-
-
-
-
-
-use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorRightTitle;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\ReadonlyField;
 use SunnySideUp\FrontendEditor\Model\FrontEndEditorExplanationsBaseClass;
-
-
 
 class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
 {
@@ -52,27 +44,20 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
      * @return array
      */
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+    /**
+      * ### @@@@ START REPLACEMENT @@@@ ###
+      * WHY: automated upgrade
+      * OLD: $className (case sensitive)
+      * NEW: $className (COMPLEX)
+      * EXP: Check if the class name can still be used as such
+      * ### @@@@ STOP REPLACEMENT @@@@ ###
+      */
     public static function get_entered_ones($className)
     {
         $array = [];
         $objects = FrontEndEditorRightTitle::get()
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
             ->filter(array("ObjectClassName" => $className));
         foreach ($objects as $object) {
             if ($object->HasDescription()) {
@@ -91,26 +76,12 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
      * @return FrontEndEditorRightTitle
      */
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
     public static function add_or_find_field($className, $fieldName, $defaultValue = "")
     {
         $filter = array(
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
             "ObjectClassName" => $className,
             "ObjectFieldName" => $fieldName
         );
@@ -166,44 +137,29 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
         foreach ($rows as $row) {
             $combo = $row['COMBO'];
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             list($className, $fieldName) = explode(',', $combo);
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             if ($className && $fieldName) {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
                 $newList[$fieldName] = $this->getFieldNameNice($className, $fieldName).
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
                 ' ('.$this->getClassNameNice($className).')';
             }
         }
@@ -237,7 +193,7 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
         return $fields;
     }
 
-    public function getTitle() : string
+    public function getTitle(): string
     {
         return $this->getClassNameNice().", ".$this->getFieldNameNice()." (".$this->ObjectFieldName.")";
     }
@@ -245,91 +201,55 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
     private static $_cache_for_field_labels = [];
 
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+    /**
+      * ### @@@@ START REPLACEMENT @@@@ ###
+      * WHY: automated upgrade
+      * OLD: $className (case sensitive)
+      * NEW: $className (COMPLEX)
+      * EXP: Check if the class name can still be used as such
+      * ### @@@@ STOP REPLACEMENT @@@@ ###
+      */
     public function getFieldNameNice($className = null, $fieldName = null)
     {
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
         if ($className === null) {
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             $className = $this->ObjectClassName;
         }
         if ($fieldName === null) {
             $fieldName = $this->ObjectFieldName;
         }
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
         if (!isset(self::$_cache_for_field_labels[$className])) {
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             if ($obj = $this->getClassNameObjectFromCache($className)) {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
                 self::$_cache_for_field_labels[$className] = $obj->FieldLabels();
             }
         }
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
         if (isset(self::$_cache_for_field_labels[$className])) {
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             if ($array = self::$_cache_for_field_labels[$className]) {
                 if (isset($array[$fieldName])) {
                     return $array[$fieldName];
@@ -345,7 +265,7 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
      *
      * @return string
      */
-    public function BestDescription() : string
+    public function BestDescription(): string
     {
         if ($this->getHasLongDescription()) {
             return $this->LongDescription;
@@ -368,13 +288,12 @@ class FrontEndEditorRightTitle extends FrontEndEditorExplanationsBaseClass
     public function canDelete($member = null)
     {
         if (!$this->getClassNameObjectFromCache()) {
-            return DataObject::canDelete($member = null);
+            return parent::canDelete($member = null);
         }
         if ($this->getFieldNameNice() == "ERROR") {
-            return DataObject::canDelete($member = null);
+            return parent::canDelete($member = null);
         }
 
         return false;
     }
 }
-

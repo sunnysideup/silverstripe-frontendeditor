@@ -2,16 +2,7 @@
 
 namespace SunnySideUp\FrontendEditor\Api;
 
-
-
-
-
-
-
-
-
 use SilverStripe\Core\Injector\Injector;
-use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextProvider;
 use SunnySideUp\FrontendEditor\Api\FrontEndEditorPreviousAndNextSequencer;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\ORM\ArrayList;
@@ -19,8 +10,6 @@ use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorSequencerExplana
 use SilverStripe\View\ArrayData;
 use SunnySideUp\FrontendEditor\Interfaces\FrontEndEditable;
 use SilverStripe\View\ViewableData;
-
-
 
 /**
  *
@@ -40,7 +29,6 @@ use SilverStripe\View\ViewableData;
   */
 class FrontEndEditorPreviousAndNextProvider extends ViewableData
 {
-
     /**
      * cached variable for a singleton pattern
      * @var FrontEndEditorPreviousAndNextProvider
@@ -54,7 +42,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return FrontEndEditorPreviousAndNextProvider
      */
-    public static function inst($sequencerClassName = null, $currentRecordBeingEdited = null) : FrontEndEditorPreviousAndNextProvider
+    public static function inst($sequencerClassName = null, $currentRecordBeingEdited = null): FrontEndEditorPreviousAndNextProvider
     {
         if (self::$_me_cached === null) {
             self::$_me_cached = Injector::inst()->get(FrontEndEditorPreviousAndNextProvider::class);
@@ -76,7 +64,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return ArrayList
      */
-    public function ListOfSequences($member = null) : ArrayList
+    public function ListOfSequences($member = null): ArrayList
     {
         $array = [];
         $list = ClassInfo::subclassesFor(FrontEndEditorPreviousAndNextSequencer::class);
@@ -84,35 +72,18 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
         $currentSequencerClassName = $this->getClassName();
         $al = ArrayList::create();
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
         foreach ($list as $className) {
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             $classObject = Injector::inst()->get($className);
             if ($classObject->canView($member = null)) {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
                 $explanation = FrontEndEditorSequencerExplanation::add_or_find_item($className);
                 $array['Title'] = $classObject->Title();
                 $array['Description'] = $explanation->ShortDescription;
@@ -148,68 +119,58 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      * @return FrontEndEditorPreviousAndNextProvider
      */
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
-    public function setSequenceProvider($className) : FrontEndEditorPreviousAndNextProvider
+    /**
+      * ### @@@@ START REPLACEMENT @@@@ ###
+      * WHY: automated upgrade
+      * OLD: $className (case sensitive)
+      * NEW: $className (COMPLEX)
+      * EXP: Check if the class name can still be used as such
+      * ### @@@@ STOP REPLACEMENT @@@@ ###
+      */
+    public function setSequenceProvider($className): FrontEndEditorPreviousAndNextProvider
     {
         $list = ClassInfo::subclassesFor(FrontEndEditorPreviousAndNextSequencer::class);
         $list = array_change_key_case($list);
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
         if (isset($list[$className]) && $className !== FrontEndEditorPreviousAndNextSequencer::class) {
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             $className = $list[$className];
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             $this->sequencerClassName = $className;
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             FrontEndEditorSessionManager::set_sequencer($className);
         } else {
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             user_error($className.' does not extend FrontEndEditorPreviousAndNextSequencer.');
         }
 
@@ -222,7 +183,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return FrontEndEditorPreviousAndNextProvider
      */
-    public function setCurrentRecordBeingEdited($currentRecordBeingEdited) : FrontEndEditorPreviousAndNextProvider
+    public function setCurrentRecordBeingEdited($currentRecordBeingEdited): FrontEndEditorPreviousAndNextProvider
     {
         $this->runOnSequencer('setCurrentRecordBeingEdited', null, $params = [$currentRecordBeingEdited]);
 
@@ -259,7 +220,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      * a sequencer has been set ...
      * @return bool
      */
-    public function HasSequencer() : bool
+    public function HasSequencer(): bool
     {
         return $this->getSequencer() ? true : false;
     }
@@ -282,35 +243,26 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
     public function getSequencer()
     {
         if (self::$_my_sequencer === null) {
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             $className = $this->getClassName();
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+            /**
+              * ### @@@@ START REPLACEMENT @@@@ ###
+              * WHY: automated upgrade
+              * OLD: $className (case sensitive)
+              * NEW: $className (COMPLEX)
+              * EXP: Check if the class name can still be used as such
+              * ### @@@@ STOP REPLACEMENT @@@@ ###
+              */
             if ($className) {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
                 self::$_my_sequencer = Injector::inst()->get($className);
             }
         }
@@ -337,7 +289,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return FrontEndEditorPreviousAndNextProvider [description]
      */
-    public function StartSequence() : FrontEndEditorPreviousAndNextProvider
+    public function StartSequence(): FrontEndEditorPreviousAndNextProvider
     {
         $this->runOnSequencer('StartSequence', null);
 
@@ -352,7 +304,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return FrontEndEditorPreviousAndNextProvider
      */
-    public function setPage($newRecordBeingEditedOrRelativePageNumber) : FrontEndEditorPreviousAndNextProvider
+    public function setPage($newRecordBeingEditedOrRelativePageNumber): FrontEndEditorPreviousAndNextProvider
     {
         $item = null;
         if (is_int($newRecordBeingEditedOrRelativePageNumber)) {
@@ -394,7 +346,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return string
      */
-    public function Link() : string
+    public function Link(): string
     {
         return $this->getPageLink(0);
     }
@@ -405,7 +357,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return string
      */
-    public function getPageLink($offSetFromCurrent = 0) : string
+    public function getPageLink($offSetFromCurrent = 0): string
     {
         $item = null;
         if ($offSetFromCurrent !== 0) {
@@ -427,7 +379,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return int
      */
-    public function TotalNumberOfPages() : int
+    public function TotalNumberOfPages(): int
     {
         return $this->runOnSequencer('TotalNumberOfPages', 0);
     }
@@ -437,25 +389,9 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      * @return ArrayList
      */
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
-    public function AllPages($className = null) : ArrayList
-    {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+    public function AllPages($className = null): ArrayList
+    {
         return $this->runOnSequencer('AllPages', ArrayList::create(), $params = [$className]);
     }
 
@@ -466,25 +402,9 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      * @return FrontEndEditable|null
      */
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
     public function AddAnotherOfThisClass($className = null)
     {
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
         return $this->runOnSequencer('AddAnotherOfThisClass', null, $params = [$className]);
     }
 
@@ -495,25 +415,9 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      * @return bool
      */
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
-    public function HasNextPage($className = null) : bool
-    {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+    public function HasNextPage($className = null): bool
+    {
         return $this->runOnSequencer('HasNextPage', false, $params = [$className]);
     }
 
@@ -521,7 +425,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return string
      */
-    public function NextPageLink() : string
+    public function NextPageLink(): string
     {
         return $this->getPageLink(1);
     }
@@ -538,7 +442,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return string
      */
-    public function goNextPage() : string
+    public function goNextPage(): string
     {
         if ($canGo = $this->runOnSequencer('PrepareForNextPage', false)) {
             $this->setPage(1);
@@ -553,7 +457,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return string
      */
-    public function goAddAnother() : string
+    public function goAddAnother(): string
     {
         if ($canGo = $this->runOnSequencer('PrepareAddAnother', false)) {
             $this->setPage(1);
@@ -571,25 +475,9 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      * @return bool
      */
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
-    public function HasPreviousPage($className = null) : bool
-    {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+    public function HasPreviousPage($className = null): bool
+    {
         return $this->runOnSequencer('HasPreviousPage', false, $params = [$className]);
     }
 
@@ -597,7 +485,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return string
      */
-    public function PreviousLink() : string
+    public function PreviousLink(): string
     {
         return $this->getPageLink(-1);
     }
@@ -616,7 +504,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return bool
      */
-    public function canGoPreviousOrNextPage() : bool
+    public function canGoPreviousOrNextPage(): bool
     {
         return $this->canGoPreviousPage() || $this->canGoNextPage();
     }
@@ -626,7 +514,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return bool
      */
-    public function canGoPreviousPage() : bool
+    public function canGoPreviousPage(): bool
     {
         $currentPageNumber = $this->getPageNumber();
 
@@ -642,7 +530,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return bool
      */
-    public function canGoNextPage() : bool
+    public function canGoNextPage(): bool
     {
         $currentPageNumber = $this->getPageNumber();
 
@@ -658,7 +546,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return string
      */
-    public function goPreviousPage() : string
+    public function goPreviousPage(): string
     {
         $this->setPage(-1);
 
@@ -673,25 +561,9 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      * @return FrontEndEditable|null
      */
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
-    protected function CanAddAnotherOfThisClass($className, $currentRecordIsNew = false) : bool
-    {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+    protected function CanAddAnotherOfThisClass($className, $currentRecordIsNew = false): bool
+    {
         return $this->runOnSequencer('CanAddAnotherOfThisClass', false, $className, $params = [$currentRecordIsNew]);
     }
 
@@ -701,7 +573,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return FrontEndEditable|null
      */
-    protected function getPageItem($pageNumberOrFrontEndUID) : FrontEndEditable
+    protected function getPageItem($pageNumberOrFrontEndUID): FrontEndEditable
     {
         return $this->runOnSequencer('getPageItem', null, $params = [$pageNumberOrFrontEndUID]);
     }
@@ -710,12 +582,12 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
      *
      * @return int
      */
-    protected function getPageNumber() : int
+    protected function getPageNumber(): int
     {
         return $this->runOnSequencer('getPageNumber', 0);
     }
 
-    protected function FrontEndUID() : string
+    protected function FrontEndUID(): string
     {
         return $this->runOnSequencer('FrontEndUID', 'DataObject,0');
     }
@@ -760,7 +632,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
         $html .= '<hr />';
         $html .= print_r($this->NextPageObject() ? $this->NextPageObject()->FrontEndUID() : 'N/A', 1);
         $html .= print_r(', ', 1);
-        $html .= print_r($this->canGoNextPage() ? 'Accessible': 'Not Accessible', 1);
+        $html .= print_r($this->canGoNextPage() ? 'Accessible' : 'Not Accessible', 1);
 
         $html .= '<hr /><h3>Has Previous Page</h3>';
         $html .= '<hr />';
@@ -770,7 +642,7 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
         $html .= '<hr />';
         $html .= print_r($this->PreviousPageObject() ? $this->PreviousPageObject()->FrontEndUID() : 'N/A', 1);
         $html .= print_r(', ', 1);
-        $html .= print_r($this->canGoPreviousPage() ? 'Accessible': 'Not Accessible', 1);
+        $html .= print_r($this->canGoPreviousPage() ? 'Accessible' : 'Not Accessible', 1);
 
         $html .= '<hr /><h3>Total Number of Pages</h3>';
         $html .= '<hr />';
@@ -799,4 +671,3 @@ class FrontEndEditorPreviousAndNextProvider extends ViewableData
         return $html;
     }
 }
-

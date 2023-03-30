@@ -2,8 +2,6 @@
 
 namespace SunnySideUp\FrontendEditor\Forms\Fields;
 
-use DBCompositeField;
-
 
 
 
@@ -15,6 +13,7 @@ use DBCompositeField;
 use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\HiddenField;
 use SunnySideUp\FrontendEditor\Model\FrontEndDataExtension;
 use SilverStripe\ORM\Map;
@@ -26,8 +25,9 @@ use SilverStripe\ORM\FieldType\DBField;
 
 
 
-abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
+abstract class FrontEndExtendedHasOneOrManyField extends CompositeField
 {
+
 
 
     /**
@@ -234,26 +234,12 @@ abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
                 if (count($dropdownSource)) {
                     if ($fieldTypeClassName != "CheckboxOptionsetField") {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
                         $className = $this->getForeignClassName();
                         if ($fieldTypeClassName != DropdownField::class) {
                             foreach ($dropdownSource as $id => $value) {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
                                 $object = $className::get()->byID($id);
                                 if ($object) {
                                     $dropdownSource[$id] = DBField::create_field('HTMLText', "<a href=\"".$object->FrontEndEditLink()."\">".$value."</a>");
@@ -289,5 +275,8 @@ abstract class FrontEndExtendedHasOneOrManyField extends DBCompositeField
         $this->fieldHolderIsDone = false;
         return $this;
     }
+
+
+
 }
 

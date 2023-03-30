@@ -382,7 +382,7 @@ class FrontEndEditorPageController extends PageController
   * WHY: automated upgrade
   * OLD: Session:: (case sensitive)
   * NEW: Controller::curr()->getRequest()->getSession()-> (COMPLEX)
-  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly. 
+  * EXP: If THIS is a controller than you can write: $this->getRequest(). You can also try to access the HTTPRequest directly.
   * ### @@@@ STOP REPLACEMENT @@@@ ###
   */
         Controller::curr()->getRequest()->getSession()->save();
@@ -410,24 +410,10 @@ class FrontEndEditorPageController extends PageController
                     $array = explode(",", $value);
                     if (count($array) == 2) {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
                         list($className, $id) = $array;
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
                         $obj = $className::get()->byID($id);
                         if ($obj && $obj->hasExtension(FrontEndDataExtension::class)) {
                             if (!$al) {
@@ -550,24 +536,10 @@ class FrontEndEditorPageController extends PageController
     public function startsequence($request) : SS_HTTPResponse
     {
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
         $className = $this->request->param('ID');
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
         $startLink = $this->PreviousAndNextProvider($className)
             ->StartSequence()
             ->getPageLink();

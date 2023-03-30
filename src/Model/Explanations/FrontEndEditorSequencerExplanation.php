@@ -2,14 +2,11 @@
 
 namespace SunnySideUp\FrontendEditor\Model\Explanations;
 
-
-use SunnySideUp\FrontendEditor\Model\Explanations\FrontEndEditorSequencerExplanation;
 use SunnySideUp\FrontendEditor\Model\FrontEndEditorExplanationsBaseClass;
-
-
 
 class FrontEndEditorSequencerExplanation extends FrontEndEditorExplanationsBaseClass
 {
+
     private static $field_labels = array(
         "ObjectClassName" => "Sequence Code",
         "ClassNameNice" => "Sequence Name",
@@ -34,25 +31,8 @@ class FrontEndEditorSequencerExplanation extends FrontEndEditorExplanationsBaseC
      * @return FrontEndEditorSequencerExplanation
      */
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
     public static function add_or_find_item($className, $type = FrontEndEditorSequencerExplanation::class): FrontEndEditorExplanationsBaseClass
     {
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
         return parent::add_or_find_item($className, $type);
     }
 
@@ -64,5 +44,6 @@ class FrontEndEditorSequencerExplanation extends FrontEndEditorExplanationsBaseC
 
         return $fields;
     }
-}
 
+
+}

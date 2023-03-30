@@ -17,14 +17,7 @@ interface FrontEndEditable
      * @return FrontEndEditable            [description]
      */
 
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: $className (case sensitive)
-  * NEW: $className (COMPLEX)
-  * EXP: Check if the class name can still be used as such
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+
     public static function add_another($rootParentObject, $className, $sibling = null, $params);
 
     /**
