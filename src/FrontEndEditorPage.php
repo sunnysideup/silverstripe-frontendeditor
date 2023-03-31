@@ -8,7 +8,7 @@ use Page;
 
 class FrontEndEditorPage extends Page
 {
-    private static $icon = "frontendeditor/images/treeicons/FrontEndEditorPage";
+    private static $icon = "frontendeditor/client/images/treeicons/FrontEndEditorPage";
 
     private static $description = "";
 
