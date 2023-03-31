@@ -1,31 +1,38 @@
 {
-    "name": "sunnysideup/frontendeditor",
-    "type": "silverstripe-module",
-    "description": "Silverstripe Front-End Editor. Useful for places where you have listings and users can maintain their own page.",
-    "keywords": [
-        "Silverstripe-CMS",
-        "CMS",
-        "Silverstripe",
-        "Front End Editor",
-        "forms",
-        "content management",
-        "edit"
-    ],
-    "license": "BSD-3-Clause",
-    "authors": [
-        {
-            "name": "Nicolaas Francken",
-            "email": "modules@sunnysideup.co.nz",
-            "role": "lead developer"
-        }
-    ],
-    "require": {
-        "silverstripe/framework": "~3.6",
-        "sunnysideup/dataobjectsorter": "*",
-        "i-lateral/silverstripe-trumbowyg-htmleditor": "*",
-        "silverstripe/cms": "~3.6"
-    },
-    "extra": {
-        "installer-name": "frontendeditor"
+  "name": "sunnysideup/frontendeditor",
+  "type": "silverstripe-vendormodule",
+  "description": "Silverstripe Front-End Editor. Useful for places where you have listings and users can maintain their own page.",
+  "keywords": [
+    "Silverstripe-CMS",
+    "CMS",
+    "Silverstripe",
+    "Front End Editor",
+    "forms",
+    "content management",
+    "edit"
+  ],
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Nicolaas Francken",
+      "email": "modules@sunnysideup.co.nz",
+      "role": "lead developer"
     }
+  ],
+  "require": {
+    "sunnysideup/dataobjectsorter": "*",
+    "i-lateral/silverstripe-trumbowyg-htmleditor": "*",
+    "silverstripe/recipe-cms": "*"
+  },
+  "extra": {
+    "expose": [
+      "client/javascript",
+      "client/images"
+    ]
+  },
+  "autoload": {
+    "psr-4": {
+      "SunnySideUp\\FrontendEditor\\": "src/"
+    }
+  }
 }
